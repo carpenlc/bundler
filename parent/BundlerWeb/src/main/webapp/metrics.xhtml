@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3c.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<link rel="shortcut icon" type="image/x-icon" href="#{resource['images/favicon.ico']}" />
+<link rel="stylesheet" type="text/css" href="#{resource['css/style.css']}" />
+
+<h:head>
+    <title>Bundler Statistics</title>
+</h:head>
+<h:body>
+    <!--  Classification Banner -->
+    <div class="wrapClassific">
+    	<div class="classific"><a name="topOfPage"></a>
+    		<span>Dynamic content highest classification up to <b>UNCLASSIFIED//LIMDIS//FOUO</b></span>
+    	</div>
+    </div>
+    <div id="container">
+    	<table width="100%">
+    		<tr>
+    			<td id="sealWrap">
+    				<img id="seal" align="left" src="#{resource['images/NGAWebheader_logo.png']}" />
+    			</td>
+    		</tr>
+    	</table>
+    	<h:form id="form">
+    	<p:tabView>  
+    		 <p:tab title="Metrics">
+    		     <p:panelGrid id="metrics_grid" styleClass="panelGridCenter" columns="3">
+    		     <p:panelGrid id="todays_metrics" styleClass="panelGridCenter">
+    		         <f:facet name="header">
+    		             <p:row>
+    		             	  <p:column colspan="6">
+    		             	      <p:outputLabel value="Today - Metrics" />
+    		             	  </p:column>
+    		             </p:row>
+    		        </f:facet>
+    	            <p:row>
+    		             <p:column colspan="4">Total Number of Jobs</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewTodaysJobMetrics.getTotalNumJobs()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Number of Jobs Incomplete</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewTodaysJobMetrics.getNumJobsIncomplete()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Job Completion Percentage</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewTodaysJobMetrics.getJobCompletionPercentage()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Total Number of Archives</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewTodaysJobMetrics.getTotalNumArchives()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Total Number of Files</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewTodaysJobMetrics.getTotalNumFiles()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Data Transferred</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewTodaysJobMetrics.getDataTransferred()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Data Transferred (Compressed)</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewTodaysJobMetrics.getCompressedDataTransferred()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Average Num Files Per Job</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewTodaysJobMetrics.getAverageNumFilesPerJob()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Average Num Archives Per Job</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewTodaysJobMetrics.getAverageNumArchivesPerJob()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Average Size Per Job</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewTodaysJobMetrics.getAverageSizePerJob()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Average Compression Percentage</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewTodaysJobMetrics.getAverageCompression()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Absolute Compression Percentage</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewTodaysJobMetrics.getAbsoluteCompression()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Average Elapsed Time Per Job</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewTodaysJobMetrics.getAverageElapsedTimePerJob()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <f:facet name="footer">
+    		             <p:row>
+    		             	  <p:column colspan="6">
+    		             	      <p:outputLabel value="#{viewTodaysJobMetrics.getTimeFrame()}" />
+    		             	  </p:column>
+    		             </p:row>
+    		         </f:facet>
+    		         <p:tooltip for="todays_metrics" position="top" value="Table shows metrics for all jobs submitted from midnight GMT until the current time."></p:tooltip>
+    		     </p:panelGrid>         		         
+    		     <p:panelGrid id="last_30_days_metrics" styleClass="panelGridCenter">
+    		         <f:facet name="header">
+    		             <p:row>
+    		             	  <p:column colspan="6">
+    		             	      <p:outputLabel value="Last 30 Days - Metrics" />
+    		             	  </p:column>
+    		             </p:row>
+    		         </f:facet>
+    		         <p:row>
+    		             <p:column colspan="4">Total Number of Jobs</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewLast30DaysJobMetrics.getTotalNumJobs()}" />
+    		             </p:column>
+    		         </p:row>
+    		             		         <p:row>
+    		             <p:column colspan="4">Number of Jobs Incomplete</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewLast30DaysJobMetrics.getNumJobsIncomplete()}" />
+    		             </p:column>
+    		         </p:row>
+    		             		         <p:row>
+    		             <p:column colspan="4">Job Completion Percentage</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewLast30DaysJobMetrics.getJobCompletionPercentage()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Total Number of Archives</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewLast30DaysJobMetrics.getTotalNumArchives()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Total Number of Files</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewLast30DaysJobMetrics.getTotalNumFiles()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Data Transferred</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewLast30DaysJobMetrics.getDataTransferred()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Data Transferred (Compressed)</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewLast30DaysJobMetrics.getCompressedDataTransferred()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Average Num Files Per Job</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewLast30DaysJobMetrics.getAverageNumFilesPerJob()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Average Num Archives Per Job</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewLast30DaysJobMetrics.getAverageNumArchivesPerJob()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Average Size Per Job</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewLast30DaysJobMetrics.getAverageSizePerJob()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Average Compression Percentage</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewLast30DaysJobMetrics.getAverageCompression()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Absolute Compression Percentage</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewLast30DaysJobMetrics.getAbsoluteCompression()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Average Elapsed Time Per Job</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewLast30DaysJobMetrics.getAverageElapsedTimePerJob()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <f:facet name="footer">
+    		             <p:row>
+    		             	  <p:column colspan="6">
+    		             	      <p:outputLabel value="#{viewLast30DaysJobMetrics.getTimeFrame()}" />
+    		             	  </p:column>
+    		             </p:row>
+    		         </f:facet>
+    		         <p:tooltip for="last_30_days_metrics" position="top" value="Table shows metrics for all jobs submitted during the last 30 days."></p:tooltip>
+    		     </p:panelGrid>
+    		     <p:panelGrid id="overall_metrics" styleClass="panelGridCenter">
+    		         <f:facet name="header">
+    		             <p:row>
+    		             	  <p:column colspan="6">
+    		             	      <p:outputLabel value="Overall - Metrics" />
+    		             	  </p:column>
+    		             </p:row>
+    		         </f:facet>
+    		         <p:row>
+    		             <p:column colspan="4">Total Number of Jobs</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewOverallJobMetrics.getTotalNumJobs()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Number of Jobs Incomplete</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewOverallJobMetrics.getNumJobsIncomplete()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Job Completion Percentage</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewOverallJobMetrics.getJobCompletionPercentage()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Total Number of Archives</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewOverallJobMetrics.getTotalNumArchives()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Total Number of Files</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewOverallJobMetrics.getTotalNumFiles()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Data Transferred</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewOverallJobMetrics.getDataTransferred()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Data Transferred (Compressed)</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewOverallJobMetrics.getCompressedDataTransferred()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Average Num Files Per Job</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewOverallJobMetrics.getAverageNumFilesPerJob()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Average Num Archives Per Job</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewOverallJobMetrics.getAverageNumArchivesPerJob()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Average Size Per Job</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewOverallJobMetrics.getAverageSizePerJob()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Average Compression Percentage</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewOverallJobMetrics.getAverageCompression()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Absolute Compression Percentage</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewOverallJobMetrics.getAbsoluteCompression()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <p:row>
+    		             <p:column colspan="4">Average Elapsed Time Per Job</p:column>
+    		             <p:column colspan="2">
+    		                 <h:outputText value="#{viewOverallJobMetrics.getAverageElapsedTimePerJob()}" />
+    		             </p:column>
+    		         </p:row>
+    		         <f:facet name="footer">
+    		             <p:row>
+    		             	  <p:column colspan="6">
+    		             	      <p:outputLabel value="#{viewOverallJobMetrics.getTimeFrame()}" />
+    		             	  </p:column>
+    		             </p:row>
+    		         </f:facet>
+    		         <p:tooltip for="overall_metrics" position="top" value="Table shows metrics for all jobs that the bundler has processed.  Overall metrics are re-calculated every 30 minutes."></p:tooltip>
+    		     </p:panelGrid>
+    		     </p:panelGrid>
+    		     <br />
+    		     <!-- Display the bar chart showing the number of jobs submitted per day  -->
+		    	 <p:chart type="bar" model="#{viewJobsSubmittedChartModel.barModel}" style="height:300px" />
+		    	 <br />
+		    	 <p:chart type="bar" model="#{viewDataTransferredChartModel.barModel}" style="height:300px" />
+    		 </p:tab>
+    	     <p:tab title="Job List">
+    	         <p:dataTable id="jobListDT"
+    	                      value="#{viewJobList.jobs}"
+    	                      rowKey="#{job.jobID}" 
+                              var="job"
+                              paginator="true" 
+                              rows="25"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                              rowsPerPageTemplate="5,10,15"
+                              selectionMode="single" 
+                              selection="#{viewJobList.selectedJob}">
+                      <f:facet name="header">
+                          <h:outputText value="Recent Job List"></h:outputText>
+                      </f:facet>
+                      <p:column headerText="User" sortBy="#{job.userName}">
+                          <h:outputText value="#{job.userName}"></h:outputText>
+                      </p:column>
+                      <p:column headerText="Job ID" sortBy="#{job.jobID}">
+                          <h:outputText value="#{job.jobID}"></h:outputText>
+                      </p:column>
+                      <p:column headerText="Files" sortBy="#{job.numFiles}">
+                          <h:outputText value="#{job.numFiles}"></h:outputText>
+                      </p:column>
+                      <p:column headerText="Total Size" sortBy="#{job.totalSize}">
+                          <h:outputText value="#{viewJobList.getTotalSizeHR(job)}"></h:outputText>
+                      </p:column>
+                      <p:column headerText="Compressed Size" sortBy="#{job.numFiles}">
+                          <h:outputText value="#{viewJobList.getCompressedSizeHR(job)}"></h:outputText>
+                      </p:column>
+                      <p:column headerText="Compression %">
+                          <h:outputText value="#{viewJobList.getCompressionPercent(job)}"></h:outputText>
+                      </p:column>
+                      <p:column headerText="Start Time">
+                     	  <h:outputText value="#{viewJobList.getStartTimeHR(job)}"></h:outputText>
+                      </p:column>
+                      <p:column headerText="Status">
+                          <h:outputText value="#{job.state}"></h:outputText>
+                      </p:column>
+                      <p:column headerText="Elapsed Time">
+                          <h:outputText value="#{viewJobList.getElapsedTime(job)}"></h:outputText>
+                      </p:column>
+                      <f:facet name="footer">
+                          <p:commandButton process="jobListDT" 
+                                           icon="ui-icon-search"
+                                           value="View"
+                                           update=":form:jobDetail"
+                                           oncomplete="PF('jobDialog').show()"></p:commandButton>
+                      </f:facet>
+                 </p:dataTable>
+    	     </p:tab>
+    	</p:tabView>
+		<p:dialog header="State Information" widgetVar="jobDialog" modal="true" 
+		          showEffect="fade" hideEffect="fade" dynamic="true">
+		    <p:outputPanel id="jobDetail" rendered="#{not empty viewJobList.selectedJob}">
+		        <p:panelGrid>
+		        	<p:row>
+		        	    <p:column>Job ID: </p:column>
+		        	    <p:column><h:outputText value="#{viewJobList.selectedJob.jobID}"></h:outputText></p:column>
+		        	</p:row>
+		        </p:panelGrid>
+		    </p:outputPanel>          
+		</p:dialog>
+		</h:form>
+		<table width="100%">
+    		<tr>
+    			<td id="sealWrap">
+    			</td>
+    		</tr>
+    	</table>
+		<div class="pocInfo">
+			<br /><strong>Point of Contact: </strong> Gateway/Bundler<br />
+			L. Craig Carpenter TICP<br />
+			phone: 636-321-5503, DSN: 369-5503<br />
+			<a href="mailto:lester.c.carpenter.ctr@nga.mil">lester.c.carpenter.ctr@nga.mil</a>
+		</div>
+    </div> <!-- container div -->
+    <div class="footerDiv"></div>    
+	<div class="wrapClassific">
+    	<div class="classific"><a name="topOfPage"></a>
+    		<span>Dynamic content highest classification up to <b>UNCLASSIFIED//LIMDIS//FOUO</b></span>
+    	</div>
+    </div>
+</h:body>
+</html>

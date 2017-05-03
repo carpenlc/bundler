@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3c.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<link rel="shortcut icon" type="image/x-icon" href="#{resource['images/favicon.ico']}" />
+<link rel="stylesheet" type="text/css" href="#{resource['css/style.css']}" />
+
+<h:head>
+    <title>Job Status</title>
+</h:head>
+<h:body>
+    <!--  Classification Banner -->
+    <div class="wrapClassific">
+    	<div class="classific">
+    		<span>Dynamic content highest classification up to <b>UNCLASSIFIED//LIMDIS//FOUO</b></span>
+    	</div>
+    </div>
+    <div id="container">
+    	<table width="100%">
+    		<tr>
+    			<td id="sealWrap">
+    				<img id="seal" align="left" src="#{resource['images/NGAWebheader_logo.png']}" />
+    			</td>
+    		</tr>
+    	</table>
+    	<h:form id="form">
+    	
+    		<p:tabView>  
+    			<p:tab title="Bundler Jobs">
+    			     <p:dataTable id="bundlerJobDT"
+    	                      value="#{viewBundlerJobs.jobs}"
+    	                      rowKey="#{job.jobID}" 
+                              var="job"
+                              paginator="true" 
+                              rows="20"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                              rowsPerPageTemplate="5,10,15"
+                              selectionMode="single" 
+                              selection="#{viewBundlerJobs.selectedJob}">
+                      <f:facet name="header">
+                          <h:outputText value="Recent Job List"></h:outputText>
+                      </f:facet>
+                      <p:column headerText="User" sortBy="#{job.userName}">
+                          <h:outputText value="#{job.userName}"></h:outputText>
+                      </p:column>
+                      <p:column headerText="Job ID" sortBy="#{job.jobID}">
+                          <h:outputText value="#{job.jobID}"></h:outputText>
+                      </p:column>
+                      <p:column headerText="Files" sortBy="#{job.numFiles}">
+                          <h:outputText value="#{job.numFiles}"></h:outputText>
+                      </p:column>
+                      <p:column headerText="Size" sortBy="#{job.totalSize}">
+                          <h:outputText value="#{viewBundlerJobs.getTotalSizeHR(job)}"></h:outputText>
+                      </p:column>
+                      <p:column headerText="Start Time">
+                          <h:outputText value="#{viewBundlerJobs.getStartTime(job)}"></h:outputText>
+                      </p:column>
+                      <p:column headerText="Status">
+                          <h:outputText value="#{job.state}"></h:outputText>
+                      </p:column>
+                      <p:column headerText="Elapsed Time">
+                          <h:outputText value="#{viewBundlerJobs.getElapsedTime(job)}"></h:outputText>
+                      </p:column>
+                      <f:facet name="footer">
+                          <p:commandButton process="bundlerJobDT"
+                                           icon="ui-icon-search"
+                                           value="View"
+                                           update=":form:bundlerJobDetail"
+                                           onstart="PF('statusDialog').show()"
+                                           oncomplete="PF('statusDialog').hide(); PF('jobDialog').show()">
+                          </p:commandButton>
+                      </f:facet>
+                      </p:dataTable>
+    			</p:tab>
+    			<p:tab title="Validation Jobs">
+    			
+    			</p:tab>
+    		</p:tabView>
+    		<p:dialog widgetVar="statusDialog" 
+    		          modal="true"
+    		          draggable="false"
+    		          closeable="false"
+    		          resizable="false"
+    		          showHeader="false">
+    		          <p:graphicImage value="#{resource['images/loading.gif']}"></p:graphicImage>
+    		</p:dialog>
+    		<p:dialog header="Detailed Job Information" 
+    		          widgetVar="jobDialog" 
+    		          modal="true" 
+		              showEffect="fade" 
+		              hideEffect="fade" 
+		              dynamic="true">
+		    	<p:outputPanel id="bundlerJobDetail" rendered="#{not empty viewBundlerJobs.selectedJob}">
+		        	<p:tree value="#{viewJobTree.getRoot(viewBundlerJobs.selectedJob)}" var="node">
+		        		<p:treeNode>
+		        			<h:outputText value="#{node}" />
+		        		</p:treeNode>
+		        	</p:tree>
+		    	</p:outputPanel>          
+			</p:dialog>
+		</h:form>
+		<table width="100%">
+    		<tr>
+    			<td id="sealWrap">
+    			</td>
+    		</tr>
+    	</table>
+		<div class="pocInfo">
+			<br /><strong>Point of Contact: </strong> Gateway/Bundler<br />
+			L. Craig Carpenter TICP<br />
+			phone: 636-321-5503, DSN: 369-5503<br />
+			<a href="mailto:lester.c.carpenter.ctr@nga.mil">lester.c.carpenter.ctr@nga.mil</a>
+			<br />
+		</div>
+    </div> <!-- container div -->
+</h:body>
+<div class="footerDiv">
+	</div>    
+	<div class="wrapClassific">
+    	<div class="classific"><a name="bottomOfPage"></a>
+    		<span>Dynamic content highest classification up to <b>UNCLASSIFIED//LIMDIS//FOUO</b></span>
+    	</div>
+    </div>
+</html>

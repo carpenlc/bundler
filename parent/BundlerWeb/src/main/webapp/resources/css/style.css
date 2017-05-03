@@ -1,0 +1,238 @@
+
+
+body {
+	color: #333;
+	font: 12px Sans-Serif;
+	padding: 50px;
+	background: #eee;
+}
+
+h1 {
+	text-align: center;
+	padding: 20px 0 12px 0;
+	margin: 0;
+}
+h2 {
+	font-size: 16px;
+	text-align: center;
+	padding: 8px 0 12px 0; 
+}
+h3 {
+  padding-top: 0px;
+  padding-left: -10px;
+  font-size:14px !important;
+  color:#C00;
+  text-align:center;
+}
+.bluish {
+	color:#39F;
+}
+.redish {
+	color:#C00;
+}
+#container {
+  margin: 0 auto;
+  margin-top:10px;
+  background: #fff url(./images/shade.jpg) repeat-x center bottom;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  border-top: 1px solid #fff;
+  padding-bottom: 76px;
+}
+
+#tableWrap {
+/*
+	box-shadow: 0 5px 10px -5px rgba(0,0,0,0.5);
+	position: relative;
+	background: white;
+	*/
+}
+
+#sealWrap {
+	background: white;
+	border-bottom:thick #39F solid;
+	padding-bottom:15px;
+	width: 100%;
+}
+
+cite.rightAlign {
+	padding-left:20px;
+	color:#FFF;
+	font-size:11px;
+}
+
+table#directory {
+/*	background-color: #F3F3F3;
+	border-collapse: collapse;
+	margin: 15px 0;
+*/
+}
+
+table#directory th {
+	background-color: #3399FF;
+	color: #FFF;
+	cursor: pointer;
+	padding: 5px 10px;
+}
+
+table#directory th small {
+	font-size: 9px; 
+}
+
+table#directory td, th {
+	text-align: left;
+}
+
+table#directory a {
+	text-decoration: none;
+}
+
+table#directory td a {
+	color: #663300;
+	display: block;
+	padding: 5px 10px;
+}
+table#directory th a {
+	padding-left: 0
+}
+
+table#directory td:first-of-type a {
+	background: url(./images/file.png) no-repeat 10px 50%;
+	padding-left: 35px;
+}
+table#directory th:first-of-type {
+	padding-left: 35px;
+}
+
+table#directory td:not(:first-of-type) a {
+	background-image: none !important;
+} 
+
+table#directory tr:nth-of-type(odd) {
+	background-color: #E6E6E6;
+}
+
+table#directory tr:hover td {
+	background-color:#CACACA;
+}
+
+table#directory tr:hover td a {
+	color: #000;
+}
+
+
+
+
+
+/* icons for file types (icons by famfamfam) */
+
+/* images */
+table#directory tr td:first-of-type a[href$=".jpg"], 
+table#directory tr td:first-of-type a[href$=".png"], 
+table#directory tr td:first-of-type a[href$=".gif"], 
+table#directory tr td:first-of-type a[href$=".svg"], 
+table#directory tr td:first-of-type a[href$=".jpeg"]
+{background-image: url(./images/image.png);}
+
+/* zips */
+table#directory tr td:first-of-type a[href$=".zip"] 
+{background-image: url(./images/zip.png);}
+
+/* css */
+table#directory tr td:first-of-type a[href$=".css"] 
+{background-image: url(./images/css.png);}
+
+/* docs */
+table#directory tr td:first-of-type a[href$=".doc"],
+table#directory tr td:first-of-type a[href$=".docx"],
+table#directory tr td:first-of-type a[href$=".ppt"],
+table#directory tr td:first-of-type a[href$=".pptx"],
+table#directory tr td:first-of-type a[href$=".pps"],
+table#directory tr td:first-of-type a[href$=".ppsx"],
+table#directory tr td:first-of-type a[href$=".xls"],
+table#directory tr td:first-of-type a[href$=".xlsx"]
+{background-image: url(./images/office.png)}
+
+/* videos */
+table#directory tr td:first-of-type a[href$=".avi"], 
+table#directory tr td:first-of-type a[href$=".wmv"], 
+table#directory tr td:first-of-type a[href$=".mp4"], 
+table#directory tr td:first-of-type a[href$=".mov"], 
+table#directory tr td:first-of-type a[href$=".m4a"]
+{background-image: url(./images/video.png);}
+
+/* audio */
+table#directory tr td:first-of-type a[href$=".mp3"], 
+table#directory tr td:first-of-type a[href$=".ogg"], 
+table#directory tr td:first-of-type a[href$=".aac"], 
+table#directory tr td:first-of-type a[href$=".wma"] 
+{background-image: url(./images/audio.png);}
+
+/* web pages */
+table#directory tr td:first-of-type a[href$=".html"],
+table#directory tr td:first-of-type a[href$=".htm"],
+table#directory tr td:first-of-type a[href$=".xml"]
+{background-image: url(./images/xml.png);}
+
+table#directory tr td:first-of-type a[href$=".php"] 
+{background-image: url(./images/php.png);}
+
+table tr td:first-of-type a[href$=".js"] 
+{background-image: url(./images/script.png);}
+
+/* directories */
+table#directory tr.dir td:first-of-type a
+{background-image: url(./images/folder.png);}
+
+#seal {
+	margin: 5px 0px 0px 5px;
+}
+
+.inst {
+	color:#3399FF;
+}
+
+.subinst {
+	font-size:small;
+	margin-left:15px;
+}
+
+/*** agency classification */
+	/************ classification ***************/
+	.wrapClassific {
+		text-align:center;
+		background-color:#1c7b2a!important;
+/*		_width: expression((documentElement.clientWidth < 1020) ? "100%" : "100%")!important;
+*/
+	}
+	
+	.classific
+	{
+		background-color: white;
+		border-top: gray 1px solid;
+		border-bottom: gray 1px solid;
+		color: #FFFFFF;
+		font-size: 12px;
+		text-align: center;
+		padding-bottom:2px;
+		padding-top:2px;
+		background-color:#1c7b2a!important; 
+		background-image: url("#{resource['images/classific.png']}"!important;
+		background-repeat: repeat-x!important;
+		white-space: nowrap!important;
+		min-width:1020px!important;		
+
+/*		_width: expression((documentElement.clientWidth < 1020) ? "1020px" : "100%")!important;
+*/	
+	}	
+	
+	/* force min-width for IE6 */
+	* html, .footerDiv {
+/*
+		_width: expression((documentElement.clientWidth < 1020) ? "100%" : "100%");
+*/
+	}
+	
+
+	

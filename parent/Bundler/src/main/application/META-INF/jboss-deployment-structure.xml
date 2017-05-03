@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-deployment-structure>
+    <ear-subdeployments-isolated>false</ear-subdeployments-isolated>
+    <deployment>
+        <exclusions>
+        	<module name="org.jboss.resteasy.resteasy-jackson-provider" />
+        	<module name="org.apache.commons.logging" /> 
+       	    <module name="org.slf4j" />
+       	    <module name="org.slf4j.ext" />
+       	    <module name="org.slf4j.impl" />
+       	    <module name="org.apache.log4j" /> 
+       	    <module name="org.jboss.logmanager"/> 
+       	    <module name="jcl-over-slf4j"/>
+        </exclusions>
+        <dependencies>
+        	<module name="org.jboss.resteasy.resteasy-jackson2-provider" services="import" />
+        </dependencies>
+    </deployment>
+    
+    <sub-deployment name="UPGDownloadEJB.jar">
+        <exclusions>
+        	<module name="org.jboss.resteasy.resteasy-jackson-provider" />
+        	<module name="org.apache.commons.logging" /> 
+       	    <module name="org.slf4j" />
+       	    <module name="org.slf4j.ext" />
+       	    <module name="org.slf4j.impl" />
+       	    <module name="org.apache.log4j" /> 
+       	    <module name="org.jboss.logmanager"/> 
+       	    <module name="jcl-over-slf4j"/>
+        </exclusions>
+        <dependencies>
+        	<module name="org.jboss.resteasy.resteasy-jackson2-provider" services="import" />
+        </dependencies>
+    </sub-deployment>
+    <sub-deployment name="UPGDownloadWeb.war">
+        <exclusions>
+        	<module name="org.jboss.resteasy.resteasy-jackson-provider" />
+        	<module name="org.apache.commons.logging" /> 
+       	    <module name="org.slf4j" />
+       	    <module name="org.slf4j.ext" />
+       	    <module name="org.slf4j.impl" />
+       	    <module name="org.apache.log4j" /> 
+       	    <module name="org.jboss.logmanager"/> 
+       	    <module name="jcl-over-slf4j"/>
+        </exclusions>
+        <dependencies>
+        	<module name="org.jboss.resteasy.resteasy-jackson2-provider" services="import" />
+        </dependencies>
+    </sub-deployment>
+</jboss-deployment-structure>
