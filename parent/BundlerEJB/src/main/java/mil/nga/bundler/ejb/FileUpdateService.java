@@ -17,18 +17,18 @@ import org.slf4j.LoggerFactory;
 @LocalBean
 public class FileUpdateService implements BundlerConstantsI {
 
-	/**
-	 * Set up the Log4j system for use throughout the class
-	 */		
-	private static final Logger LOGGER = LoggerFactory.getLogger(
-			FileUpdateService.class);
-	
-	/**
-	 * Container-injected persistence context.
-	 */
-	@PersistenceContext(unitName=APPLICATION_PERSISTENCE_CONTEXT)
-	private EntityManager em;
-	
+    /**
+     * Set up the Log4j system for use throughout the class
+     */        
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+            FileUpdateService.class);
+    
+    /**
+     * Container-injected persistence context.
+     */
+    @PersistenceContext(unitName=APPLICATION_PERSISTENCE_CONTEXT)
+    private EntityManager em;
+    
     /**
      * Default constructor. 
      */

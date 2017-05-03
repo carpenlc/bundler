@@ -45,12 +45,12 @@ import org.slf4j.LoggerFactory;
 @Stateless
 public class ValidationService {
 
-	/**
-	 * Set up the Log4j system for use throughout the class
-	 */		
-	private static final Logger LOGGER = LoggerFactory.getLogger(
-			ValidationService.class);
-	
+    /**
+     * Set up the Log4j system for use throughout the class
+     */        
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+            ValidationService.class);
+    
     /**
      * Default Eclipse-generated constructor. 
      */
@@ -66,58 +66,58 @@ public class ValidationService {
      * file system.  Null otherwise.
      */
     public ValidFile validateOneFile(String filename) {
-    	
-    	ValidFile valid = null;
-    	
-    	if ((filename != null) && (!filename.isEmpty())) {
-    		Path file = Paths.get(filename.trim());
-    		if (Files.exists(file)) {
-    			try {
-    				
-	    			BasicFileAttributes attrs = Files.readAttributes(
-	    					file, 
-	    					BasicFileAttributes.class);
-	    			
-	    			FileTime lastModifiedDate = attrs.lastModifiedTime();
-	    			long size = attrs.size();
-	    			
-	    			if (size > 0) {
-		    			valid = new ValidFile(
-		    					filename, 
-		    					size,
-		    					lastModifiedDate.toMillis());
-		    			
-		    			if (LOGGER.isDebugEnabled()) {
-		    				
-		    			}
-	    			}
-	    			else {
-		    			LOGGER.warn("File [ "
-		    					+ filename
-		    					+ " ] exists on the file system but has zero "
-		    					+ "length.");
-	    			}
-    			}
-    			catch (IOException ioe) {
-    				LOGGER.warn("Unexpected IOException raised while "
-    						+ "attempting to read file attributes for file [ "
-    						+ filename
-    						+ " ].  Exception message [ "
-    						+ ioe.getMessage()
-    						+ " ].");
-    			}
-    		}
-    		else {
-    			LOGGER.warn("File [ "
-    					+ filename
-    					+ " ] does not exist on the file system.");
-    		}
-    	}
-    	else {
-    		LOGGER.warn("Client supplied a null or empty file name.  "
-    				+ "Skipping.");
-    	}
-    	return valid;
+        
+        ValidFile valid = null;
+        
+        if ((filename != null) && (!filename.isEmpty())) {
+            Path file = Paths.get(filename.trim());
+            if (Files.exists(file)) {
+                try {
+                    
+                    BasicFileAttributes attrs = Files.readAttributes(
+                            file, 
+                            BasicFileAttributes.class);
+                    
+                    FileTime lastModifiedDate = attrs.lastModifiedTime();
+                    long size = attrs.size();
+                    
+                    if (size > 0) {
+                        valid = new ValidFile(
+                                filename, 
+                                size,
+                                lastModifiedDate.toMillis());
+                        
+                        if (LOGGER.isDebugEnabled()) {
+                            
+                        }
+                    }
+                    else {
+                        LOGGER.warn("File [ "
+                                + filename
+                                + " ] exists on the file system but has zero "
+                                + "length.");
+                    }
+                }
+                catch (IOException ioe) {
+                    LOGGER.warn("Unexpected IOException raised while "
+                            + "attempting to read file attributes for file [ "
+                            + filename
+                            + " ].  Exception message [ "
+                            + ioe.getMessage()
+                            + " ].");
+                }
+            }
+            else {
+                LOGGER.warn("File [ "
+                        + filename
+                        + " ] does not exist on the file system.");
+            }
+        }
+        else {
+            LOGGER.warn("Client supplied a null or empty file name.  "
+                    + "Skipping.");
+        }
+        return valid;
     }
     
     /**
@@ -129,28 +129,28 @@ public class ValidationService {
      * system and are not 0 length).
      */
     public List<ValidFile> validateFiles(List<String> files) 
-    		throws InvalidRequestException {
-    	
-    	List<ValidFile> validFiles = new ArrayList<ValidFile>();
-    	
-    	if ((files != null) && (files.size() > 0)) {
-    		for (String file : files) {
-    			ValidFile validFile = validateOneFile(file);
-    			if (validFile != null) {
-    				validFiles.add(validFile);
-    			}
-    			else {
-    				LOGGER.warn("The target file [ " 
-    						+ file
-    						+ " ] is not valid.");
-    			}
-    		}
-    	}
-    	else {
-    		throw new InvalidRequestException(
-    				ValidationErrorCodes.NO_INPUT_FILES_FOUND);
-    	}
-    	return validFiles;
+            throws InvalidRequestException {
+        
+        List<ValidFile> validFiles = new ArrayList<ValidFile>();
+        
+        if ((files != null) && (files.size() > 0)) {
+            for (String file : files) {
+                ValidFile validFile = validateOneFile(file);
+                if (validFile != null) {
+                    validFiles.add(validFile);
+                }
+                else {
+                    LOGGER.warn("The target file [ " 
+                            + file
+                            + " ] is not valid.");
+                }
+            }
+        }
+        else {
+            throw new InvalidRequestException(
+                    ValidationErrorCodes.NO_INPUT_FILES_FOUND);
+        }
+        return validFiles;
     }
     
     /**
@@ -162,29 +162,29 @@ public class ValidationService {
      * system and are not 0 length).
      */
     public List<ValidFile> validateFiles2(List<FileRequest> files) 
-    		throws InvalidRequestException {
-    	
-    	List<ValidFile> validFiles = new ArrayList<ValidFile>();
-    	
-    	if ((files != null) && (files.size() > 0)) {
-    		for (FileRequest file : files) {
-    			ValidFile validFile = validateOneFile(file.getFile().trim());
-    			if (validFile != null) {
-    				validFile.setEntryPath(file.getPath());
-    				validFiles.add(validFile);
-    			}
-    			else {
-    				LOGGER.warn("The target file [ " 
-    						+ file
-    						+ " ] is not valid.");
-    			}
-    		}
-    	}
-    	else {
-    		throw new InvalidRequestException(
-    				ValidationErrorCodes.NO_INPUT_FILES_FOUND);
-    	}
-    	return validFiles;
+            throws InvalidRequestException {
+        
+        List<ValidFile> validFiles = new ArrayList<ValidFile>();
+        
+        if ((files != null) && (files.size() > 0)) {
+            for (FileRequest file : files) {
+                ValidFile validFile = validateOneFile(file.getFile().trim());
+                if (validFile != null) {
+                    validFile.setEntryPath(file.getPath());
+                    validFiles.add(validFile);
+                }
+                else {
+                    LOGGER.warn("The target file [ " 
+                            + file
+                            + " ] is not valid.");
+                }
+            }
+        }
+        else {
+            throw new InvalidRequestException(
+                    ValidationErrorCodes.NO_INPUT_FILES_FOUND);
+        }
+        return validFiles;
     }
     
     /**
@@ -198,22 +198,22 @@ public class ValidationService {
      * @return A new list containing no duplicate entries.
      */
     private List<String> eliminateDuplicates(List<String> files) {
-    	
-    	List<String> deDupList = null;
-    	
-    	if (files != null) {
-    		
-    		// Stuff the list into a Set (which doesn't allow duplicates) then
-    		// create a new List out of the Set.
-	     	Set<String> deDupSet = new HashSet<String>(files);
-	    	deDupList = new ArrayList<String>(deDupSet);
-    	}
-    	else {
-    		LOGGER.warn("Null List object supplied to routine for "
-    				+ "eliminating duplicates.");
-    	}
-    	
-    	return deDupList;
+        
+        List<String> deDupList = null;
+        
+        if (files != null) {
+            
+            // Stuff the list into a Set (which doesn't allow duplicates) then
+            // create a new List out of the Set.
+             Set<String> deDupSet = new HashSet<String>(files);
+            deDupList = new ArrayList<String>(deDupSet);
+        }
+        else {
+            LOGGER.warn("Null List object supplied to routine for "
+                    + "eliminating duplicates.");
+        }
+        
+        return deDupList;
     }
     
     /**
@@ -227,28 +227,28 @@ public class ValidationService {
      * @return A new list containing no duplicate entries.
      */
     private List<FileRequest> eliminateDuplicates2(List<FileRequest> files) {
-    	
-    	List<FileRequest> deDupList = null;
-    	HashMap<String, FileRequest> map = new HashMap<String, FileRequest>();
-    	
-    	if ((files != null) && (files.size() > 0)) {
-    		
-    		// Stuff the keys from the FileRequest object into the key portion
-    		// of the HashMap.  This will effectively eliminate the duplicates.
-    		for (FileRequest file : files) {
-    			map.put(file.getFile().trim(), file);
-    		}
-    		
-    		Collection<FileRequest> deDupCollection = map.values();
-    		deDupList = new ArrayList<FileRequest>(deDupCollection);
-    		
-    	}
-    	else {
-    		LOGGER.warn("Null List object supplied to routine for "
-    				+ "eliminating duplicates.");
-    	}
-    	
-    	return deDupList;
+        
+        List<FileRequest> deDupList = null;
+        HashMap<String, FileRequest> map = new HashMap<String, FileRequest>();
+        
+        if ((files != null) && (files.size() > 0)) {
+            
+            // Stuff the keys from the FileRequest object into the key portion
+            // of the HashMap.  This will effectively eliminate the duplicates.
+            for (FileRequest file : files) {
+                map.put(file.getFile().trim(), file);
+            }
+            
+            Collection<FileRequest> deDupCollection = map.values();
+            deDupList = new ArrayList<FileRequest>(deDupCollection);
+            
+        }
+        else {
+            LOGGER.warn("Null List object supplied to routine for "
+                    + "eliminating duplicates.");
+        }
+        
+        return deDupList;
     }
     
     /**
@@ -260,25 +260,25 @@ public class ValidationService {
      * not supported. 
      */
     private void checkArchiveType(String value) 
-    		throws InvalidRequestException {
-    	if ((value == null) || (value.isEmpty())) {
-    		LOGGER.warn("The type of output archive was not supplied by the "
-    				+ "client.  It will be defaulted to ZIP.");
-    	}
-    	else {
-        	try {
-    			// Check the archive type. 
-    			ArchiveType.fromString(value);
-        	}
-        	catch (UnknownArchiveTypeException uate) {
-        		LOGGER.error("Invalid archive type requested.  Client requested "
-        				+ "unsupported archive type [ "
-        				+ value
-        				+ " ].");
-        		throw new InvalidRequestException(
-        				ValidationErrorCodes.INVALID_ARCHIVE_TYPE);
-        	}
-    	}
+            throws InvalidRequestException {
+        if ((value == null) || (value.isEmpty())) {
+            LOGGER.warn("The type of output archive was not supplied by the "
+                    + "client.  It will be defaulted to ZIP.");
+        }
+        else {
+            try {
+                // Check the archive type. 
+                ArchiveType.fromString(value);
+            }
+            catch (UnknownArchiveTypeException uate) {
+                LOGGER.error("Invalid archive type requested.  Client requested "
+                        + "unsupported archive type [ "
+                        + value
+                        + " ].");
+                throw new InvalidRequestException(
+                        ValidationErrorCodes.INVALID_ARCHIVE_TYPE);
+            }
+        }
     }
     
     /**
@@ -289,11 +289,11 @@ public class ValidationService {
      * request any files to bundle.
      */
     private void checkFileList(List<String> files) 
-    		throws InvalidRequestException {
-    	if ((files == null) || (files.size() == 0)) {
-    		throw new InvalidRequestException(
-    				ValidationErrorCodes.NO_INPUT_FILES_FOUND);
-    	}
+            throws InvalidRequestException {
+        if ((files == null) || (files.size() == 0)) {
+            throw new InvalidRequestException(
+                    ValidationErrorCodes.NO_INPUT_FILES_FOUND);
+        }
     }
     
     /**
@@ -304,40 +304,40 @@ public class ValidationService {
      * request any files to bundle.
      */
     private void checkFileList2(List<FileRequest> files) 
-    		throws InvalidRequestException {
-    	if ((files == null) || (files.size() == 0)) {
-    		throw new InvalidRequestException(
-    				ValidationErrorCodes.NO_INPUT_FILES_FOUND);
-    	}
+            throws InvalidRequestException {
+        if ((files == null) || (files.size() == 0)) {
+            throw new InvalidRequestException(
+                    ValidationErrorCodes.NO_INPUT_FILES_FOUND);
+        }
     }
     
     public List<ValidFile> validate(BundleRequest2 request) 
-    		throws InvalidRequestException {
-    	
-    	LOGGER.info("validate() called.");
-    	List<ValidFile> validFiles = null;
-    	
-    	checkArchiveType(request.getType());
-    	checkFileList2(request.getFiles());
-    	
-    	// Reset the input list of files with a de-duplicated version
-    	List<FileRequest> deDupList = eliminateDuplicates2(request.getFiles());
-    	request.setFiles(deDupList);
-    	
-    	// Next, make sure that clients actually supplied something valid to 
-    	// bundle.  This was implemented because clients started supplying a 
-    	// list of empty files. 
-    	validFiles = validateFiles2(deDupList);
-    	if ((validFiles == null) || (validFiles.size() == 0)) { 
-    		throw new InvalidRequestException(
-    				ValidationErrorCodes.NO_VALID_INPUT_FILES_FOUND);
-    	}
-    	
-    	// Not sure this is the best place to put this call, but set all 
-    	// of the entry paths in the list of valid files.
-    	PathGenerator.getInstance().setEntryPaths(validFiles);
-    	
-    	return validFiles;
+            throws InvalidRequestException {
+        
+        LOGGER.info("validate() called.");
+        List<ValidFile> validFiles = null;
+        
+        checkArchiveType(request.getType());
+        checkFileList2(request.getFiles());
+        
+        // Reset the input list of files with a de-duplicated version
+        List<FileRequest> deDupList = eliminateDuplicates2(request.getFiles());
+        request.setFiles(deDupList);
+        
+        // Next, make sure that clients actually supplied something valid to 
+        // bundle.  This was implemented because clients started supplying a 
+        // list of empty files. 
+        validFiles = validateFiles2(deDupList);
+        if ((validFiles == null) || (validFiles.size() == 0)) { 
+            throw new InvalidRequestException(
+                    ValidationErrorCodes.NO_VALID_INPUT_FILES_FOUND);
+        }
+        
+        // Not sure this is the best place to put this call, but set all 
+        // of the entry paths in the list of valid files.
+        PathGenerator.getInstance().setEntryPaths(validFiles);
+        
+        return validFiles;
     }
     
     /**
@@ -346,32 +346,32 @@ public class ValidationService {
      * @throws InvalidRequestException
      */
     public List<ValidFile> validate(BundleRequest request) 
-    		throws InvalidRequestException {
-    	
-    	LOGGER.info("validate() called.");
-    	List<ValidFile> validFiles = null;
-    	
-    	checkArchiveType(request.getType());
-    	checkFileList(request.getFiles());
-    	
-    	// Reset the input list of files with a de-duplicated version
-    	List<String> deDupList = eliminateDuplicates(request.getFiles());
-    	request.setFileList(deDupList);
-    	
-    	// Next, make sure that clients actually supplied something valid to 
-    	// bundle.  This was implemented because clients started supplying a 
-    	// list of empty files. 
-    	validFiles = validateFiles(deDupList);
-    	if ((validFiles == null) || (validFiles.size() == 0)) { 
-    		throw new InvalidRequestException(
-    				ValidationErrorCodes.NO_VALID_INPUT_FILES_FOUND);
-    	}
-    	
-    	// Not sure this is the best place to put this call, but set all 
-    	// of the entry paths in the list of valid files.
-    	PathGenerator.getInstance().setEntryPaths(validFiles);
-    	
-    	return validFiles;
+            throws InvalidRequestException {
+        
+        LOGGER.info("validate() called.");
+        List<ValidFile> validFiles = null;
+        
+        checkArchiveType(request.getType());
+        checkFileList(request.getFiles());
+        
+        // Reset the input list of files with a de-duplicated version
+        List<String> deDupList = eliminateDuplicates(request.getFiles());
+        request.setFileList(deDupList);
+        
+        // Next, make sure that clients actually supplied something valid to 
+        // bundle.  This was implemented because clients started supplying a 
+        // list of empty files. 
+        validFiles = validateFiles(deDupList);
+        if ((validFiles == null) || (validFiles.size() == 0)) { 
+            throw new InvalidRequestException(
+                    ValidationErrorCodes.NO_VALID_INPUT_FILES_FOUND);
+        }
+        
+        // Not sure this is the best place to put this call, but set all 
+        // of the entry paths in the list of valid files.
+        PathGenerator.getInstance().setEntryPaths(validFiles);
+        
+        return validFiles;
     }
     
 }

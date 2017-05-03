@@ -24,67 +24,67 @@ import mil.nga.bundler.model.BundlerMetrics;
 @ManagedBean
 @ViewScoped
 public class ViewOverallJobMetrics 
-		extends ViewJobMetrics implements Serializable {
+        extends ViewJobMetrics implements Serializable {
 
-	/**
-	 * Eclipse-generated serialVersionUID
-	 */
-	private static final long serialVersionUID = 6010783594993431230L;
+    /**
+     * Eclipse-generated serialVersionUID
+     */
+    private static final long serialVersionUID = 6010783594993431230L;
 
-	/**
-	 * Inject the EJB used to look up the job tracker information.
-	 * 
-	 * Note:  JBoss EAP 6.x does not support injection into the application
-	 * web tier.  When deployed to JBoss EAP 6.x this internal member 
-	 * variable will always be null.
-	 */
-	@EJB(lookup="java:global/BundlerEAR/BundlerEJB/MetricsService!mil.nga.bundler.ejb.MetricsService")
-	MetricsService jobMetrics = null;
-	
-	/**
-	 * Static logger for use throughout the class.
-	 */
-	static final Logger LOGGER = LoggerFactory.getLogger(
-			ViewOverallJobMetrics.class);
-	
-	/**
-	 * Handle to the object containing the calculated job metrics.  This 
-	 * object is populated by the <code>initialize()</code> method.
-	 */
-	private BundlerMetrics metrics = null;
-	
-	/**
-	 * The initialize method is called immediately after the Bean is 
-	 * instantiated.  It's responsibility is to retrieve the metrics data that
-	 * will be displayed.   In this case, it simply retrieves the 
-	 * pre-calculated metrics data from the data store.
-	 */
-	@PostConstruct
-	public void initialize() {
+    /**
+     * Inject the EJB used to look up the job tracker information.
+     * 
+     * Note:  JBoss EAP 6.x does not support injection into the application
+     * web tier.  When deployed to JBoss EAP 6.x this internal member 
+     * variable will always be null.
+     */
+    @EJB(lookup="java:global/BundlerEAR/BundlerEJB/MetricsService!mil.nga.bundler.ejb.MetricsService")
+    MetricsService jobMetrics = null;
+    
+    /**
+     * Static logger for use throughout the class.
+     */
+    static final Logger LOGGER = LoggerFactory.getLogger(
+            ViewOverallJobMetrics.class);
+    
+    /**
+     * Handle to the object containing the calculated job metrics.  This 
+     * object is populated by the <code>initialize()</code> method.
+     */
+    private BundlerMetrics metrics = null;
+    
+    /**
+     * The initialize method is called immediately after the Bean is 
+     * instantiated.  It's responsibility is to retrieve the metrics data that
+     * will be displayed.   In this case, it simply retrieves the 
+     * pre-calculated metrics data from the data store.
+     */
+    @PostConstruct
+    public void initialize() {
         if (getMetricsService() != null) {
-    	    metrics = getMetricsService().getMetrics();
-    	}
-    	else {
-    		LOGGER.error("Unable to obtain a reference to the "
-    				+ "JobMetricsService.");
-    	}
-	}
-	 
-	/**
+            metrics = getMetricsService().getMetrics();
+        }
+        else {
+            LOGGER.error("Unable to obtain a reference to the "
+                    + "JobMetricsService.");
+        }
+    }
+     
+    /**
      * Private method used to obtain a reference to the target EJB.  
      * 
      * @return Reference to the JobService EJB.
      */
     protected MetricsService getMetricsService() {
-    	if (jobMetrics == null) {
-    		LOGGER.warn("Application container failed to inject the "
-    				+ "reference to MetricsService.  Attempting to "
-    				+ "look it up via JNDI.");
-    		jobMetrics = EJBClientUtilities
-    				.getInstance()
-    				.getMetricsService();
-    	}
-    	return jobMetrics;
+        if (jobMetrics == null) {
+            LOGGER.warn("Application container failed to inject the "
+                    + "reference to MetricsService.  Attempting to "
+                    + "look it up via JNDI.");
+            jobMetrics = EJBClientUtilities
+                    .getInstance()
+                    .getMetricsService();
+        }
+        return jobMetrics;
     }
     
     /**

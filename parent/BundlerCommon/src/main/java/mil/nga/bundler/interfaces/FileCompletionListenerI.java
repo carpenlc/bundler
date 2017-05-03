@@ -12,10 +12,10 @@ package mil.nga.bundler.interfaces;
  */
 public interface FileCompletionListenerI {
 
-	/**
-	 * Single method requiring the name of the file that was processed.
-	 * @param filename The processed file.
-	 */
-	public void notify(String filename);
-	
+    /**
+     * Single method requiring the name of the file that was processed.
+     * @param filename The processed file.
+     */
+    public void notify(String filename);
+    
 }

@@ -7,17 +7,17 @@ package mil.nga.bundler.exceptions;
  */
 public class UnknownHashTypeException extends Exception {
 
-	/**
-	 * Eclipse-generated serialVersionUID
-	 */
-	private static final long serialVersionUID = -8266532817396136239L;
+    /**
+     * Eclipse-generated serialVersionUID
+     */
+    private static final long serialVersionUID = -8266532817396136239L;
 
-	/** 
-	 * Default constructor requiring a message String.
-	 * @param msg Information identifying why the exception was raised.
-	 */
-	public UnknownHashTypeException(String msg) {
-		super(msg);
-	}
-	
+    /** 
+     * Default constructor requiring a message String.
+     * @param msg Information identifying why the exception was raised.
+     */
+    public UnknownHashTypeException(String msg) {
+        super(msg);
+    }
+    
 }

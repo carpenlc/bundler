@@ -23,16 +23,16 @@ import org.slf4j.LoggerFactory;
 @LocalBean
 public class MetricsService implements BundlerConstantsI {
 
-	/**
-	 * Set up the Log4j system for use throughout the class
-	 */		
-	private static final Logger LOGGER = LoggerFactory.getLogger(
-			MetricsService.class);
+    /**
+     * Set up the Log4j system for use throughout the class
+     */        
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+            MetricsService.class);
 
-	/**
-	 * Container-injected persistence context.
-	 */
-	@PersistenceContext(unitName=APPLICATION_PERSISTENCE_CONTEXT)
+    /**
+     * Container-injected persistence context.
+     */
+    @PersistenceContext(unitName=APPLICATION_PERSISTENCE_CONTEXT)
     private EntityManager em;
     
     /**
@@ -50,59 +50,59 @@ public class MetricsService implements BundlerConstantsI {
 
 
     public BundlerMetrics getMetrics() {
-    	
-    	BundlerMetrics metrics = null;
-    	
-    	try {
-	    	if (this.em != null) {
-	    			
-				CriteriaBuilder cb = em.getCriteriaBuilder();
-				CriteriaQuery<BundlerMetrics> cq = cb.createQuery(BundlerMetrics.class);
-				Root<BundlerMetrics> root = cq.from(BundlerMetrics.class);
-				cq.select(root);
-				Query query = em.createQuery(cq);
-				metrics = (BundlerMetrics)query.getSingleResult();
-				
-	    	}
-	    	else {
-	    		LOGGER.error("The container injected EntityManager object is "
-	    				+ "null.  Unable to retrieve the BundlerMetrics "
-	    				+ "object from the data store.");
-	    	}
-    	}
-        catch (NoResultException nre) {
-	       	 LOGGER.warn("Unable to retrieve BundlerMetrics object from target "
-	       			 + "data store.  javax.persistence.NoResultException "
-	                 + "encountered.  Error message [ "
-	                 + nre.getMessage()
-	                 + " ].");	
+        
+        BundlerMetrics metrics = null;
+        
+        try {
+            if (this.em != null) {
+                    
+                CriteriaBuilder cb = em.getCriteriaBuilder();
+                CriteriaQuery<BundlerMetrics> cq = cb.createQuery(BundlerMetrics.class);
+                Root<BundlerMetrics> root = cq.from(BundlerMetrics.class);
+                cq.select(root);
+                Query query = em.createQuery(cq);
+                metrics = (BundlerMetrics)query.getSingleResult();
+                
+            }
+            else {
+                LOGGER.error("The container injected EntityManager object is "
+                        + "null.  Unable to retrieve the BundlerMetrics "
+                        + "object from the data store.");
+            }
         }
-    	
-    	return metrics;
-    	
+        catch (NoResultException nre) {
+                LOGGER.warn("Unable to retrieve BundlerMetrics object from target "
+                        + "data store.  javax.persistence.NoResultException "
+                     + "encountered.  Error message [ "
+                     + nre.getMessage()
+                     + " ].");    
+        }
+        
+        return metrics;
+        
     }
     
     
     public BundlerMetrics update(BundlerMetrics metrics) {
-    	
-    	BundlerMetrics managedMetrics = null;
         
-    	if (em != null) {
+        BundlerMetrics managedMetrics = null;
+        
+        if (em != null) {
             if (metrics != null) {
-            	
-            	managedMetrics = em.merge(metrics);
+                
+                managedMetrics = em.merge(metrics);
                 em.flush();
                 
             }
             else {
-            	LOGGER.warn("Called with a null or empty BundlerMetrics "
-            			+ "object.  Object will not be persisted.");
+                LOGGER.warn("Called with a null or empty BundlerMetrics "
+                        + "object.  Object will not be persisted.");
             }
         }
         else {
-    		LOGGER.error("The container injected EntityManager object is "
-    				+ "null.  Unable to persist the BundlerMetrics "
-    				+ "object from the data store.");
+            LOGGER.error("The container injected EntityManager object is "
+                    + "null.  Unable to persist the BundlerMetrics "
+                    + "object from the data store.");
         }
         return managedMetrics;
     }

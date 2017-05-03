@@ -1,75 +1,75 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>mil.nga.bundler</groupId>
-		<artifactId>parent</artifactId>
-		<version>1.0-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <groupId>mil.nga.bundler</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
 
-	<groupId>mil.nga.bundler.web</groupId>
-	<artifactId>BundlerWeb</artifactId>
-	<name>Product Bundler - Web WAR</name>
-	<version>1.0-SNAPSHOT</version>
-	<packaging>war</packaging>
-	
-	<dependencies>
-		<dependency>
-			<groupId>mil.nga.bundler.common</groupId>
-			<artifactId>BundlerCommon</artifactId>
-			<version>${application.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>mil.nga.bundler.ejb</groupId>
-			<artifactId>BundlerEJB</artifactId>
-			<version>${application.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>javax</groupId>
-			<artifactId>javaee-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-	        <artifactId>logback-classic</artifactId>
+    <groupId>mil.nga.bundler.web</groupId>
+    <artifactId>BundlerWeb</artifactId>
+    <name>Product Bundler - Web WAR</name>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+    
+    <dependencies>
+        <dependency>
+            <groupId>mil.nga.bundler.common</groupId>
+            <artifactId>BundlerCommon</artifactId>
+            <version>${application.version}</version>
         </dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-access</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-annotations</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>mil.nga.bundler.ejb</groupId>
+            <artifactId>BundlerEJB</artifactId>
+            <version>${application.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-access</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.primefaces</groupId>
-			<artifactId>primefaces</artifactId>
-			<version>${primefaces.version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.primefaces.themes</groupId>
-	            <artifactId>smoothness</artifactId>
-	            <version>1.0.10</version>
-	        </dependency>
-	</dependencies>
+        <dependency>
+            <groupId>org.primefaces</groupId>
+            <artifactId>primefaces</artifactId>
+            <version>${primefaces.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.primefaces.themes</groupId>
+                <artifactId>smoothness</artifactId>
+                <version>1.0.10</version>
+            </dependency>
+    </dependencies>
         <repositories>
             <repository>
                 <id>prime-repo</id>

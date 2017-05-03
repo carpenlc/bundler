@@ -1,143 +1,143 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>mil.nga.bundler</groupId>
-	<artifactId>parent</artifactId>
-	<name>Product Bundler</name>
+    <groupId>mil.nga.bundler</groupId>
+    <artifactId>parent</artifactId>
+    <name>Product Bundler</name>
 
-	<packaging>pom</packaging>
-	<version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
 
 
-	<modules>
+    <modules>
             <module>BundlerCommon</module>
             <module>BundlerEJB</module>
-	    <module>BundlerWeb</module>
-	    <module>Bundler</module>
-	</modules>
+        <module>BundlerWeb</module>
+        <module>Bundler</module>
+    </modules>
 
-	<properties>
-		<application.version>1.0-SNAPSHOT</application.version>
-		<encoding>UTF-8</encoding>
-		<ejb.ejbVersion>3.1</ejb.ejbVersion>
+    <properties>
+        <application.version>1.0-SNAPSHOT</application.version>
+        <encoding>UTF-8</encoding>
+        <ejb.ejbVersion>3.1</ejb.ejbVersion>
 
-		<jdk.version>1.8</jdk.version>
-		<javaee.version>7.0</javaee.version>
-		<jackson.version>2.6.2</jackson.version>
-		<logback.version>1.2.2</logback.version>
-		<slf4j.version>1.7.25</slf4j.version>
-		<primefaces.version>6.0</primefaces.version>
-		<commons.codec.version>1.10</commons.codec.version>
+        <jdk.version>1.8</jdk.version>
+        <javaee.version>7.0</javaee.version>
+        <jackson.version>2.6.2</jackson.version>
+        <logback.version>1.2.2</logback.version>
+        <slf4j.version>1.7.25</slf4j.version>
+        <primefaces.version>6.0</primefaces.version>
+        <commons.codec.version>1.10</commons.codec.version>
                 <commons.compress.version>1.5</commons.compress.version>
 
-		<maven-ear-plugin.version>2.10</maven-ear-plugin.version>
-		<maven-ejb-plugin.version>2.3</maven-ejb-plugin.version>
-		<maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
-		<maven-wildfly-plugin.version>1.2.0.Alpha4</maven-wildfly-plugin.version>
-	</properties>
+        <maven-ear-plugin.version>2.10</maven-ear-plugin.version>
+        <maven-ejb-plugin.version>2.3</maven-ejb-plugin.version>
+        <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
+        <maven-wildfly-plugin.version>1.2.0.Alpha4</maven-wildfly-plugin.version>
+    </properties>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>javax</groupId>
-				<artifactId>javaee-api</artifactId>
-				<version>${javaee.version}</version>
-				<scope>provided</scope>
-			</dependency>
+    <dependencyManagement>
+        <dependencies>
             <dependency>
-			    <groupId>ch.qos.logback</groupId>
-			    <artifactId>logback-core</artifactId>
-			    <version>${logback.version}</version>
-			    <scope>provided</scope>
-		    </dependency>
-		    <dependency>
-			    <groupId>ch.qos.logback</groupId>
-			    <artifactId>logback-classic</artifactId>
-			    <version>${logback.version}</version>
-			    <scope>provided</scope>
-		    </dependency>
-		    <dependency>
-			    <groupId>ch.qos.logback</groupId>
-			    <artifactId>logback-access</artifactId>
-			<version>${logback.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-core</artifactId>
-			<version>${jackson.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-annotations</artifactId>
-			<version>${jackson.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>${jackson.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-			<version>${commons.codec.version}</version>
-			<scope>provided</scope>
-		</dependency>
+                <groupId>javax</groupId>
+                <artifactId>javaee-api</artifactId>
+                <version>${javaee.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-access</artifactId>
+            <version>${logback.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${commons.codec.version}</version>
+            <scope>provided</scope>
+        </dependency>
                 <dependency>
                     <groupId>org.apache.commons</groupId>
                     <artifactId>commons-compress</artifactId>
                     <version>${commons.compress.version}</version>
                     <scope>provided</scope>
                 </dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		</dependencies>
-	</dependencyManagement>
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>${maven-javadoc-plugin.version}</version>
-					<configuration>
-						<show>private</show>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-ejb-plugin</artifactId>
-					<version>${maven-ejb-plugin.version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.wildfly.plugins</groupId>
-					<artifactId>wildfly-maven-plugin</artifactId>
-					<version>${maven-wildfly-plugin.version}</version>
-					<configuration>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${maven-javadoc-plugin.version}</version>
+                    <configuration>
+                        <show>private</show>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-ejb-plugin</artifactId>
+                    <version>${maven-ejb-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.wildfly.plugins</groupId>
+                    <artifactId>wildfly-maven-plugin</artifactId>
+                    <version>${maven-wildfly-plugin.version}</version>
+                    <configuration>
                         <skip>true</skip>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-ear-plugin</artifactId>
-					<version>${maven-ear-plugin.version}</version>
-					<configuration>
-						<fileNameMapping>no-version</fileNameMapping>
-						<version>7</version>
-						<defaultLibBundleDir>lib</defaultLibBundleDir>
-						<skinnywars>true</skinnywars>
-						<libraryDirectoryMode>NONE</libraryDirectoryMode>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-ear-plugin</artifactId>
+                    <version>${maven-ear-plugin.version}</version>
+                    <configuration>
+                        <fileNameMapping>no-version</fileNameMapping>
+                        <version>7</version>
+                        <defaultLibBundleDir>lib</defaultLibBundleDir>
+                        <skinnywars>true</skinnywars>
+                        <libraryDirectoryMode>NONE</libraryDirectoryMode>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>

@@ -41,38 +41,38 @@ import org.slf4j.LoggerFactory;
                                                 propertyValue = "Auto-acknowledge")
                 })
 public class JobTrackerMDB implements MessageListener {
-	
-	/**
-	 * Set up the Log4j system for use throughout the class
-	 */
-	static final Logger LOGGER = LoggerFactory.getLogger(JobTrackerMDB.class);
-	
-	/**
-	 * Container-injected reference to the JobService EJB.
-	 */
-	@EJB
-	JobService jobService;
     
-	/**
+    /**
+     * Set up the Log4j system for use throughout the class
+     */
+    static final Logger LOGGER = LoggerFactory.getLogger(JobTrackerMDB.class);
+    
+    /**
+     * Container-injected reference to the JobService EJB.
+     */
+    @EJB
+    JobService jobService;
+    
+    /**
      * Default constructor. 
      */
     public JobTrackerMDB() { }
-	
+    
     /**
      * Private method used to obtain a reference to the target EJB.  
      * 
      * @return Reference to the JobService EJB.
      */
     private JobService getJobService() {
-    	if (jobService == null) {
-    		LOGGER.warn("Application container failed to inject the "
-    				+ "reference to JobService.  Attempting to "
-    				+ "look it up via JNDI.");
-    		jobService = EJBClientUtilities
-    				.getInstance()
-    				.getJobService();
-    	}
-    	return jobService;
+        if (jobService == null) {
+            LOGGER.warn("Application container failed to inject the "
+                    + "reference to JobService.  Attempting to "
+                    + "look it up via JNDI.");
+            jobService = EJBClientUtilities
+                    .getInstance()
+                    .getJobService();
+        }
+        return jobService;
     }
     
     /**
@@ -83,27 +83,27 @@ public class JobTrackerMDB implements MessageListener {
      * @return The number of archives complete.
      */
     private int getNumArchivesComplete(Job job) {
-    	int archivesComplete = 0;
-    	if (job != null) {
-    		if ((job.getArchives() != null) && 
-    				(job.getArchives().size() > 0)) {
-    			for (Archive archive : job.getArchives()) {
-    				if (archive.getArchiveState() == JobStateType.COMPLETE) {
-    					archivesComplete++;
-    				}
-    			}
-    		}
-    		else {
-        		LOGGER.error("Input Job does not contain any archives.  "
-        				+ "Unable to calculate the number or archives "
-        				+ "completed.");
-    		}
-    	}
-    	else {
-    		LOGGER.error("Input Job ID is null.  Unable to calculate the "
-    				+ "number of archives completed.");
-    	}
-    	return archivesComplete;
+        int archivesComplete = 0;
+        if (job != null) {
+            if ((job.getArchives() != null) && 
+                    (job.getArchives().size() > 0)) {
+                for (Archive archive : job.getArchives()) {
+                    if (archive.getArchiveState() == JobStateType.COMPLETE) {
+                        archivesComplete++;
+                    }
+                }
+            }
+            else {
+                LOGGER.error("Input Job does not contain any archives.  "
+                        + "Unable to calculate the number or archives "
+                        + "completed.");
+            }
+        }
+        else {
+            LOGGER.error("Input Job ID is null.  Unable to calculate the "
+                    + "number of archives completed.");
+        }
+        return archivesComplete;
     }
     
     /**
@@ -113,18 +113,18 @@ public class JobTrackerMDB implements MessageListener {
      * @return The total size of all files in the archive job (uncompressed).
      */
     private long getSizeComplete(List<FileEntry> files) {
-    	long sizeComplete = 0L;
-    	if ((files != null) && (files.size() > 0)) {
-    		for (FileEntry file : files) {
-    			if (file.getFileState() == JobStateType.COMPLETE) {
-    				sizeComplete += file.getSize();
-    			}
-    		}
-    	}
-    	else {
-    		LOGGER.error("Input list of files is null or contains zero files.");
-    	}
-    	return sizeComplete;
+        long sizeComplete = 0L;
+        if ((files != null) && (files.size() > 0)) {
+            for (FileEntry file : files) {
+                if (file.getFileState() == JobStateType.COMPLETE) {
+                    sizeComplete += file.getSize();
+                }
+            }
+        }
+        else {
+            LOGGER.error("Input list of files is null or contains zero files.");
+        }
+        return sizeComplete;
     }
     
     /**
@@ -135,29 +135,29 @@ public class JobTrackerMDB implements MessageListener {
      * @return The total size of all files in the archive job (uncompressed).
      */
     private long getFilesComplete(List<FileEntry> files) {
-    	long numFiles = 0L;
-    	if ((files != null) && (files.size() > 0)) {
-    		for (FileEntry file : files) {
-    			if (file.getFileState() == JobStateType.COMPLETE) {
-    				numFiles++;
-    			}
-    		}
-    		if (numFiles != files.size()) {
-    			LOGGER.warn("There is a mismatch between the number of files "
-    					+ "in the input list and the number of files that "
-    					+ "were compressed in the output Archive.  The input "
-    					+ "list contains [ "
-    					+ files.size()
-    					+ " ] files, but [ "
-    					+ numFiles
-    					+ " ] were marked complete by the archive processing "
-    					+ "algorithm.");
-    		}
-    	}
-    	else {
-    		LOGGER.error("Input list of files is null or contains zero files.");
-    	}
-    	return numFiles;
+        long numFiles = 0L;
+        if ((files != null) && (files.size() > 0)) {
+            for (FileEntry file : files) {
+                if (file.getFileState() == JobStateType.COMPLETE) {
+                    numFiles++;
+                }
+            }
+            if (numFiles != files.size()) {
+                LOGGER.warn("There is a mismatch between the number of files "
+                        + "in the input list and the number of files that "
+                        + "were compressed in the output Archive.  The input "
+                        + "list contains [ "
+                        + files.size()
+                        + " ] files, but [ "
+                        + numFiles
+                        + " ] were marked complete by the archive processing "
+                        + "algorithm.");
+            }
+        }
+        else {
+            LOGGER.error("Input list of files is null or contains zero files.");
+        }
+        return numFiles;
     }
     
     /**
@@ -170,17 +170,17 @@ public class JobTrackerMDB implements MessageListener {
      * @param archive The archive that has complete.  
      */
     private void checkArchive(Archive archive) { 
-    	if (archive.getArchiveState() != JobStateType.COMPLETE) {
-    		LOGGER.warn("Archive complete message received for Job ID [ "
-    				+ archive.getJobID()
-    				+ " ], archive ID [ " 
-    				+ archive.getArchiveID()
-    				+ " ] but the data store has not been updated.  Updating "
-    				+ "archive state to ensure that the overall job "
-    				+ "completes.");
-    		archive.setArchiveState(JobStateType.COMPLETE);
-    		archive.setEndTime(System.currentTimeMillis());
-    	}
+        if (archive.getArchiveState() != JobStateType.COMPLETE) {
+            LOGGER.warn("Archive complete message received for Job ID [ "
+                    + archive.getJobID()
+                    + " ], archive ID [ " 
+                    + archive.getArchiveID()
+                    + " ] but the data store has not been updated.  Updating "
+                    + "archive state to ensure that the overall job "
+                    + "completes.");
+            archive.setArchiveState(JobStateType.COMPLETE);
+            archive.setEndTime(System.currentTimeMillis());
+        }
     }
     
     /**
@@ -191,30 +191,30 @@ public class JobTrackerMDB implements MessageListener {
      * @param archive The individual completed archive file.
      */
     private void updateJobState(Job job, Archive archive) {
-    	
-    	long numFiles              = getFilesComplete(archive.getFiles());
-    	long totalNumFilesComplete = job.getNumFilesComplete() + numFiles;
-    	long sizeComplete          = getSizeComplete(archive.getFiles());
-    	long totalSizeComplete     = job.getTotalSizeComplete() + sizeComplete;
-    	int  numArchivesComplete   = getNumArchivesComplete(job);
+        
+        long numFiles              = getFilesComplete(archive.getFiles());
+        long totalNumFilesComplete = job.getNumFilesComplete() + numFiles;
+        long sizeComplete          = getSizeComplete(archive.getFiles());
+        long totalSizeComplete     = job.getTotalSizeComplete() + sizeComplete;
+        int  numArchivesComplete   = getNumArchivesComplete(job);
     
-    	if (totalNumFilesComplete > job.getNumFiles()) {
-    		LOGGER.warn( "Inconsistency detected in the number of "
-    				+ "files completed for job ID [ "
-    				+ job.getJobID()
-    				+ " ].  Job expects [ "
-    				+ job.getNumFiles()
+        if (totalNumFilesComplete > job.getNumFiles()) {
+            LOGGER.warn( "Inconsistency detected in the number of "
+                    + "files completed for job ID [ "
+                    + job.getJobID()
+                    + " ].  Job expects [ "
+                    + job.getNumFiles()
                     + " ] files completed, yet calculations based "
                     + "on archives complete show [ "
                     + totalNumFilesComplete
                     + " ].  Updating based on archives.");
-    		totalNumFilesComplete = job.getNumFiles();
-    	}
-    	
-    	job.setNumFilesComplete(totalNumFilesComplete);
-    	
-    	if (totalSizeComplete > job.getTotalSize()) {
-    		LOGGER.warn("Inconsistency detected in the size of the "
+            totalNumFilesComplete = job.getNumFiles();
+        }
+        
+        job.setNumFilesComplete(totalNumFilesComplete);
+        
+        if (totalSizeComplete > job.getTotalSize()) {
+            LOGGER.warn("Inconsistency detected in the size of the "
                     + "data completed for job ID [ "
                     + job.getJobID()
                     + " ].  expected size [ "
@@ -223,93 +223,93 @@ public class JobTrackerMDB implements MessageListener {
                     + "on archives complete indicate [ "
                     + totalSizeComplete
                     + " ].  Updating based on archives.");
-    		totalSizeComplete = job.getTotalSize();
-    	}
-    	
-    	job.setTotalSizeComplete(totalSizeComplete);
-    	job.setNumArchivesComplete(numArchivesComplete);
-    	
-    	if (job.getNumArchives() == numArchivesComplete) {
-    		if (LOGGER.isDebugEnabled()) {
-    			LOGGER.debug("Marking job ID [ "
-    					+ job.getJobID() 
-    					+ " ] complete.");
-    		}
-    		job.setState(JobStateType.COMPLETE);
-    		job.setEndTime(System.currentTimeMillis());
-    	}
-    	else { 
-    		if (LOGGER.isDebugEnabled()) {
-    			LOGGER.debug("Job ID [ "
-    					+ job.getJobID() 
-    					+ " ] not yet complete.  Only [ "
-    					+ numArchivesComplete
-    					+ " ] archives complete out of [ "
-    					+ job.getNumArchives()
-    					+ " ] total archives.");
-    		}
-    	}
+            totalSizeComplete = job.getTotalSize();
+        }
+        
+        job.setTotalSizeComplete(totalSizeComplete);
+        job.setNumArchivesComplete(numArchivesComplete);
+        
+        if (job.getNumArchives() == numArchivesComplete) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Marking job ID [ "
+                        + job.getJobID() 
+                        + " ] complete.");
+            }
+            job.setState(JobStateType.COMPLETE);
+            job.setEndTime(System.currentTimeMillis());
+        }
+        else { 
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Job ID [ "
+                        + job.getJobID() 
+                        + " ] not yet complete.  Only [ "
+                        + numArchivesComplete
+                        + " ] archives complete out of [ "
+                        + job.getNumArchives()
+                        + " ] total archives.");
+            }
+        }
     }
     
-	/**
-	 * Method called when a JMS message is placed on the queue/TrackerMessageQ
-	 * message queue.  This method will unmarshal the incoming message, then
-	 * retrieve references to the Job and Archive then call the private 
-	 * internal methods to update the overall job state.
-	 * 
+    /**
+     * Method called when a JMS message is placed on the queue/TrackerMessageQ
+     * message queue.  This method will unmarshal the incoming message, then
+     * retrieve references to the Job and Archive then call the private 
+     * internal methods to update the overall job state.
+     * 
      * @see MessageListener#onMessage(Message)
      */
     public void onMessage(Message message) {
-    	try {
-    		    
-	         ObjectMessage  objMessage = (ObjectMessage)message;
-	         ArchiveMessage archiveMsg = (ArchiveMessage)objMessage.getObject();
-	         
-	         if (archiveMsg != null) {
-	         
+        try {
+                
+             ObjectMessage  objMessage = (ObjectMessage)message;
+             ArchiveMessage archiveMsg = (ArchiveMessage)objMessage.getObject();
+             
+             if (archiveMsg != null) {
+             
                  LOGGER.info("Archive completed for archive [ "
                          + archiveMsg.toString()
                          + " ].");
 
                  if (getJobService() != null) {
-                	 
-                	 Job job = getJobService().getJob(archiveMsg.getJobID());
-                	 
-                	 if (job != null) {
-                		 Archive archive = job.getArchive(archiveMsg.getArchiveID());
-                		 if (archive != null) {
-                			 checkArchive(archive);
-                			 updateJobState(job, archive);
-                			 jobService.update(job);
-                		 }
-                		 else {
-                     		 LOGGER.error("Unable to retrieve Archive "
-                    				 + "associated with job ID [ "
-                    				 + archiveMsg.getJobID()
-                    				 + " ] and archive ID [ "
-                    				 + archiveMsg.getArchiveID()
-                    				 + " ].");
-                		 }
-                	 }
-                	 else {
-                		 LOGGER.error("Unable to retrieve Job associated with "
-                				 + "job ID [ "
-                				 + archiveMsg.getJobID()
-                				 + " ].");
-                	 }
+                     
+                     Job job = getJobService().getJob(archiveMsg.getJobID());
+                     
+                     if (job != null) {
+                         Archive archive = job.getArchive(archiveMsg.getArchiveID());
+                         if (archive != null) {
+                             checkArchive(archive);
+                             updateJobState(job, archive);
+                             jobService.update(job);
+                         }
+                         else {
+                              LOGGER.error("Unable to retrieve Archive "
+                                     + "associated with job ID [ "
+                                     + archiveMsg.getJobID()
+                                     + " ] and archive ID [ "
+                                     + archiveMsg.getArchiveID()
+                                     + " ].");
+                         }
+                     }
+                     else {
+                         LOGGER.error("Unable to retrieve Job associated with "
+                                 + "job ID [ "
+                                 + archiveMsg.getJobID()
+                                 + " ].");
+                     }
                  }
                  else {
                      LOGGER.error("The application container did not inject "
                              + "JobFactoryService EJB into the MDB.");
                  }
-	         }
-	     }
-	     catch (JMSException je) {
-	         LOGGER.error("Unexpected JMSException encountered while "
-	             + "attempting to retrieve the Archive object from "
-	             + "the input ObjectMessage.  Error message [ "
-	             + je.getMessage()
-	             + " ].");
-	     }
+             }
+         }
+         catch (JMSException je) {
+             LOGGER.error("Unexpected JMSException encountered while "
+                 + "attempting to retrieve the Archive object from "
+                 + "the input ObjectMessage.  Error message [ "
+                 + je.getMessage()
+                 + " ].");
+         }
     }
 }

@@ -42,10 +42,10 @@ import mil.nga.util.FileUtils;
  * @author L. Craig Carpenter 
  */
 @MessageDriven(
-				// Note to self, if your MDB implements any interfaces other 
-				// than MessageListener, you have to specify which one is the 
-				// MessageListener.
-				messageListenerInterface=MessageListener.class,
+                // Note to self, if your MDB implements any interfaces other 
+                // than MessageListener, you have to specify which one is the 
+                // MessageListener.
+                messageListenerInterface=MessageListener.class,
                 name = "ArchiverMDB",
                 activationConfig = {
                                 @ActivationConfigProperty(
@@ -59,31 +59,31 @@ import mil.nga.util.FileUtils;
                                                 propertyValue = "Auto-acknowledge")
                 })
 public class ArchiverMDB 
-		extends NotificationService 
-		implements MessageListener, BundlerConstantsI {
+        extends NotificationService 
+        implements MessageListener, BundlerConstantsI {
 
-	/**
-	 * Set up the Log4j system for use throughout the class
-	 */
-	static final Logger LOGGER = LoggerFactory.getLogger(ArchiverMDB.class);
-	
-	/**
-	 * Container-injected reference to the JobService EJB.
-	 */
-	@EJB
-	JobService jobService;
-	
-	/**
-	 * Container-injected reference to the HashGenerator service.
-	 */
-	@EJB
-	HashGeneratorService hashGeneratorService;
-	
+    /**
+     * Set up the Log4j system for use throughout the class
+     */
+    static final Logger LOGGER = LoggerFactory.getLogger(ArchiverMDB.class);
+    
+    /**
+     * Container-injected reference to the JobService EJB.
+     */
+    @EJB
+    JobService jobService;
+    
+    /**
+     * Container-injected reference to the HashGenerator service.
+     */
+    @EJB
+    HashGeneratorService hashGeneratorService;
+    
     /**
      * Default constructor. 
      */
     public ArchiverMDB() { }
-	
+    
     /**
      * Private method used to obtain a reference to the target EJB.  
      * 
@@ -93,15 +93,15 @@ public class ArchiverMDB
      * @return Reference to the JobService EJB.
      */
     private JobService getJobService() {
-    	if (jobService == null) {
-    		LOGGER.warn("Application container failed to inject the "
-    				+ "reference to JobService.  Attempting to "
-    				+ "look it up via JNDI.");
-    		jobService = EJBClientUtilities
-    				.getInstance()
-    				.getJobService();
-    	}
-    	return jobService;
+        if (jobService == null) {
+            LOGGER.warn("Application container failed to inject the "
+                    + "reference to JobService.  Attempting to "
+                    + "look it up via JNDI.");
+            jobService = EJBClientUtilities
+                    .getInstance()
+                    .getJobService();
+        }
+        return jobService;
     }
     
     /**
@@ -113,15 +113,15 @@ public class ArchiverMDB
      * @return Reference to the HashGeneratorService EJB.
      */
     private HashGeneratorService getHashGeneratorService() {
-    	if (jobService == null) {
-    		LOGGER.warn("Application container failed to inject the "
-    				+ "reference to HashGeneratorService.  Attempting to "
-    				+ "look it up via JNDI.");
-    		hashGeneratorService = EJBClientUtilities
-    				.getInstance()
-    				.getHashGeneratorService();
-    	}
-    	return hashGeneratorService;
+        if (jobService == null) {
+            LOGGER.warn("Application container failed to inject the "
+                    + "reference to HashGeneratorService.  Attempting to "
+                    + "look it up via JNDI.");
+            hashGeneratorService = EJBClientUtilities
+                    .getInstance()
+                    .getHashGeneratorService();
+        }
+        return hashGeneratorService;
     }
     
     /**
@@ -131,75 +131,75 @@ public class ArchiverMDB
      * @param archive Archive job to run.
      */
     private void createArchive(Job job, long archiveID) 
-    		throws ArchiveException, IOException { 
-    	
-    	long startTime = System.currentTimeMillis();
-    	
-    	try {
-    		
-			Archive archive = job.getArchive(archiveID);
-			
-			if (archive != null) {
-				
-				// Get the concrete instance of the archiver that will be
-			    // used to construct the output archive file.
-			    ArchiveFactory factory = ArchiveFactory.getFactory();
-			
-			    // Get the concrete Bundler object.
-			    BundlerI bundler = factory.getInstance(
-			                    job.getArchiveType());
-			  
-			    // Here's where the magic happens.
-			    bundler.bundle(archive.getFiles(), archive.getArchive());
-			   
-			    // Generate the hash file associated with the output archive.
-			    if (getHashGeneratorService() != null) {
-			    	getHashGeneratorService().generate(
-			    			archive.getArchive(),
-			    			archive.getHash());
-			    }
-			    else {
-	                LOGGER.warn("Unable to obtain a reference to the "
-	                		+ "HashGenerator EJB.  Unable to create the output "
-	                		+ "hash file associated with job ID [ "
-	                		+ archive.getJobID()
-	                		+ " ] and archive ID [ "
-	                		+ archiveID
-	                		+ " ].  Since few, if any customers actually use "
-	                		+ "the hash for anything we just issue a warning "
-	                		+ "and proceed with processing.");
-			    }
-	        
-			    if (LOGGER.isDebugEnabled()) {
-			    	LOGGER.debug("Archive processing for job ID [ "
-	                		+ archive.getJobID()
-	                		+ " ] and archive ID [ "
-	                		+ archiveID
-	                		+ " ].  Completed in [ "
-	                		+ (System.currentTimeMillis() - startTime)
-	                		+ " ] ms.");
-			    }
+            throws ArchiveException, IOException { 
+        
+        long startTime = System.currentTimeMillis();
+        
+        try {
+            
+            Archive archive = job.getArchive(archiveID);
+            
+            if (archive != null) {
+                
+                // Get the concrete instance of the archiver that will be
+                // used to construct the output archive file.
+                ArchiveFactory factory = ArchiveFactory.getFactory();
+            
+                // Get the concrete Bundler object.
+                BundlerI bundler = factory.getInstance(
+                                job.getArchiveType());
+              
+                // Here's where the magic happens.
+                bundler.bundle(archive.getFiles(), archive.getArchive());
+               
+                // Generate the hash file associated with the output archive.
+                if (getHashGeneratorService() != null) {
+                    getHashGeneratorService().generate(
+                            archive.getArchive(),
+                            archive.getHash());
+                }
+                else {
+                    LOGGER.warn("Unable to obtain a reference to the "
+                            + "HashGenerator EJB.  Unable to create the output "
+                            + "hash file associated with job ID [ "
+                            + archive.getJobID()
+                            + " ] and archive ID [ "
+                            + archiveID
+                            + " ].  Since few, if any customers actually use "
+                            + "the hash for anything we just issue a warning "
+                            + "and proceed with processing.");
+                }
+            
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Archive processing for job ID [ "
+                            + archive.getJobID()
+                            + " ] and archive ID [ "
+                            + archiveID
+                            + " ].  Completed in [ "
+                            + (System.currentTimeMillis() - startTime)
+                            + " ] ms.");
+                }
 
-			}
-			else {
-				LOGGER.error("Unable to find archive to process for "
-							+ "job ID [ "
-	                		+ job.getJobID()
-	                		+ " ] and archive ID [ "
-	                		+ archiveID
-	                		+ " ].");
-			}
-    	
-    	}
+            }
+            else {
+                LOGGER.error("Unable to find archive to process for "
+                            + "job ID [ "
+                            + job.getJobID()
+                            + " ] and archive ID [ "
+                            + archiveID
+                            + " ].");
+            }
+        
+        }
         catch (UnknownArchiveTypeException uate) {
-        	// We should never see this exception here.  However, we will log 
-        	// it as there must a programming error.
-        	LOGGER.error("Unexpected UnknownArchiveException raised while "
-        			+ "actually creating the output archive.  This sitation "
-        			+ "should have been caught much earlier than here.  "
-        			+ "Error message [ "
-        			+ uate.getMessage()
-        			+ " ].");
+            // We should never see this exception here.  However, we will log 
+            // it as there must a programming error.
+            LOGGER.error("Unexpected UnknownArchiveException raised while "
+                    + "actually creating the output archive.  This sitation "
+                    + "should have been caught much earlier than here.  "
+                    + "Error message [ "
+                    + uate.getMessage()
+                    + " ].");
         }
 
         
@@ -215,132 +215,132 @@ public class ArchiverMDB
      * the output files created.
      */
     private void notify(Archive archive) {
-    	super.notify(TRACKER_DEST_Q,
-    			new ArchiveMessage(
-    					archive.getJobID(), 
-    					archive.getArchiveID()));
+        super.notify(TRACKER_DEST_Q,
+                new ArchiveMessage(
+                        archive.getJobID(), 
+                        archive.getArchiveID()));
     
     }
     
-	/**
-	 * This method invokes the bundler processing for a single archive job.
-	 * It listens for messages placed on the JMS Queue queue/ArchiverMessageQ.
-	 * When a message is received it unwraps the Archive object from the 
-	 * JMS ObjectMessage and then proceeds to perform the bundle operation 
-	 * specified. 
-	 * 
+    /**
+     * This method invokes the bundler processing for a single archive job.
+     * It listens for messages placed on the JMS Queue queue/ArchiverMessageQ.
+     * When a message is received it unwraps the Archive object from the 
+     * JMS ObjectMessage and then proceeds to perform the bundle operation 
+     * specified. 
+     * 
      * @see MessageListener#onMessage(Message)
      */
     @Override
     public void onMessage(Message message) {
-    	
-    	try {
-    		
-	    	ObjectMessage objMessage = (ObjectMessage)message;
-	        ArchiveMessage archiveMsg = (ArchiveMessage)objMessage.getObject();
-	        
-	        LOGGER.info("ArchiverMDB received notification to process [ " 
-	        		+ archiveMsg.toString()
-	        		+ " ].");
-	        
-	        if (getJobService() != null) {
-	        	
-	        	Job job = getJobService().getJob(archiveMsg.getJobID());
-	        	if (job != null) {
-	        		
-	        		Archive archive = job.getArchive(archiveMsg.getArchiveID());
-	        		if (archive != null) {
-	        			
-	        			// Update the archive to reflect that archive processing 
-	        			// has started.
-	        			archive.setHostName(FileUtils.getHostName());
-	        			archive.setServerName(
-	        					EJBClientUtilities.getInstance().getServerName());
-	        			archive.setStartTime(System.currentTimeMillis());
-	        			archive.setArchiveState(JobStateType.IN_PROGRESS);	
-	        			
-	        			getJobService().update(job);
-	        			
-	        			if (LOGGER.isDebugEnabled()) {
-	        				LOGGER.debug("Creating output archive file for "
-	        						+ "archive [ "
-	        						+ archive.toString()
-	        						+ " ].");
-	        			}
-	        			try {
-	        				createArchive(job, archiveMsg.getArchiveID());
-	        				archive.setArchiveState(JobStateType.COMPLETE);
-	        			}
-	        			catch (IOException ioe) {
-	        	        	LOGGER.error("Unexpected IOException raised while "
-	        	        			+ "creating the output archive.  Archive "
-	        	        			+ "state will be set to ERROR for job ID [ "
-	        	        			+ job.getJobID()
-	        	        			+ " ] archive ID [ "
-	        	        			+ archive.getArchiveID()
-	        	        			+ " ].  Error message [ "
-	        	        			+ ioe.getMessage()
-	        	        			+ " ].");
-	        				archive.setArchiveState(JobStateType.ERROR);
-	        			}
-	        			catch (ArchiveException ae) {
-	        	        	LOGGER.error("Unexpected ArchiveException raised "
-	        	        			+ "while "
-	        	        			+ "creating the output archive.  Archive "
-	        	        			+ "state will be set to ERROR for job ID [ "
-	        	        			+ job.getJobID()
-	        	        			+ " ] archive ID [ "
-	        	        			+ archive.getArchiveID()
-	        	        			+ " ].  Error message [ "
-	        	        			+ ae.getMessage()
-	        	        			+ " ].");
-	        				archive.setArchiveState(JobStateType.ERROR);
-	        			}
-	        			
-	        			// Update the end time.
-	        			archive.setEndTime(System.currentTimeMillis());
-	        			archive.setSize(
-	        					getArchiveFileSize(
-	        							archive.getArchive()));
-	        			
-	        			// Ensure the Job object is persisted.
-	        			getJobService().update(job);
-	        			
-	        			if (LOGGER.isDebugEnabled()) {
-	        				LOGGER.debug("Archive complete.  Sending " 
-	        						+ "notification message file for "
-	        						+ "archive [ "
-	        						+ archive.toString()
-	        						+ " ].");
-	        			}
-	        			notify(archive);
-	        			
-	        		}
-	        		else {
-	        			LOGGER.error("Unable to find an Archive matching [ "
-	        					+ archiveMsg.toString()
-	        					+ " ].");
-	        		}
-	        	}
-	        	else {
-	        		LOGGER.error("Unable to find a Job matching [ "
-	        					+ archiveMsg.toString()
-	        					+ " ].");
-	        	}
-	        }
-	        else {
+        
+        try {
+            
+            ObjectMessage objMessage = (ObjectMessage)message;
+            ArchiveMessage archiveMsg = (ArchiveMessage)objMessage.getObject();
+            
+            LOGGER.info("ArchiverMDB received notification to process [ " 
+                    + archiveMsg.toString()
+                    + " ].");
+            
+            if (getJobService() != null) {
+                
+                Job job = getJobService().getJob(archiveMsg.getJobID());
+                if (job != null) {
+                    
+                    Archive archive = job.getArchive(archiveMsg.getArchiveID());
+                    if (archive != null) {
+                        
+                        // Update the archive to reflect that archive processing 
+                        // has started.
+                        archive.setHostName(FileUtils.getHostName());
+                        archive.setServerName(
+                                EJBClientUtilities.getInstance().getServerName());
+                        archive.setStartTime(System.currentTimeMillis());
+                        archive.setArchiveState(JobStateType.IN_PROGRESS);    
+                        
+                        getJobService().update(job);
+                        
+                        if (LOGGER.isDebugEnabled()) {
+                            LOGGER.debug("Creating output archive file for "
+                                    + "archive [ "
+                                    + archive.toString()
+                                    + " ].");
+                        }
+                        try {
+                            createArchive(job, archiveMsg.getArchiveID());
+                            archive.setArchiveState(JobStateType.COMPLETE);
+                        }
+                        catch (IOException ioe) {
+                            LOGGER.error("Unexpected IOException raised while "
+                                    + "creating the output archive.  Archive "
+                                    + "state will be set to ERROR for job ID [ "
+                                    + job.getJobID()
+                                    + " ] archive ID [ "
+                                    + archive.getArchiveID()
+                                    + " ].  Error message [ "
+                                    + ioe.getMessage()
+                                    + " ].");
+                            archive.setArchiveState(JobStateType.ERROR);
+                        }
+                        catch (ArchiveException ae) {
+                            LOGGER.error("Unexpected ArchiveException raised "
+                                    + "while "
+                                    + "creating the output archive.  Archive "
+                                    + "state will be set to ERROR for job ID [ "
+                                    + job.getJobID()
+                                    + " ] archive ID [ "
+                                    + archive.getArchiveID()
+                                    + " ].  Error message [ "
+                                    + ae.getMessage()
+                                    + " ].");
+                            archive.setArchiveState(JobStateType.ERROR);
+                        }
+                        
+                        // Update the end time.
+                        archive.setEndTime(System.currentTimeMillis());
+                        archive.setSize(
+                                getArchiveFileSize(
+                                        archive.getArchive()));
+                        
+                        // Ensure the Job object is persisted.
+                        getJobService().update(job);
+                        
+                        if (LOGGER.isDebugEnabled()) {
+                            LOGGER.debug("Archive complete.  Sending " 
+                                    + "notification message file for "
+                                    + "archive [ "
+                                    + archive.toString()
+                                    + " ].");
+                        }
+                        notify(archive);
+                        
+                    }
+                    else {
+                        LOGGER.error("Unable to find an Archive matching [ "
+                                + archiveMsg.toString()
+                                + " ].");
+                    }
+                }
+                else {
+                    LOGGER.error("Unable to find a Job matching [ "
+                                + archiveMsg.toString()
+                                + " ].");
+                }
+            }
+            else {
                 LOGGER.error("Unable to obtain a reference to the JobService "
-                		+ "EJB.  Unable to process [ "
-                		+ archiveMsg.toString()
-                		+ " ].");
-	        }
-    	}
+                        + "EJB.  Unable to process [ "
+                        + archiveMsg.toString()
+                        + " ].");
+            }
+        }
         catch (JMSException jmsEx) {
-        	LOGGER.error("Unexpected JMSException encountered while attempting "
-        			+ "to retrieve the ArchiveMessage from the target message "
-        			+ "queue.  Error message [ "
-        			+ jmsEx.getMessage()
-        			+ " ].");
+            LOGGER.error("Unexpected JMSException encountered while attempting "
+                    + "to retrieve the ArchiveMessage from the target message "
+                    + "queue.  Error message [ "
+                    + jmsEx.getMessage()
+                    + " ].");
         }
     }
     
@@ -354,15 +354,15 @@ public class ArchiverMDB
         long size = 0L;
         
         if ((archive != null) && (!archive.isEmpty())) {
-        	File file = new File(archive);
-	        if (file.exists()) {
-	            size = file.length();
-	        }
-	        else {
-	        	LOGGER.error("The expected output archive file [ "
-	        			+ archive
-	        			+ " ] does not exist.");
-	        }
+            File file = new File(archive);
+            if (file.exists()) {
+                size = file.length();
+            }
+            else {
+                LOGGER.error("The expected output archive file [ "
+                        + archive
+                        + " ] does not exist.");
+            }
         }
         return size;
     }

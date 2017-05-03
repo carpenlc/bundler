@@ -31,18 +31,18 @@ import mil.nga.util.FileUtils;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Archive implements BundlerConstantsI, Serializable {
 
-	/**
-	 * Eclipse-generated serialVersionUID
-	 */
-	private static final long serialVersionUID = 9023436709593213577L;
+    /**
+     * Eclipse-generated serialVersionUID
+     */
+    private static final long serialVersionUID = 9023436709593213577L;
 
-	/**
-	 * Foreign key linking the archive and JOB tables.
-	 */
-	@Column(name="ARCHIVE_ID")
-	@JsonIgnore
-	private long archiveID     = 0;
-	
+    /**
+     * Foreign key linking the archive and JOB tables.
+     */
+    @Column(name="ARCHIVE_ID")
+    @JsonIgnore
+    private long archiveID     = 0;
+    
     /**
      * The size of the output archive file
      */
@@ -51,18 +51,18 @@ public class Archive implements BundlerConstantsI, Serializable {
     private long size          = 0;
     
     /**
-	 * The list of Files to be included in the Archive.
-	 */
-	@OneToMany(cascade={ CascadeType.ALL },
-			orphanRemoval=true,
-			fetch=FetchType.EAGER)
-	@JoinColumns({
-		@JoinColumn(name="ARCHIVE_ID", referencedColumnName="ARCHIVE_ID"),
-		@JoinColumn(name="JOB_ID", referencedColumnName="JOB_ID")
-	})
-	@JsonIgnore
+     * The list of Files to be included in the Archive.
+     */
+    @OneToMany(cascade={ CascadeType.ALL },
+            orphanRemoval=true,
+            fetch=FetchType.EAGER)
+    @JoinColumns({
+        @JoinColumn(name="ARCHIVE_ID", referencedColumnName="ARCHIVE_ID"),
+        @JoinColumn(name="JOB_ID", referencedColumnName="JOB_ID")
+    })
+    @JsonIgnore
     List<FileEntry> files = new ArrayList<FileEntry>();
-	
+    
     /**
      * Local path of the  the output archive file
      */
@@ -70,7 +70,7 @@ public class Archive implements BundlerConstantsI, Serializable {
     @JsonProperty(value="archive_file")
     private String archive     = null;
     
-	/**
+    /**
      * Added to keep track of the processing state of individual 
      * archives.  Very large archive requests were tending to not be
      * recognized as completed.  This flag was added in order to implement
@@ -81,14 +81,14 @@ public class Archive implements BundlerConstantsI, Serializable {
     @JsonIgnore
     private JobStateType archiveState = JobStateType.NOT_STARTED;
 
-	/**
-	 * The type of archive to create with this job.
-	 */
-	@Enumerated(EnumType.STRING)
-	@Column(name="ARCHIVE_TYPE")
-	@JsonIgnore
-	private ArchiveType archiveType = ArchiveType.ZIP;
-	
+    /**
+     * The type of archive to create with this job.
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name="ARCHIVE_TYPE")
+    @JsonIgnore
+    private ArchiveType archiveType = ArchiveType.ZIP;
+    
     /**
      * External accessible URL of the output archive file
      */
@@ -104,8 +104,8 @@ public class Archive implements BundlerConstantsI, Serializable {
     private long endTime = 0L;
     
     /**
-	 * The server that processed the archive job.
-	 */
+     * The server that processed the archive job.
+     */
     @Column(name="HOST_NAME")
     @JsonIgnore
     private String hostName    = null;
@@ -127,20 +127,20 @@ public class Archive implements BundlerConstantsI, Serializable {
     private String hashFileURL = null;
     
     /**
-	 * Primary key
-	 */
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="ID")
-	@JsonIgnore
-	private long ID;
-	
-	/**
-	 * Foreign key linking the JOBS and ARCHIVES tables.
-	 */
-	@Column(name="JOB_ID")
-	@JsonIgnore
-	private String jobID = null;
+     * Primary key
+     */
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name="ID")
+    @JsonIgnore
+    private long ID;
+    
+    /**
+     * Foreign key linking the JOBS and ARCHIVES tables.
+     */
+    @Column(name="JOB_ID")
+    @JsonIgnore
+    private String jobID = null;
 
     /**
      * The number of files contained in the archive.
@@ -157,63 +157,63 @@ public class Archive implements BundlerConstantsI, Serializable {
     @JsonIgnore
     private String serverName  = "";
     
-	/**
+    /**
      * Time when the archive job was started.
      */
     @Column(name="START_TIME")
     @JsonIgnore
     private long startTime = 0L;
-	
-	/**
-	 * Default Eclipse-generated constructor.
-	 */
-	public Archive() {
-		super();
-	}
+    
+    /**
+     * Default Eclipse-generated constructor.
+     */
+    public Archive() {
+        super();
+    }
    
-	/**
-	 * Alternate constructor allowing clients to supply important
-	 * values.
-	 * @param jobID The associated job ID.
-	 * @param archiveID The ID of the archive (foreign key)
-	 * @param type The type of output archive to create.
-	 */
-	public Archive(
-			String      jobID, 
-			long        archiveID, 
-			ArchiveType type) {
-		setJobID(jobID);
-		setArchiveID(archiveID);
-		setArchiveType(type);
-	}
-	
-	/**
-	 * Add a file to the archive for later processing.
-	 * @param file FileEntry object to add the list.
-	 */
-	public void add(FileEntry file) {
-		if (files == null) {
-			files = new ArrayList<FileEntry>();
-		}
-		files.add(file);
-	}
-	
-	/**
-	 * Called by the JobFactory class when we have determined that all files
-	 * that will be added have been added.   It then updates internal values
-	 * with totals for the archive.
-	 */
-	public void complete() {
-		long sizeAccumulator = 0L;
-		if ((getFiles() != null) && (getFiles().size() > 0)) {
-			for (FileEntry file : files) {
-				sizeAccumulator += file.getSize();
-			}
-		}
-		setNumFiles(getFiles().size());
-		setSize(sizeAccumulator);
-	}
-	
+    /**
+     * Alternate constructor allowing clients to supply important
+     * values.
+     * @param jobID The associated job ID.
+     * @param archiveID The ID of the archive (foreign key)
+     * @param type The type of output archive to create.
+     */
+    public Archive(
+            String      jobID, 
+            long        archiveID, 
+            ArchiveType type) {
+        setJobID(jobID);
+        setArchiveID(archiveID);
+        setArchiveType(type);
+    }
+    
+    /**
+     * Add a file to the archive for later processing.
+     * @param file FileEntry object to add the list.
+     */
+    public void add(FileEntry file) {
+        if (files == null) {
+            files = new ArrayList<FileEntry>();
+        }
+        files.add(file);
+    }
+    
+    /**
+     * Called by the JobFactory class when we have determined that all files
+     * that will be added have been added.   It then updates internal values
+     * with totals for the archive.
+     */
+    public void complete() {
+        long sizeAccumulator = 0L;
+        if ((getFiles() != null) && (getFiles().size() > 0)) {
+            for (FileEntry file : files) {
+                sizeAccumulator += file.getSize();
+            }
+        }
+        setNumFiles(getFiles().size());
+        setSize(sizeAccumulator);
+    }
+    
     /**
      * Getter method for the external accessible URL of the output archive 
      * file.
@@ -240,8 +240,8 @@ public class Archive implements BundlerConstantsI, Serializable {
     public String getArchiveFilename() {
         String name = "";
         if ((getArchive() != null) && 
-        		(!getArchive().trim().equalsIgnoreCase(""))) {
-        	name = (new File(getArchive())).getName();
+                (!getArchive().trim().equalsIgnoreCase(""))) {
+            name = (new File(getArchive())).getName();
         }
         return name;
     }
@@ -274,13 +274,13 @@ public class Archive implements BundlerConstantsI, Serializable {
             return archiveURL;
     }
     
-	/**
+    /**
      * Getter method for the time the job was completed
      * @param state The end time of the job
      */
     @JsonIgnore
     public long getEndTime() {
-    	return endTime;
+        return endTime;
     }
     
     /**
@@ -336,11 +336,11 @@ public class Archive implements BundlerConstantsI, Serializable {
      */
     @JsonIgnore
     public String getHashFilename() {
-    	String name = "";
-    	if ((getHash() != null) && (!getHash().trim().equalsIgnoreCase(""))) {
-    		name = (new File(getHash())).getName();
-    	}
-    	return name;
+        String name = "";
+        if ((getHash() != null) && (!getHash().trim().equalsIgnoreCase(""))) {
+            name = (new File(getHash())).getName();
+        }
+        return name;
     }
 
     /**
@@ -361,25 +361,25 @@ public class Archive implements BundlerConstantsI, Serializable {
     public String getHostName() {
             return hostName;
     }
-	
+    
     /**
-	 * Getter method for the primary key.
-	 * @return The primary key.
-	 */
+     * Getter method for the primary key.
+     * @return The primary key.
+     */
     @JsonIgnore
-	public long getID() {
-		return ID;
-	}
-	
-	/**
-	 * Getter method for the foreign key (i.e. JOB_ID).
-	 * @return The foreign key (i.e. JOB_ID).
-	 */
+    public long getID() {
+        return ID;
+    }
+    
+    /**
+     * Getter method for the foreign key (i.e. JOB_ID).
+     * @return The foreign key (i.e. JOB_ID).
+     */
     @JsonIgnore
-	public String getJobID() {
-		return jobID;
-	}
-	
+    public String getJobID() {
+        return jobID;
+    }
+    
     /**
      * Getter method for the number of files contained in the output archive.
      * @return The number of files contained in the output archive.
@@ -389,13 +389,13 @@ public class Archive implements BundlerConstantsI, Serializable {
             return numFiles;
     }
     
-	/**
+    /**
      * Getter method for the time the job was started
      * @param state The start time of the job
      */
     @JsonIgnore
     public long getStartTime() {
-    	return startTime;
+        return startTime;
     }
     
     /** 
@@ -412,7 +412,7 @@ public class Archive implements BundlerConstantsI, Serializable {
      * @param value The archive ID.
      */
     public void setArchiveID(long value) {
-    	archiveID = value;
+        archiveID = value;
     }
     
     /** 
@@ -428,7 +428,7 @@ public class Archive implements BundlerConstantsI, Serializable {
      * @param value The type of archive to create.
      */
     public void setArchiveType(ArchiveType value) {
-    	archiveType = value;
+        archiveType = value;
     }
 
     /** 
@@ -440,12 +440,12 @@ public class Archive implements BundlerConstantsI, Serializable {
             archiveURL = value;
     }
 
-	/**
+    /**
      * Setter method for the time the job was completed
      * @param state The completion time of the job
      */
     public void setEndTime(long value) {
-    	endTime = value;
+        endTime = value;
     }
     
     /**
@@ -453,7 +453,7 @@ public class Archive implements BundlerConstantsI, Serializable {
      * @param value The name of the JVM that processed the job.
      */
     public void setServerName(String value) {
-    	serverName = value;
+        serverName = value;
     }
     
     /**
@@ -497,22 +497,22 @@ public class Archive implements BundlerConstantsI, Serializable {
             hostName = value;
     }
 
-	/**
-	 * Setter method for the primary key.
-	 * @param value The primary key.
-	 */
-	public void setID(long value) {
-		ID = value;
-	}
-	
-	/**
-	 * Setter method for the foreign key (i.e. JOB_ID).
-	 * @param value The foreign key (i.e. JOB_ID).
-	 */
-	public void setJobID(String value) {
-		jobID = value;
-	}
-	
+    /**
+     * Setter method for the primary key.
+     * @param value The primary key.
+     */
+    public void setID(long value) {
+        ID = value;
+    }
+    
+    /**
+     * Setter method for the foreign key (i.e. JOB_ID).
+     * @param value The foreign key (i.e. JOB_ID).
+     */
+    public void setJobID(String value) {
+        jobID = value;
+    }
+    
     /**
      * The number of files contained in the output archive.
      * @param value The number of files contained in the output archive.
@@ -521,15 +521,15 @@ public class Archive implements BundlerConstantsI, Serializable {
             numFiles = value;
     }
     
-	/**
+    /**
      * Setter method for the time the job was started
      * @param state The start time of the job
      */
     public void setStartTime(long value) {
-    	startTime = value;
+        startTime = value;
     }
     
-	/**
+    /**
      * Convert the internal members to a String (for logging purposes).
      * @return Printable string
      */
@@ -584,13 +584,13 @@ public class Archive implements BundlerConstantsI, Serializable {
         sb.append(newLine);
         sb.append("  Start Time       : ");
         sb.append(FileUtils.getTimeAsString(
-        		UNIVERSAL_DATE_STRING, 
-        		getStartTime()));
+                UNIVERSAL_DATE_STRING, 
+                getStartTime()));
         sb.append(newLine);
         sb.append("  End Time         : ");
         sb.append(FileUtils.getTimeAsString(
-        		UNIVERSAL_DATE_STRING, 
-        		getEndTime()));
+                UNIVERSAL_DATE_STRING, 
+                getEndTime()));
         sb.append(newLine);
         sb.append("----------------------------------------");
         sb.append("----------------------------------------");
@@ -600,9 +600,9 @@ public class Archive implements BundlerConstantsI, Serializable {
         sb.append("----------------------------------------");
         sb.append("----------------------------------------");
         for (FileEntry file : getFiles()) {
-        	sb.append(file.toString());
+            sb.append(file.toString());
         }
         return sb.toString();
     }
-	
+    
 }

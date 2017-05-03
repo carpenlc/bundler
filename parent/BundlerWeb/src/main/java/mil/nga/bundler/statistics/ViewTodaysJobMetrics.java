@@ -28,49 +28,49 @@ import org.slf4j.LoggerFactory;
 @ManagedBean
 @ViewScoped
 public class ViewTodaysJobMetrics 
-		extends ViewJobMetrics implements Serializable {
+        extends ViewJobMetrics implements Serializable {
 
-	/**
-	 * Eclipse-generated serialVersionUID
-	 */
-	private static final long serialVersionUID = -6008564386596417914L;
+    /**
+     * Eclipse-generated serialVersionUID
+     */
+    private static final long serialVersionUID = -6008564386596417914L;
 
-	/**
-	 * Set up the Log4j system for use throughout the class
-	 */		
-	Logger LOGGER = LoggerFactory.getLogger(MetricsTimerBean.class);
-	
-	/**
-	 * Container-injected reference to the JobService EJB.
-	 */
-	@EJB
-	JobService jobService;
-	
-	/**
-	 * Handle to the object containing the calculated job metrics.  This 
-	 * object is populated by the <code>initialize()</code> method.
-	 */
-	private BundlerMetrics metrics = null;
-	
+    /**
+     * Set up the Log4j system for use throughout the class
+     */        
+    Logger LOGGER = LoggerFactory.getLogger(MetricsTimerBean.class);
+    
+    /**
+     * Container-injected reference to the JobService EJB.
+     */
+    @EJB
+    JobService jobService;
+    
+    /**
+     * Handle to the object containing the calculated job metrics.  This 
+     * object is populated by the <code>initialize()</code> method.
+     */
+    private BundlerMetrics metrics = null;
+    
     /**
      * Default Eclipse-generated constructor. 
      */
     public ViewTodaysJobMetrics() {}
-	
+    
     /**
      * Private method used to obtain a reference to the target EJB.  
      * @return Reference to the JobService EJB.
      */
     private JobService getJobService() {
-    	if (jobService == null) {
-    		LOGGER.warn("Application container failed to inject the "
-    				+ "reference to JobService.  Attempting to "
-    				+ "look it up via JNDI.");
-    		jobService = EJBClientUtilities
-    				.getInstance()
-    				.getJobService();
-    	}
-    	return jobService;
+        if (jobService == null) {
+            LOGGER.warn("Application container failed to inject the "
+                    + "reference to JobService.  Attempting to "
+                    + "look it up via JNDI.");
+            jobService = EJBClientUtilities
+                    .getInstance()
+                    .getJobService();
+        }
+        return jobService;
     }
     
     /**
@@ -82,40 +82,40 @@ public class ViewTodaysJobMetrics
      * list.
      */
     private List<Job> getJobList() {
-    	
-    	List<Job> jobList = null;
-    	DayModel today = new DayModel();
-		
-		if (getJobService() != null) {
-			jobList = getJobService().getJobsByDate(
-					today.getStartTime(), 
-					today.getEndTime());
-		}
-		else {
-    		LOGGER.error("Unable to obtain a reference to the "
-    				+ "JobService EJB.");
-		}
-		return jobList;
+        
+        List<Job> jobList = null;
+        DayModel today = new DayModel();
+        
+        if (getJobService() != null) {
+            jobList = getJobService().getJobsByDate(
+                    today.getStartTime(), 
+                    today.getEndTime());
+        }
+        else {
+            LOGGER.error("Unable to obtain a reference to the "
+                    + "JobService EJB.");
+        }
+        return jobList;
     }
-	/**
-	 * The initialize method is called immediately after the Bean is 
-	 * instantiated.  It's responsibility is to retrieve the metrics data that
-	 * will be displayed.   In this case, it simply retrieves the 
-	 * pre-calculated metrics data from the data store.
-	 */
-	@PostConstruct
-	public void initialize() {
-    	List<Job> jobs = getJobList();
-    	if ((jobs != null) && (jobs.size() > 0)) {
-    		metrics = new BundlerMetrics();
-    		MetricsCalculator calc = new MetricsCalculator();
-    		calc.getMetrics(metrics, jobs);
-    	}
-    	else {
-    		LOGGER.info("No jobs have been submitted/processed today.");
-    	}
-	}
-	
+    /**
+     * The initialize method is called immediately after the Bean is 
+     * instantiated.  It's responsibility is to retrieve the metrics data that
+     * will be displayed.   In this case, it simply retrieves the 
+     * pre-calculated metrics data from the data store.
+     */
+    @PostConstruct
+    public void initialize() {
+        List<Job> jobs = getJobList();
+        if ((jobs != null) && (jobs.size() > 0)) {
+            metrics = new BundlerMetrics();
+            MetricsCalculator calc = new MetricsCalculator();
+            calc.getMetrics(metrics, jobs);
+        }
+        else {
+            LOGGER.info("No jobs have been submitted/processed today.");
+        }
+    }
+    
     /**
      * Getter method allowing access to the private internal bundler metrics
      * data.

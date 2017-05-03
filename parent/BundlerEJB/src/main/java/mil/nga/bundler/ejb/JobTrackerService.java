@@ -26,18 +26,18 @@ import org.slf4j.LoggerFactory;
 @LocalBean
 public class JobTrackerService {
 
-	/**
-	 * Set up the Log4j system for use throughout the class
-	 */		
-	private static final Logger LOGGER = LoggerFactory.getLogger(
-			JobTrackerService.class);
-	
-	/**
-	 * Container-injected reference to the JobService EJB.
-	 */
-	@EJB
-	JobService jobService;
-	
+    /**
+     * Set up the Log4j system for use throughout the class
+     */        
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+            JobTrackerService.class);
+    
+    /**
+     * Container-injected reference to the JobService EJB.
+     */
+    @EJB
+    JobService jobService;
+    
     /**
      * Default constructor. 
      */
@@ -49,15 +49,15 @@ public class JobTrackerService {
      * @return Reference to the JobService EJB.
      */
     private JobService getJobService() {
-    	if (jobService == null) {
-    		LOGGER.warn("Application container failed to inject the "
-    				+ "reference to JobService.  Attempting to "
-    				+ "look it up via JNDI.");
-    		jobService = EJBClientUtilities
-    				.getInstance()
-    				.getJobService();
-    	}
-    	return jobService;
+        if (jobService == null) {
+            LOGGER.warn("Application container failed to inject the "
+                    + "reference to JobService.  Attempting to "
+                    + "look it up via JNDI.");
+            jobService = EJBClientUtilities
+                    .getInstance()
+                    .getJobService();
+        }
+        return jobService;
     }
     
     /**
@@ -68,14 +68,14 @@ public class JobTrackerService {
      * @return The amount of wall-clock time the job has taken.
      */
     private long getElapsedTime(long startTime, long endTime) {
-    	long elapsedTime = 0L;
-    	if ((endTime > 0) && (startTime > 0)) {
-    		elapsedTime = endTime - startTime;
-    	}
-    	if ((endTime == 0) && (startTime > 0)) { 
-    		elapsedTime = System.currentTimeMillis() - startTime;
-    	}
-    	return elapsedTime;
+        long elapsedTime = 0L;
+        if ((endTime > 0) && (startTime > 0)) {
+            elapsedTime = endTime - startTime;
+        }
+        if ((endTime == 0) && (startTime > 0)) { 
+            elapsedTime = System.currentTimeMillis() - startTime;
+        }
+        return elapsedTime;
     }
     
     /**
@@ -86,64 +86,64 @@ public class JobTrackerService {
      * @return Current state information associated with the job.
      */
     private JobTrackerMessage createJobTracker(Job job) {
-    	
-    	int  numArchivesComplete = 0;
-    	long numFilesComplete    = 0L;
-    	long totalSizeComplete   = 0L;
-    	long elapsedTime         = getElapsedTime(
-    								job.getStartTime(), 
-    								job.getEndTime());
-    	
-    	JobTrackerMessage message = new JobTrackerMessage(
-    			job.getJobID(),
-    			job.getUserName(),
-    			job.getNumFiles(),
-    			job.getTotalSize(),
-    			job.getNumArchives());
-    	
-    	message.setState(job.getState());
-    	
-    	if ((job.getArchives() != null) && (job.getArchives().size() > 0)) {
-    		for (Archive archive : job.getArchives()) {
-    			
-    			if (archive.getArchiveState() == JobStateType.COMPLETE) {
-    				numArchivesComplete++;
-    				message.addArchive(archive);
-    			}
-    			if ((archive.getFiles() != null) && 
-    					(archive.getFiles().size() > 0)) {
-    				for (FileEntry file : archive.getFiles()) {
-    					if (file.getFileState() == JobStateType.COMPLETE) {
-    						numFilesComplete++;
-    						totalSizeComplete += file.getSize();
-    					}
-    				}
-    			}
-				else {
-					LOGGER.warn("Job ID [ "
-							+ job.getJobID() 
-							+ " ], archive ID [ "
-							+ archive.getArchiveID()
-							+ " ] does not contain a list of files to "
-							+ "archive.");
-				}
-    		}
-    	}
-		else {
-			LOGGER.warn("Job ID [ "
-					+ job.getJobID() 
-					+ " ] does not contain any archives to process.");
-		}
-    	message.setElapsedTime(elapsedTime);
-    	message.setNumArchivesComplete(numArchivesComplete);
-    	
-    	// The number of hashes complete is maintained for backwards 
-    	// compatibility.  It will always be the same as the number of 
-    	// archives complete
-    	message.setNumHashesComplete(numArchivesComplete);
-    	message.setNumFilesComplete(numFilesComplete);
-    	message.setSizeComplete(totalSizeComplete);
-    	return message;	
+        
+        int  numArchivesComplete = 0;
+        long numFilesComplete    = 0L;
+        long totalSizeComplete   = 0L;
+        long elapsedTime         = getElapsedTime(
+                                    job.getStartTime(), 
+                                    job.getEndTime());
+        
+        JobTrackerMessage message = new JobTrackerMessage(
+                job.getJobID(),
+                job.getUserName(),
+                job.getNumFiles(),
+                job.getTotalSize(),
+                job.getNumArchives());
+        
+        message.setState(job.getState());
+        
+        if ((job.getArchives() != null) && (job.getArchives().size() > 0)) {
+            for (Archive archive : job.getArchives()) {
+                
+                if (archive.getArchiveState() == JobStateType.COMPLETE) {
+                    numArchivesComplete++;
+                    message.addArchive(archive);
+                }
+                if ((archive.getFiles() != null) && 
+                        (archive.getFiles().size() > 0)) {
+                    for (FileEntry file : archive.getFiles()) {
+                        if (file.getFileState() == JobStateType.COMPLETE) {
+                            numFilesComplete++;
+                            totalSizeComplete += file.getSize();
+                        }
+                    }
+                }
+                else {
+                    LOGGER.warn("Job ID [ "
+                            + job.getJobID() 
+                            + " ], archive ID [ "
+                            + archive.getArchiveID()
+                            + " ] does not contain a list of files to "
+                            + "archive.");
+                }
+            }
+        }
+        else {
+            LOGGER.warn("Job ID [ "
+                    + job.getJobID() 
+                    + " ] does not contain any archives to process.");
+        }
+        message.setElapsedTime(elapsedTime);
+        message.setNumArchivesComplete(numArchivesComplete);
+        
+        // The number of hashes complete is maintained for backwards 
+        // compatibility.  It will always be the same as the number of 
+        // archives complete
+        message.setNumHashesComplete(numArchivesComplete);
+        message.setNumFilesComplete(numFilesComplete);
+        message.setSizeComplete(totalSizeComplete);
+        return message;    
     }
     
     /**
@@ -155,35 +155,35 @@ public class JobTrackerService {
      * the job in progress.
      */
     public JobTrackerMessage getJobTracker(String jobID) {
-    	
-    	JobTrackerMessage message = null;
-    	Job               job     = null;
-    	
-    	if ((jobID != null) && (!jobID.isEmpty())) {
-    		if (getJobService() != null) {
-    			job = getJobService().getJob(jobID);
-    			if (job != null) {
-    				message = createJobTracker(job);
-    			}
-    			else {
-    				LOGGER.error("Unable to retrieve job ID [ "
-    						+ jobID 
-    						+ " ] from the data store.  Method will return "
-    						+ "null.");
-    			}
-    		}
-	        else {
+        
+        JobTrackerMessage message = null;
+        Job               job     = null;
+        
+        if ((jobID != null) && (!jobID.isEmpty())) {
+            if (getJobService() != null) {
+                job = getJobService().getJob(jobID);
+                if (job != null) {
+                    message = createJobTracker(job);
+                }
+                else {
+                    LOGGER.error("Unable to retrieve job ID [ "
+                            + jobID 
+                            + " ] from the data store.  Method will return "
+                            + "null.");
+                }
+            }
+            else {
                 LOGGER.error("Unable to obtain a reference to the JobService "
-                		+ "EJB.  Unable to determine state of job ID [ "
-                		+ jobID
-                		+ " ].");
-	        }
-    	}
-    	else {
-    		LOGGER.error("The input job ID is null, or not populated.  Unable "
-    				+ "to determine state.");
-    	}
-    	return message;
+                        + "EJB.  Unable to determine state of job ID [ "
+                        + jobID
+                        + " ].");
+            }
+        }
+        else {
+            LOGGER.error("The input job ID is null, or not populated.  Unable "
+                    + "to determine state.");
+        }
+        return message;
     }
 
 }

@@ -32,10 +32,10 @@ import mil.nga.bundler.types.JobStateType;
 public class ValidationFileGroup implements Serializable {
 
     /**
-	 * Eclipse-generated serialVersionUID
-	 */
-	private static final long serialVersionUID = 5896077351721296322L;
-	
+     * Eclipse-generated serialVersionUID
+     */
+    private static final long serialVersionUID = 5896077351721296322L;
+    
     /**
      * Time when the group was completed.  This value will remain zero
      */
@@ -43,50 +43,50 @@ public class ValidationFileGroup implements Serializable {
     private long endTime = 0L;
     
     /**
-	 * The list of Files to be validated.
-	 */
-	@OneToMany(cascade={ CascadeType.ALL },
-			orphanRemoval=true,
-			fetch=FetchType.EAGER)
-	@JoinColumns({
-		@JoinColumn(name="GROUP_ID", referencedColumnName="GROUP_ID"),
-		@JoinColumn(name="JOB_ID", referencedColumnName="JOB_ID")
-	})
+     * The list of Files to be validated.
+     */
+    @OneToMany(cascade={ CascadeType.ALL },
+            orphanRemoval=true,
+            fetch=FetchType.EAGER)
+    @JoinColumns({
+        @JoinColumn(name="GROUP_ID", referencedColumnName="GROUP_ID"),
+        @JoinColumn(name="JOB_ID", referencedColumnName="JOB_ID")
+    })
     List<ValidFile> files = new ArrayList<ValidFile>();
-	
-	/**
-	 * Foreign key linking the VALIDATION_JOB and VALIDATION_FILE_GROUP tables.
-	 */
-	@Column(name="GROUP_ID")
-	private long groupID = 0;
-	
-	/**
-	 * The server that processed the archive job.
-	 */
+    
+    /**
+     * Foreign key linking the VALIDATION_JOB and VALIDATION_FILE_GROUP tables.
+     */
+    @Column(name="GROUP_ID")
+    private long groupID = 0;
+    
+    /**
+     * The server that processed the archive job.
+     */
     @Column(name="HOST_NAME")
     private String hostName = null;
     
     /**
-	 * Primary key
-	 */
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="ID")
-	private long ID;
+     * Primary key
+     */
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name="ID")
+    private long ID;
     
-	/**
-	 * Foreign key linking the VALIDATION_JOBS and VALIDATION_FILE_GROUP tables.
-	 */
-	@Column(name="JOB_ID")
-	private String jobID = null;
-	
-	/**
+    /**
+     * Foreign key linking the VALIDATION_JOBS and VALIDATION_FILE_GROUP tables.
+     */
+    @Column(name="JOB_ID")
+    private String jobID = null;
+    
+    /**
      * Time when processing of the validation group was started.
      */
     @Column(name="START_TIME")
     private long startTime = 0L;
     
-	/**
+    /**
      * Added to keep track of the processing state of individual validation
      * jobs.  Very large jobs were tending to not be recognized as completed.  
      * This flag was added in order to implement additional checks on the 
@@ -101,15 +101,15 @@ public class ValidationFileGroup implements Serializable {
      * @param file File to add to the group.
      */
     public void addFile(ValidFile file) {
-    	files.add(file);
+        files.add(file);
     }
     
-	/**
+    /**
      * Getter method for the time the group was completed.
      * @param state The end time for the validation group.
      */
     public long getEndTime() {
-    	return endTime;
+        return endTime;
     }
     
     /**
@@ -117,7 +117,7 @@ public class ValidationFileGroup implements Serializable {
      * @return The list of files in the group.
      */
     public List<ValidFile> getFiles() {
-    	return files;
+        return files;
     }
     
     /**
@@ -125,7 +125,7 @@ public class ValidationFileGroup implements Serializable {
      * @return The group ID.
      */
     public long getGroupID() {
-    	return groupID;
+        return groupID;
     }
     
     /**
@@ -141,39 +141,39 @@ public class ValidationFileGroup implements Serializable {
      * @return The ID.
      */
     public long getID() {
-    	return ID;
+        return ID;
     }
     
-	/**
-	 * Getter method for the foreign key (i.e. JOB_ID).
-	 * @return The foreign key (i.e. JOB_ID).
-	 */
-	public String getJobID() {
-		return jobID;
-	}
-	
-	/**
+    /**
+     * Getter method for the foreign key (i.e. JOB_ID).
+     * @return The foreign key (i.e. JOB_ID).
+     */
+    public String getJobID() {
+        return jobID;
+    }
+    
+    /**
      * Getter method for the time the group was started.
      * @return The start time for the validation group.
      */
     public long getStartTime() {
-    	return startTime;
+        return startTime;
     }
     
-	/**
+    /**
      * Setter method for the state of the validation group.
      * @return state of the validation group.
      */
     public JobStateType getValidationState() {
-    	return validationState;
+        return validationState;
     }
     
-	/**
+    /**
      * Setter method for the time the group was completed.
      * @param state The completion time of the group.
      */
     public void setEndTime(long value) {
-    	endTime = value;
+        endTime = value;
     }
     
     /**
@@ -181,7 +181,7 @@ public class ValidationFileGroup implements Serializable {
      * @param value The list of files in the group.
      */
     public void setFiles(List<ValidFile> value) {
-    	files = value;
+        files = value;
     }
     
     /**
@@ -189,7 +189,7 @@ public class ValidationFileGroup implements Serializable {
      * @param value The group ID.
      */
     public void setGroupID(long value) {
-    	groupID = value;
+        groupID = value;
     }
     
 
@@ -198,7 +198,7 @@ public class ValidationFileGroup implements Serializable {
      * @param value The server name
      */
     public void setHostName(String value) {
-    	hostName = value;
+        hostName = value;
     }
     
     /**
@@ -206,30 +206,30 @@ public class ValidationFileGroup implements Serializable {
      * @param value The ID.
      */
     public void setID(long value) {
-    	ID = value;
+        ID = value;
     }
     
-	/**
-	 * Setter method for the foreign key (i.e. JOB_ID).
-	 * @param value The foreign key (i.e. JOB_ID).
-	 */
-	public void setJobID(String value) {
-		jobID = value;
-	}
-	
-	/**
+    /**
+     * Setter method for the foreign key (i.e. JOB_ID).
+     * @param value The foreign key (i.e. JOB_ID).
+     */
+    public void setJobID(String value) {
+        jobID = value;
+    }
+    
+    /**
      * Setter method for the time the group was started
      * @param value The start time of the group
      */
     public void setStartTime(long value) {
-    	startTime = value;
+        startTime = value;
     }
     
-	/**
+    /**
      * Setter method for the state of the validation group.
      * @param value state of the validation group.
      */
     public void setValidationState(JobStateType value) {
-    	validationState = value;
+        validationState = value;
     }
 }

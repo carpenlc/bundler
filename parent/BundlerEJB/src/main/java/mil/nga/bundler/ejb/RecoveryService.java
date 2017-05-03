@@ -40,30 +40,30 @@ import mil.nga.util.FileUtils;
 @Singleton
 public class RecoveryService {
 
-	/**
-	 * Set up the Log4j system for use throughout the class
-	 */		
-	static final Logger LOGGER = LoggerFactory.getLogger(RecoveryService.class);
-	
-	/**
-	 * The amount of time to wait before checking to see if a job is actually complete.
-	 * As of this writing we have never seen a successful job take more than 45 seconds.
-	 */
-	private static final long PROCESSING_TIME_THRESHOLD = (long)(45 * 1000);
-	
-	/**
-	 * Container-injected reference to the JobService EJB.
-	 */
-	@EJB
-	JobService jobService;
-	
-	/**
-	 * Container-injected reference to the JobRunnerService EJB.  Class is 
-	 * responsible for placing archives to retry on the JMS queue.
-	 */
-	@EJB
-	JobRunnerService jobRunnerService;
-	
+    /**
+     * Set up the Log4j system for use throughout the class
+     */        
+    static final Logger LOGGER = LoggerFactory.getLogger(RecoveryService.class);
+    
+    /**
+     * The amount of time to wait before checking to see if a job is actually complete.
+     * As of this writing we have never seen a successful job take more than 45 seconds.
+     */
+    private static final long PROCESSING_TIME_THRESHOLD = (long)(45 * 1000);
+    
+    /**
+     * Container-injected reference to the JobService EJB.
+     */
+    @EJB
+    JobService jobService;
+    
+    /**
+     * Container-injected reference to the JobRunnerService EJB.  Class is 
+     * responsible for placing archives to retry on the JMS queue.
+     */
+    @EJB
+    JobRunnerService jobRunnerService;
+    
     /**
      * Eclipse-generated constructor. 
      */
@@ -76,12 +76,12 @@ public class RecoveryService {
      * @return The amount of time elapsed for the current job.
      */
     private long getElapsedTime(Job job) {
-    	long now = System.currentTimeMillis();
-    	long elapsedTime = 0L;
-    	if (job != null) {
-    		elapsedTime = (now - job.getStartTime());
-    	}
-    	return elapsedTime;
+        long now = System.currentTimeMillis();
+        long elapsedTime = 0L;
+        if (job != null) {
+            elapsedTime = (now - job.getStartTime());
+        }
+        return elapsedTime;
     }
     
     /**
@@ -89,9 +89,9 @@ public class RecoveryService {
      */
     @PostConstruct
     public void initialize() {
-    	checkForJobsToRetry();
-    	checkForJobsThatAreReallyComplete();	
-    	checkForInvalidJobs();
+        checkForJobsToRetry();
+        checkForJobsThatAreReallyComplete();    
+        checkForInvalidJobs();
     }
     
     /**
@@ -103,25 +103,25 @@ public class RecoveryService {
      * a state of 'INVALID_REQUEST'.
      */
     public void checkForInvalidJobs() {
-    	if (getJobService() != null) {
-			List<Job> jobsInProgress = getJobService().getIncompleteJobs();
-			if ((jobsInProgress != null) && (jobsInProgress.size() > 0)) {
-				for (Job job : jobsInProgress) {
-					if ((job.getState() == JobStateType.NOT_STARTED) && 
-							(job.getNumArchives() == 0)) {
-						job.setState(JobStateType.INVALID_REQUEST);
-						job.setStartTime(System.currentTimeMillis());
-						job.setEndTime(System.currentTimeMillis());
-						getJobService().update(job);
-					}
-				}
-			}
-    	}
-		else {
-    		LOGGER.error("RETRY: The container-injected reference to the "
-    				+ "JobService EJB is null.  Unable to determine if "
-    				+ "there are any incomplete jobs to retry.");
-		}
+        if (getJobService() != null) {
+            List<Job> jobsInProgress = getJobService().getIncompleteJobs();
+            if ((jobsInProgress != null) && (jobsInProgress.size() > 0)) {
+                for (Job job : jobsInProgress) {
+                    if ((job.getState() == JobStateType.NOT_STARTED) && 
+                            (job.getNumArchives() == 0)) {
+                        job.setState(JobStateType.INVALID_REQUEST);
+                        job.setStartTime(System.currentTimeMillis());
+                        job.setEndTime(System.currentTimeMillis());
+                        getJobService().update(job);
+                    }
+                }
+            }
+        }
+        else {
+            LOGGER.error("RETRY: The container-injected reference to the "
+                    + "JobService EJB is null.  Unable to determine if "
+                    + "there are any incomplete jobs to retry.");
+        }
     }
     
     /**
@@ -131,55 +131,55 @@ public class RecoveryService {
      * to handle that particular situation upon node startup.
      */
     public void checkForJobsThatAreReallyComplete() {
-    	
-    	if (getJobService() != null) {
-			
-			List<Job> jobsInProgress = getJobService().getIncompleteJobs();
-			if ((jobsInProgress != null) && (jobsInProgress.size() > 0)) {
-				for (Job job : jobsInProgress) {
-					if (getElapsedTime(job) > PROCESSING_TIME_THRESHOLD) {
-						if ((job.getArchives() != null) && (job.getArchives().size() > 0)) {
-							
-							int archivesComplete = 0;
-							long sizeComplete = 0L;
-							long filesComplete = 0L;
-							
-							for (Archive archive : job.getArchives()) {
-								if (archive.getArchiveState() == JobStateType.COMPLETE) {
-									archivesComplete++;
-									sizeComplete += archive.getSize();
-									filesComplete += archive.getNumFiles();
-								}
-							}
-							
-							if (archivesComplete == job.getNumArchives()) {
-								LOGGER.info("RETRY: Job [ "
-										+ job.getJobID()
-										+ " ] was complete, but still marked as [ "
-										+ JobStateType.IN_PROGRESS
-										+ " ].  Updating job state information.");
-								job.setTotalSizeComplete(sizeComplete);
-								job.setNumArchivesComplete(archivesComplete);
-								job.setNumFilesComplete(filesComplete);
-								job.setEndTime(job.getStartTime() + PROCESSING_TIME_THRESHOLD);
-								job.setState(JobStateType.COMPLETE);
-								getJobService().update(job);
-							}
-						}
-					}
-				}
-			}
-			else {
-				LOGGER.info("RETRY:  There are no in-progress jobs.  Exiting "
-						+ "gracefully.");
-			}
-    	}
-		else {
-    		LOGGER.error("RETRY: The container-injected reference to the "
-    				+ "JobService EJB is null.  Unable to determine if "
-    				+ "there are any incomplete jobs to retry.");
-		}
-    	
+        
+        if (getJobService() != null) {
+            
+            List<Job> jobsInProgress = getJobService().getIncompleteJobs();
+            if ((jobsInProgress != null) && (jobsInProgress.size() > 0)) {
+                for (Job job : jobsInProgress) {
+                    if (getElapsedTime(job) > PROCESSING_TIME_THRESHOLD) {
+                        if ((job.getArchives() != null) && (job.getArchives().size() > 0)) {
+                            
+                            int archivesComplete = 0;
+                            long sizeComplete = 0L;
+                            long filesComplete = 0L;
+                            
+                            for (Archive archive : job.getArchives()) {
+                                if (archive.getArchiveState() == JobStateType.COMPLETE) {
+                                    archivesComplete++;
+                                    sizeComplete += archive.getSize();
+                                    filesComplete += archive.getNumFiles();
+                                }
+                            }
+                            
+                            if (archivesComplete == job.getNumArchives()) {
+                                LOGGER.info("RETRY: Job [ "
+                                        + job.getJobID()
+                                        + " ] was complete, but still marked as [ "
+                                        + JobStateType.IN_PROGRESS
+                                        + " ].  Updating job state information.");
+                                job.setTotalSizeComplete(sizeComplete);
+                                job.setNumArchivesComplete(archivesComplete);
+                                job.setNumFilesComplete(filesComplete);
+                                job.setEndTime(job.getStartTime() + PROCESSING_TIME_THRESHOLD);
+                                job.setState(JobStateType.COMPLETE);
+                                getJobService().update(job);
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                LOGGER.info("RETRY:  There are no in-progress jobs.  Exiting "
+                        + "gracefully.");
+            }
+        }
+        else {
+            LOGGER.error("RETRY: The container-injected reference to the "
+                    + "JobService EJB is null.  Unable to determine if "
+                    + "there are any incomplete jobs to retry.");
+        }
+        
     }
     
     /**
@@ -190,64 +190,64 @@ public class RecoveryService {
      * is re-submitted to the cluster for processing. 
      */
     public void checkForJobsToRetry() {
-    	
-    	EJBClientUtilities utils      = EJBClientUtilities.getInstance();
-    	String             serverName = utils.getServerName();
-    	
-    	if ((serverName != null) && (!serverName.isEmpty())) {
-    		if (getJobService() != null) {
-    			
-    			List<Job> jobsInProgress = getJobService().getIncompleteJobs();
-    			if ((jobsInProgress != null) && (jobsInProgress.size() > 0)) {
-    				
-    				for (Job job : jobsInProgress) {
-    					if ((job.getArchives() != null) && 
-    							(job.getArchives().size() > 0)) {
-    						
-    						for (Archive archive : job.getArchives()) {
-    							if ((archive.getServerName() != null) && 
-    									(!archive.getServerName().isEmpty())) {
-    								if ((archive.getServerName()
-    										.equalsIgnoreCase(serverName)) && 
-    										(archive.getArchiveState() != 
-    										JobStateType.COMPLETE)) {
-    									retry(archive);
-    								}
-    							}
-    							else {
-    								LOGGER.info("The server name associated " 
-    										+ "with job ID [ "
-    										+ job.getJobID()
-    										+ " ] is not populated.");
-    							}
-    						}
-    					}
-    					else {
-    						LOGGER.warn("RETRY:  Job ID [ " 
-    								+ job.getJobID()
-    								+ " ] does not contain any archive jobs "
-    								+ "to process.  This should be "
-    								+ "investigated.");
-    					}
-    				}
-    					
-    			}
-    			else {
-    				LOGGER.info("RETRY:  There are no in-progress jobs to "
-    						+ "retry.");
-    			}
-    		}
-    		else {
-	    		LOGGER.error("RETRY: The container-injected reference to the "
-	    				+ "JobService EJB is null.  Unable to determine if "
-	    				+ "there are any incomplete jobs to retry.");
-    		}
-    	}
-    	else {
-    		LOGGER.warn("RETRY: Unable to determine the current JVM name.  "
-    				+ "Retry logic will not be executed.");
-    	}
-    	
+        
+        EJBClientUtilities utils      = EJBClientUtilities.getInstance();
+        String             serverName = utils.getServerName();
+        
+        if ((serverName != null) && (!serverName.isEmpty())) {
+            if (getJobService() != null) {
+                
+                List<Job> jobsInProgress = getJobService().getIncompleteJobs();
+                if ((jobsInProgress != null) && (jobsInProgress.size() > 0)) {
+                    
+                    for (Job job : jobsInProgress) {
+                        if ((job.getArchives() != null) && 
+                                (job.getArchives().size() > 0)) {
+                            
+                            for (Archive archive : job.getArchives()) {
+                                if ((archive.getServerName() != null) && 
+                                        (!archive.getServerName().isEmpty())) {
+                                    if ((archive.getServerName()
+                                            .equalsIgnoreCase(serverName)) && 
+                                            (archive.getArchiveState() != 
+                                            JobStateType.COMPLETE)) {
+                                        retry(archive);
+                                    }
+                                }
+                                else {
+                                    LOGGER.info("The server name associated " 
+                                            + "with job ID [ "
+                                            + job.getJobID()
+                                            + " ] is not populated.");
+                                }
+                            }
+                        }
+                        else {
+                            LOGGER.warn("RETRY:  Job ID [ " 
+                                    + job.getJobID()
+                                    + " ] does not contain any archive jobs "
+                                    + "to process.  This should be "
+                                    + "investigated.");
+                        }
+                    }
+                        
+                }
+                else {
+                    LOGGER.info("RETRY:  There are no in-progress jobs to "
+                            + "retry.");
+                }
+            }
+            else {
+                LOGGER.error("RETRY: The container-injected reference to the "
+                        + "JobService EJB is null.  Unable to determine if "
+                        + "there are any incomplete jobs to retry.");
+            }
+        }
+        else {
+            LOGGER.warn("RETRY: Unable to determine the current JVM name.  "
+                    + "Retry logic will not be executed.");
+        }
+        
     }
     
     /**
@@ -257,50 +257,50 @@ public class RecoveryService {
      * @param archive The archive that we need to re-run.
      */
     private void cleanupPreviousAttempt(Archive archive) {
-    	
-    	if (archive != null) {
-    		
-    		if ((archive.getArchiveFilename() != null) &&
-    				(!archive.getArchiveFilename().isEmpty())) {
-    			try {
-    				if (LOGGER.isDebugEnabled()) {
-    					LOGGER.debug("RETRY:  Deleting file from previous "
-    							+ "attempt [ "
-    							+ archive.getArchiveFilename()
-    							+ " ].");
-    				}
-    				FileUtils.delete(archive.getArchiveFilename());
-    			}
-    			catch (IOException ioe) {
-    				LOGGER.warn("RETRY: Unable to delete target file [ "
-    						+ archive.getArchiveFilename()
-    						+ " ].  Unexpected IOException encountered, error "
-    						+ "message [ "
-    						+ ioe.getMessage()
-    						+ " ].");
-    			}
-    		}
-    		if ((archive.getHashFilename() != null) &&
-    				(!archive.getHashFilename().isEmpty())) {
-    			try {
-    				if (LOGGER.isDebugEnabled()) {
-    					LOGGER.debug("RETRY:  Deleting file from previous "
-    							+ "attempt [ "
-    							+ archive.getHashFilename()
-    							+ " ].");
-    				}
-    				FileUtils.delete(archive.getHashFilename());
-    			}
-    			catch (IOException ioe) {
-    				LOGGER.warn("RETRY: Unable to delete target file [ "
-    						+ archive.getHashFilename()
-    						+ " ].  Unexpected IOException encountered, error "
-    						+ "message [ "
-    						+ ioe.getMessage()
-    						+ " ].");
-    			}
-    		}
-    	}
+        
+        if (archive != null) {
+            
+            if ((archive.getArchiveFilename() != null) &&
+                    (!archive.getArchiveFilename().isEmpty())) {
+                try {
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("RETRY:  Deleting file from previous "
+                                + "attempt [ "
+                                + archive.getArchiveFilename()
+                                + " ].");
+                    }
+                    FileUtils.delete(archive.getArchiveFilename());
+                }
+                catch (IOException ioe) {
+                    LOGGER.warn("RETRY: Unable to delete target file [ "
+                            + archive.getArchiveFilename()
+                            + " ].  Unexpected IOException encountered, error "
+                            + "message [ "
+                            + ioe.getMessage()
+                            + " ].");
+                }
+            }
+            if ((archive.getHashFilename() != null) &&
+                    (!archive.getHashFilename().isEmpty())) {
+                try {
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("RETRY:  Deleting file from previous "
+                                + "attempt [ "
+                                + archive.getHashFilename()
+                                + " ].");
+                    }
+                    FileUtils.delete(archive.getHashFilename());
+                }
+                catch (IOException ioe) {
+                    LOGGER.warn("RETRY: Unable to delete target file [ "
+                            + archive.getHashFilename()
+                            + " ].  Unexpected IOException encountered, error "
+                            + "message [ "
+                            + ioe.getMessage()
+                            + " ].");
+                }
+            }
+        }
     }
     
     /**
@@ -308,15 +308,15 @@ public class RecoveryService {
      * @return Reference to the JobService EJB.
      */
     private JobService getJobService() {
-    	if (jobService == null) {
-    		LOGGER.warn("Application container failed to inject the "
-    				+ "reference to JobService.  Attempting to "
-    				+ "look it up via JNDI.");
-    		jobService = EJBClientUtilities
-    				.getInstance()
-    				.getJobService();
-    	}
-    	return jobService;
+        if (jobService == null) {
+            LOGGER.warn("Application container failed to inject the "
+                    + "reference to JobService.  Attempting to "
+                    + "look it up via JNDI.");
+            jobService = EJBClientUtilities
+                    .getInstance()
+                    .getJobService();
+        }
+        return jobService;
     }
     
     /**
@@ -324,15 +324,15 @@ public class RecoveryService {
      * @return Reference to the JobRunnerService EJB.
      */
     private JobRunnerService getJobRunnerService() {
-    	if (jobRunnerService == null) {
-    		LOGGER.warn("Application container failed to inject the "
-    				+ "reference to JobRunnerService.  Attempting to "
-    				+ "look it up via JNDI.");
-    		jobRunnerService = EJBClientUtilities
-    				.getInstance()
-    				.getJobRunnerService();
-    	}
-    	return jobRunnerService;
+        if (jobRunnerService == null) {
+            LOGGER.warn("Application container failed to inject the "
+                    + "reference to JobRunnerService.  Attempting to "
+                    + "look it up via JNDI.");
+            jobRunnerService = EJBClientUtilities
+                    .getInstance()
+                    .getJobRunnerService();
+        }
+        return jobRunnerService;
     }
     
     /**
@@ -341,22 +341,22 @@ public class RecoveryService {
      * @param archive Archive job to retry.
      */
     private void retry(Archive archive) {
-    	
-    	LOGGER.info("RETRY:  Retrying job ID [ "
-    			+ archive.getJobID() 
-    			+ " ], archive ID [ "
-    			+ archive.getArchiveID()
-    			+ " ].");
-    	
-    	cleanupPreviousAttempt(archive);
-    	if (getJobRunnerService() != null) {
-    		getJobRunnerService().run(archive);
-    	}
-    	else {
-    		LOGGER.error("RETRY: The container-injected reference to the "
-	    				+ "JobRunnerService EJB is null.  Unable to retry "
-	    				+ "the archive job.");
-    	}
-    	
+        
+        LOGGER.info("RETRY:  Retrying job ID [ "
+                + archive.getJobID() 
+                + " ], archive ID [ "
+                + archive.getArchiveID()
+                + " ].");
+        
+        cleanupPreviousAttempt(archive);
+        if (getJobRunnerService() != null) {
+            getJobRunnerService().run(archive);
+        }
+        else {
+            LOGGER.error("RETRY: The container-injected reference to the "
+                        + "JobRunnerService EJB is null.  Unable to retry "
+                        + "the archive job.");
+        }
+        
     }
 }

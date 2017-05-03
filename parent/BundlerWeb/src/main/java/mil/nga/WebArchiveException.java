@@ -11,16 +11,16 @@ import javax.ws.rs.core.Response;
  */
 public class WebArchiveException extends WebApplicationException {
 
-	/**
-	 * Eclipse-generated serialVersionUID
-	 */
-	private static final long serialVersionUID = -7558172102269292783L;
+    /**
+     * Eclipse-generated serialVersionUID
+     */
+    private static final long serialVersionUID = -7558172102269292783L;
 
-	public WebArchiveException(String message) {
+    public WebArchiveException(String message) {
         super(Response
-        		.status(Response.Status.BAD_REQUEST)
-        		.entity(message)
-        		.type(MediaType.TEXT_PLAIN)
-        		.build());
+                .status(Response.Status.BAD_REQUEST)
+                .entity(message)
+                .type(MediaType.TEXT_PLAIN)
+                .build());
     }
 }

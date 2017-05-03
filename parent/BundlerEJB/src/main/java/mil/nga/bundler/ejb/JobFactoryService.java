@@ -22,25 +22,25 @@ import org.slf4j.LoggerFactory;
 @Stateless
 @LocalBean
 public class JobFactoryService 
-		extends PropertyLoader implements BundlerConstantsI {
+        extends PropertyLoader implements BundlerConstantsI {
 
-	/**
-	 * Set up the Log4j system for use throughout the class
-	 */		
-	private static final Logger LOGGER = LoggerFactory.getLogger(
-			JobFactoryService.class);
-	
-	/**
-	 * Container-injected reference to the JobService EJB.
-	 */
-	@EJB
-	JobService jobService;
-	
+    /**
+     * Set up the Log4j system for use throughout the class
+     */        
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+            JobFactoryService.class);
+    
+    /**
+     * Container-injected reference to the JobService EJB.
+     */
+    @EJB
+    JobService jobService;
+    
     /**
      * Default constructor.
      */
     public JobFactoryService() { 
-    	super(PROPERTY_FILE_NAME);
+        super(PROPERTY_FILE_NAME);
     }
     
     /**
@@ -49,46 +49,46 @@ public class JobFactoryService
      * @return Reference to the JobService EJB.
      */
     private JobService getJobService() {
-    	if (jobService == null) {
-    		LOGGER.warn("Application container failed to inject the "
-    				+ "reference to JobService.  Attempting to "
-    				+ "look it up via JNDI.");
-    		jobService = EJBClientUtilities
-    				.getInstance()
-    				.getJobService();
-    	}
-    	return jobService;
+        if (jobService == null) {
+            LOGGER.warn("Application container failed to inject the "
+                    + "reference to JobService.  Attempting to "
+                    + "look it up via JNDI.");
+            jobService = EJBClientUtilities
+                    .getInstance()
+                    .getJobService();
+        }
+        return jobService;
     }
     
     
 
     
     public Job createJob(
-    		BundleRequest request, 
-    		List<ValidFile> validatedFiles) {
-    	
-    	Job job = null;
-    	
-    	if (request != null) {
-	    	JobFactory factory = new JobFactory();
-	    	
-	    	job = factory.createJob(request, validatedFiles);
-	    	LOGGER.info(job.toString());
-    	
-	    	if (getJobService() != null) {
-	    		jobService.persist(job);
-	    	}
-    	}
-    	else {
-    		LOGGER.error("Input BundleRequest object is null.  Unable to "
-    				+ "create a Job.  Job object returned will be null.");
-    	}
-    	return job;
-    	
+            BundleRequest request, 
+            List<ValidFile> validatedFiles) {
+        
+        Job job = null;
+        
+        if (request != null) {
+            JobFactory factory = new JobFactory();
+            
+            job = factory.createJob(request, validatedFiles);
+            LOGGER.info(job.toString());
+        
+            if (getJobService() != null) {
+                jobService.persist(job);
+            }
+        }
+        else {
+            LOGGER.error("Input BundleRequest object is null.  Unable to "
+                    + "create a Job.  Job object returned will be null.");
+        }
+        return job;
+        
     }
     
     public void validate(BundleRequest request) {
-    	LOGGER.info("validate() called.");
+        LOGGER.info("validate() called.");
     }
     
 

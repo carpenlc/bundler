@@ -27,19 +27,19 @@ import mil.nga.bundler.types.JobStateType;
 @Stateless
 @LocalBean
 public class JobRunnerService 
-		extends NotificationService implements BundlerConstantsI {
+        extends NotificationService implements BundlerConstantsI {
 
-	/**
-	 * Set up the Log4j system for use throughout the class
-	 */
-	static final Logger LOGGER = LoggerFactory.getLogger(RecoveryService.class);
-	
-	/**
-	 * Container-injected reference to the JobService EJB.
-	 */
-	@EJB
-	JobService jobService;
-	
+    /**
+     * Set up the Log4j system for use throughout the class
+     */
+    static final Logger LOGGER = LoggerFactory.getLogger(RecoveryService.class);
+    
+    /**
+     * Container-injected reference to the JobService EJB.
+     */
+    @EJB
+    JobService jobService;
+    
     /**
      * Default Eclipse-generated constructor. 
      */
@@ -50,15 +50,15 @@ public class JobRunnerService
      * @return Reference to the JobService EJB.
      */
     private JobService getJobService() {
-    	if (jobService == null) {
-    		LOGGER.warn("Application container failed to inject the "
-    				+ "reference to JobService.  Attempting to "
-    				+ "look it up via JNDI.");
-    		jobService = EJBClientUtilities
-    				.getInstance()
-    				.getJobService();
-    	}
-    	return jobService;
+        if (jobService == null) {
+            LOGGER.warn("Application container failed to inject the "
+                    + "reference to JobService.  Attempting to "
+                    + "look it up via JNDI.");
+            jobService = EJBClientUtilities
+                    .getInstance()
+                    .getJobService();
+        }
+        return jobService;
     }
     
     /**
@@ -69,24 +69,24 @@ public class JobRunnerService
      * @param archive A single Archive to submit to the JMS queues.
      */
     public void run(Archive archive) {
-    	
-    	if (archive != null) {
-    		
-    		LOGGER.info("Submitting archive with job ID [ "
-    				+ archive.getJobID()
-    				+ " ] and archive ID [ "
-    				+ archive.getArchiveID()
-    				+ " ] to the JMS queue for processing.");
-    		
-        	super.notify(ARCHIVER_DEST_Q,
-        			new ArchiveMessage(
-        					archive.getJobID(), 
-        					archive.getArchiveID()));
-    	}
-    	else {
-    		LOGGER.error("Client submitted a null archive.  The archive will "
-    				+ "not be placed on the JMS queue.");
-    	}
+        
+        if (archive != null) {
+            
+            LOGGER.info("Submitting archive with job ID [ "
+                    + archive.getJobID()
+                    + " ] and archive ID [ "
+                    + archive.getArchiveID()
+                    + " ] to the JMS queue for processing.");
+            
+            super.notify(ARCHIVER_DEST_Q,
+                    new ArchiveMessage(
+                            archive.getJobID(), 
+                            archive.getArchiveID()));
+        }
+        else {
+            LOGGER.error("Client submitted a null archive.  The archive will "
+                    + "not be placed on the JMS queue.");
+        }
     }
     
     /**
@@ -98,37 +98,37 @@ public class JobRunnerService
      * @param job The populated Job object to invoke processing on.
      */
     public void run(Job job) {
-    	
-    	if ((job != null) &&
-    			(job.getArchives() != null) &&
-    			(job.getArchives().size() > 0)) {
-    		
-    		LOGGER.info("Initiating archive processing for job ID [ "
-    				+ job.getJobID()
-    				+ " ].");
-    		
-    		// Update the job status
-    		job.setState(JobStateType.IN_PROGRESS);
-    		job.setStartTime(System.currentTimeMillis());
-    		
-    		if (getJobService() != null) {
-    			job = getJobService().update(job);
-    		}
-    		
-			for (Archive archive : job.getArchives()) {
-				
-				ArchiveMessage archiveMsg = new ArchiveMessage(
-						archive.getJobID(), 
-						archive.getArchiveID());
-				
-				if (LOGGER.isDebugEnabled()) {
-					LOGGER.info("Placing the following message on "
-							+ "the JMS queue [ "
+        
+        if ((job != null) &&
+                (job.getArchives() != null) &&
+                (job.getArchives().size() > 0)) {
+            
+            LOGGER.info("Initiating archive processing for job ID [ "
+                    + job.getJobID()
+                    + " ].");
+            
+            // Update the job status
+            job.setState(JobStateType.IN_PROGRESS);
+            job.setStartTime(System.currentTimeMillis());
+            
+            if (getJobService() != null) {
+                job = getJobService().update(job);
+            }
+            
+            for (Archive archive : job.getArchives()) {
+                
+                ArchiveMessage archiveMsg = new ArchiveMessage(
+                        archive.getJobID(), 
+                        archive.getArchiveID());
+                
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.info("Placing the following message on "
+                            + "the JMS queue [ "
                             + archiveMsg.toString()
                             + " ].");
-				}
-				super.notify(ARCHIVER_DEST_Q, archiveMsg); 
-			}
-    	}
+                }
+                super.notify(ARCHIVER_DEST_Q, archiveMsg); 
+            }
+        }
     }
 }
