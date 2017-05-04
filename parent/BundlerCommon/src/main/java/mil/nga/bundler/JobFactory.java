@@ -20,7 +20,7 @@ import mil.nga.util.FileUtils;
  * archives that will be processed by the cluster. 
  * 
  * All of the files that can be bundled must be accessible by the server on 
- * which the application container is running. 
+ * which the application container is running.  
  * 
  * Updated to require a list of validated files as input rather than a raw 
  * list of Strings.

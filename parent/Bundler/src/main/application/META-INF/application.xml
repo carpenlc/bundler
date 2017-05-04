@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-             xmlns="http://java.sun.com/xml/ns/javaee" 
-             xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_6.xsd" 
-             version="6">
+<application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_6.xsd" version="6">
   <display-name>BundlerEAR</display-name>
   <module>
     <web>
@@ -10,13 +7,8 @@
       <context-root>bundler</context-root>
     </web>
   </module>
-  <!-- <module>
-    <web>
-      <web-uri>BundlerStatistics.war</web-uri>
-      <context-root>BundlerStatistics</context-root>
-    </web>
-  </module> -->
   <module>
     <ejb>BundlerEJB.jar</ejb>
   </module>
+  <library-directory>lib</library-directory>
 </application>

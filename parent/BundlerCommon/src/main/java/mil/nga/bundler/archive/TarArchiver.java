@@ -16,6 +16,7 @@ import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +58,6 @@ public class TarArchiver
      * @throws IOException Thrown If there are errors reading/writing to the
      * target output file.
      */
-    @Override
     public void bundle(String baseDir, String outputFile) 
             throws ArchiveException, IOException {
         
@@ -122,7 +122,6 @@ public class TarArchiver
      * @throws IOException Raised if there are issues constructing the output
      * archive.
      */
-    @Override
     public void bundle(
             List<String> files, 
             String outputFile, 
@@ -240,7 +239,6 @@ public class TarArchiver
         return new TarArchiveEntry(file, name);
     }
     
-    @Override
     public void bundle(List<FileEntry> files, String outputFile) 
             throws ArchiveException, IOException {
         

@@ -407,8 +407,10 @@ public class Bundler extends PropertyLoader {
             
             try {
                 
-                // Validate the incoming request to ensure all aspects
+                // Validate the incoming request to ensure all aspects of the
+            	// request are consistent.
                 if (getValidationService() != null) { 
+                	
                     List<ValidFile> validatedFiles = getValidationService().validate(request);
                     
                 
@@ -432,6 +434,7 @@ public class Bundler extends PropertyLoader {
                         }
                         
                         if (job != null) {
+                        	
                             if (getJobRunnerService() != null) {
                                 getJobRunnerService().run(job);
                             }

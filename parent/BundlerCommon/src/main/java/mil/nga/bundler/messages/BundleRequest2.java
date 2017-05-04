@@ -9,6 +9,11 @@ import javax.xml.bind.annotation.XmlElement;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+
+import mil.nga.bundler.interfaces.BundlerConstantsI;
+import mil.nga.bundler.types.ArchiveType;
 
 /**
  * Simple POJO used to hold the contents of a client-initiated bundle
@@ -33,6 +38,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @XmlRootElement
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDeserialize(builder = BundleRequest2.BundleRequestBuilder.class)
 public class BundleRequest2 implements Serializable {
 
     /**
@@ -40,25 +46,12 @@ public class BundleRequest2 implements Serializable {
      */
     private static final long serialVersionUID = 5588539869510887583L;
 
-    /**
-     * The type of archive to produce.
-     */
-    private String type;
-    
-    /**
-     * Maximum size of the output archives
-     */
-    private int maxSize = 400;
-    
-    /**
-     * The name to use for the output archive files
-     */
-    private String filename = null;
-    
-    /**
-     * If true, redirect the client to the status page
-     */
-    private boolean redirect = false;
+    // Internal members
+    private final boolean     redirect;
+    private final int         maxSize;
+    private final String      outputFilename;
+    private final String      userName;
+    private final ArchiveType type;
     
     /**
      * Annotated list of files that will be processed by the bundler.
@@ -70,12 +63,20 @@ public class BundleRequest2 implements Serializable {
      * is not set in the input bundle request, an attempt will be made to 
      * extract it from the input request headers.
      */
-    private String userName = null;
+
             
     /**
-     * No argument constructor required by JAX-B
+     * Private constructor forcing the builder design pattern.  
+     * @param The builder object. 
      */
-    public BundleRequest2() {}
+    private BundleRequest2(BundleRequestBuilder builder) {
+    	redirect       = builder.redirect;
+    	maxSize        = builder.maxSize;
+    	outputFilename = builder.outputFilename;
+    	userName       = builder.userName;
+    	type           = builder.type;
+    	files          = builder.files;
+    }
     
     /**
      * Method used to add files to the target internal list of files.
@@ -85,7 +86,25 @@ public class BundleRequest2 implements Serializable {
         if (files == null) {
             files = new ArrayList<FileRequest>();
         }
-        files.add(new FileRequest(file, path));
+        files.add(new FileRequest.FileRequestBuilder()
+        		.file(file)
+        		.archivePath(path)
+        		.build());
+    }
+    
+    /**
+     * Method used to add a new <code>FileRequest</code> object to the 
+     * internal list of files requested by the user.
+     * 
+     * @param value The <code>FileRequest</code> object to add.
+     */
+    public void add(FileRequest value) {
+    	if (files == null) {
+            files = new ArrayList<FileRequest>();
+        }
+    	if (value != null) {
+    		files.add(value);
+    	}
     }
     
     /**
@@ -96,8 +115,8 @@ public class BundleRequest2 implements Serializable {
      */
     @XmlElement(name="archive_file")
     @JsonProperty(value="archive_file")
-    public String getFilename() {
-        return filename;
+    public String getOutputFilename() {
+        return outputFilename;
     }
     
     /**
@@ -139,7 +158,7 @@ public class BundleRequest2 implements Serializable {
      */
     @XmlElement(name="type")
     @JsonProperty(value="type")
-    public String getType() {
+    public ArchiveType getType() {
         return type;
     }
     
@@ -154,17 +173,6 @@ public class BundleRequest2 implements Serializable {
     }
     
     /**
-     * Setter method for the name of the output archive filename.  This is 
-     * an optional parameter.  If it is not supplied, a default filename will
-     * be calculated.
-     * 
-     * @param value The suggested name for the output archive files.
-     */
-    public void setFilename(String value) {
-        filename = value;
-    }
-    
-    /**
      * Setter allowing classes to reset the file list.  This was added to 
      * support the need for removing duplicate entries from the in out list.
      * 
@@ -172,53 +180,6 @@ public class BundleRequest2 implements Serializable {
      */
     public void setFiles(List<FileRequest> value) {
         files = value;
-    }
-    
-    /**
-     * Setter method for the maximum size of output archive files.  We're not 
-     * allowing a max size greater than 1G.
-     * @param value The maximum size (in MBytes) of output archive files.
-     */
-    public void setMaxSize(int value) {
-        if ((value < 1) || (value > 1000)) {
-            maxSize = 400;
-        }
-        else {
-            maxSize = value;
-        }
-    }
-    
-    /**
-     * Setter method determining whether the client should be redirected
-     * after job initiation.
-     * 
-     * @param value If true the user will be redirected to the status page.
-     * If false, it is assumed that the client will handle status tracking.
-     */
-    public void setRedirect(boolean value) {
-        redirect = value;
-    }
-    
-    /**
-     * Setter method for the type of output archive file to create.  If this
-     * parameter is not supplied, it the bundler will create an output zip file.
-     * @return The type of output archive file to create.
-     */
-    public void setType(String value) {
-        if ((value == null) || (value.equalsIgnoreCase(""))) {
-            type = "zip";
-        }
-        else {
-            type = value;
-        }
-    }
-    
-    /**
-     * Setter method for the name of the client submitting the bundle request.
-     * @param value The user name of the client submitting the bundle request.
-     */
-    public void setUserName(String value) {
-        userName = value;
     }
     
     /**
@@ -247,15 +208,13 @@ public class BundleRequest2 implements Serializable {
         sb.append(redirect);
         sb.append(newLine);
         sb.append("Output Filename : ");
-        sb.append(filename);
+        sb.append(outputFilename);
         sb.append(newLine);
         sb.append("Files            : ");
-        sb.append("----------------------------------------");
-        sb.append("----------------------------------------");
         sb.append(newLine);
         if ((files != null) && (files.size() > 0)) {
             for (FileRequest file : files) {
-                sb.append("File            : ");
+                sb.append("    ");
                 sb.append(file);
                 sb.append(newLine);
             }
@@ -264,6 +223,127 @@ public class BundleRequest2 implements Serializable {
         sb.append("----------------------------------------");
         sb.append(newLine);
         return sb.toString();
+    }
+    
+    /**
+     * Internal static class implementing the Builder creation pattern for 
+     * new QueryRequestAccelerator objects.  
+     * 
+     * @author L. Craig Carpenter
+     */
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class BundleRequestBuilder implements BundlerConstantsI {
+    
+    	// Private internal members
+    	private int               maxSize        = -1;
+        private boolean           redirect       = false;
+    	private String            outputFilename = null;
+    	private String            userName       = null;
+        private ArchiveType       type           = ArchiveType.ZIP;
+        private List<FileRequest> files    = new ArrayList<FileRequest>();
+        
+        
+        public BundleRequest2 build() throws IllegalStateException {
+        	validateBundleRequestObject();
+        	return new BundleRequest2(this);
+        }
+        
+        /**
+         * Setter method for the maximum size of output archive files.
+         * 
+         * @param value The maximum size (in MBytes) of output archive files.
+         * @return Handle to the builder object.
+         */
+        @JsonProperty(value="max_size")
+        public BundleRequestBuilder maxSize(int value) {
+        	maxSize = value;
+        	return this;
+        }
+        
+        /**
+         * Setter method for the boolean determining whether the client 
+         * should be redirected after job initiation.
+         * 
+         * @param value If true the user will be redirected to the internal 
+         * status page.  If false, it is assumed that the client will handle 
+         * status tracking.
+         */
+        @JsonProperty(value="redirect")
+        public BundleRequestBuilder redirect(boolean value) {
+            redirect = value;
+            return this;
+        }
+        
+        /**
+         * Setter method for the type of output archive files to create.
+         * 
+         * @param value The type of output archives to create.
+         * @return Handle to the builder object.
+         */
+        @JsonProperty(value="type")
+        public BundleRequestBuilder type(ArchiveType value) {
+        	type = value;
+        	return this;
+        }
+        
+        /**
+         * Setter method for the name of the output archive file to create.
+         * 
+         * @param value The name of the output archive file to create.
+         */
+        @JsonProperty(value="archive_file")
+        public BundleRequestBuilder outputFilename(String value) {
+            outputFilename = value;
+            return this;
+        }
+        
+        /**
+         * Setter method for the name of the client submitting the bundle request.
+         * 
+         * @param value The user name of the client submitting the bundle request.
+         */
+        @JsonProperty(value="user_name")
+        public BundleRequestBuilder userName(String value) {
+            userName = value;
+            return this;
+        }
+        
+        /**
+         * List of files to bundle
+         * 
+         * @param value The lit of files to bundle.
+         */
+        @JsonProperty(value="files")
+        public BundleRequestBuilder files(List<FileRequest> values) {
+        	files = values;
+        	return this;
+        }
+        
+        /**
+         * Validate internal member variables.  This should be called prior to
+         * the actual construction of the parent object.
+         * 
+         * @param object The <code>BundleRequest</code> object to validate.
+         * @throws IllegalStateException Thrown if any of the required fields 
+         * are not populated.
+         */
+        private void validateBundleRequestObject() throws IllegalStateException {
+        	
+        	if ((maxSize <= MIN_ARCHIVE_SIZE) || (maxSize > MAX_ARCHIVE_SIZE)) {
+        		maxSize = DEFAULT_MAX_ARCHIVE_SIZE;
+        	}
+        	
+        	if ((userName == null) || (userName.isEmpty())) {
+        		userName = DEFAULT_USERNAME;
+        	}
+        	
+        	if ((outputFilename == null) || (outputFilename.isEmpty())) {
+        		// TODO:  This is probably the wrong setting - find the correct one later.
+        		outputFilename = DEFAULT_FILENAME_PREFIX;
+        	}
+        	
+        }
+    	
     }
 }
 
