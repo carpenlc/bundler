@@ -57,13 +57,6 @@ public class BundleRequest2 implements Serializable {
      * Annotated list of files that will be processed by the bundler.
      */
     private List<FileRequest> files = new ArrayList<FileRequest>();
-    
-    /**
-     * The user name of the client submitting the bundle request.  If it 
-     * is not set in the input bundle request, an attempt will be made to 
-     * extract it from the input request headers.
-     */
-
             
     /**
      * Private constructor forcing the builder design pattern.  
