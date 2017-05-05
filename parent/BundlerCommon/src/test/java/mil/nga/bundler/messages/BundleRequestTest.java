@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
  * 
  * @author L. Craig Carpenter
  */
-public class BundleRequest2Test {
+public class BundleRequestTest {
 
 	public static final String TEST_OUTPUT_FILENAME = "file_archive";
 	public static final String TEST_USERNAME        = "Bob Marley";
@@ -24,7 +24,7 @@ public class BundleRequest2Test {
 	public void testCreation() {
 		
 		System.out.println("[TEST] Testing building objects of type class mil.nga.bundler.BundleRequest...");
-		BundleRequest2 request = new BundleRequest2.BundleRequestBuilder()
+		BundleRequest request = new BundleRequest.BundleRequestBuilder()
 									.maxSize(123)
 									.type(ArchiveType.TAR)
 									.redirect(true)
@@ -53,7 +53,7 @@ public class BundleRequest2Test {
 		assertEquals(request.getType().getText(), ArchiveType.TAR.getText());
 		
 		// Test creation with out-of-range values
-		BundleRequest2 request2 = new BundleRequest2.BundleRequestBuilder()
+		BundleRequest request2 = new BundleRequest.BundleRequestBuilder()
 				.maxSize(1200)
 				.redirect(true)
 				.build();
@@ -69,7 +69,7 @@ public class BundleRequest2Test {
 	@Test
 	public void testSerialization() {
 		System.out.println("[TEST] Testing serialization of class mil.nga.bundler.BundleRequest...");
-		BundleRequest2 request = new BundleRequest2.BundleRequestBuilder()
+		BundleRequest request = new BundleRequest.BundleRequestBuilder()
 									.maxSize(123)
 									.type(ArchiveType.TAR)
 									.redirect(true)
@@ -100,7 +100,7 @@ public class BundleRequest2Test {
 		String json = BundlerMessageSerializer.getInstance().serialize(request);
 		assertNotNull(json);
 		
-		BundleRequest2 request2 = new BundleRequest2.BundleRequestBuilder()
+		BundleRequest request2 = new BundleRequest.BundleRequestBuilder()
 				.maxSize(1200)
 				.redirect(true)
 				.build();
@@ -137,7 +137,7 @@ public class BundleRequest2Test {
 		sb.append("\"/arbitrary/path/in/archive/file2.txt\"},");
 		sb.append("{\"file\":\"/some/long/path/to/file2.txt\"}]}");
 
-		BundleRequest2 request = BundlerMessageSerializer.getInstance()
+		BundleRequest request = BundlerMessageSerializer.getInstance()
 									.deserializeToBundleRequest(sb.toString());
 		
 		assertEquals(request.getMaxSize(), 123);
