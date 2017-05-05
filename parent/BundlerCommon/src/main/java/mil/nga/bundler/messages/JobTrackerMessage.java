@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import mil.nga.bundler.interfaces.BundlerConstantsI;
 import mil.nga.bundler.interfaces.JobTrackerI;
 import mil.nga.bundler.model.Archive;
 import mil.nga.bundler.types.JobStateType;
@@ -13,6 +14,7 @@ import mil.nga.bundler.types.JobStateType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
  * JPA entity following the Java bean pattern that holds information on the
@@ -454,4 +456,15 @@ public class JobTrackerMessage
         return sb.toString();
     }
    
+    /**
+     * Internal static class implementing the Builder creation pattern for 
+     * new JobTrackerMessageBuilder objects.  
+     * 
+     * @author L. Craig Carpenter
+     */
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class JobTrackerMessageBuilder implements BundlerConstantsI {
+        
+        
+    }
 }

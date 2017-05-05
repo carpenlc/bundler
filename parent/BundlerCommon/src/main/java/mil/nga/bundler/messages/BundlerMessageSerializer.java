@@ -113,9 +113,9 @@ public class BundlerMessageSerializer {
      * @return A <code>mil.nga.bundler.message.BundleRequest2</code> object. 
      * Null if any exceptions were encountered while deserializing the String.
      */
-    public BundleRequest2 deserializeToBundleRequest(String json) {
+    public BundleRequest deserializeToBundleRequest(String json) {
         
-    	BundleRequest2 deserialized = null;
+    	BundleRequest deserialized = null;
         
         try {
             if (json != null) {
@@ -124,7 +124,7 @@ public class BundlerMessageSerializer {
                 mapper.setDateFormat(dateFormatter);
                 deserialized = mapper.readValue(
                         json, 
-                        BundleRequest2.class);
+                        BundleRequest.class);
                 
             }
         }
