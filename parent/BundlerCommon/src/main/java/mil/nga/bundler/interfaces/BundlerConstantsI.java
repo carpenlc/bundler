@@ -90,6 +90,11 @@ public interface BundlerConstantsI {
     public static final int MIN_ARCHIVE_SIZE = 20;
     
     /**
+     * The maximum number of archives allowed for a single job.
+     */
+    public static final long MAX_NUM_ARCHIVES = 150;
+    
+    /**
      * The name of the properties file to load.
      */
     public static final String PROPERTY_FILE_NAME = "/mnt/eng2/gateway/bundler/bundler.properties";
