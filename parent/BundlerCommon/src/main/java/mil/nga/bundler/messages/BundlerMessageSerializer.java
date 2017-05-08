@@ -53,59 +53,6 @@ public class BundlerMessageSerializer {
     }    
     
     /**
-     * Method used to deserialize a JSON array into an object or type 
-     * <code>mil.nga.rod.model.QueryRequestAccelerator</code>
-     * 
-     * @param json The String in JSON format.
-     * @return A <code>mil.nga.rod.model.QueryRequestAccelerator</code> object. 
-     * Null if any exceptions were encountered while deserializing the String.
-     */
-    
-    /*
-    public QueryRequestAccelerator deserializeToQueryRequestAccelerator(String json) {
-        
-        QueryRequestAccelerator deserialized = null;
-        
-        try {
-            if (json != null) {
-                
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.setDateFormat(dateFormatter);
-                deserialized = mapper.readValue(
-                        json, 
-                        QueryRequestAccelerator.class);
-                
-            }
-        }
-        catch (JsonMappingException jme) {
-            LOGGER.error("Unexpected JsonMappingException encountered "
-                    + "while attempting to deserialize the input "
-                    + "JSON to a List of String objects.  Exception "
-                    + "message [ "
-                    + jme.getMessage()
-                    + " ].");
-        }
-        catch (JsonParseException jpe) {
-            LOGGER.error("Unexpected JsonParseException encountered "
-                    + "while attempting to deserialize the input "
-                    + "JSON into a List of String objects.  Exception "
-                    + "message [ "
-                    + jpe.getMessage()
-                    + " ].");
-        }
-        catch (IOException ioe) {
-            LOGGER.error("Unexpected IOException encountered "
-                    + "while attempting to deserialize the input "
-                    + "JSON into a List of String objects.  Exception "
-                    + "message [ "
-                    + ioe.getMessage()
-                    + " ].");
-        }
-        return deserialized;
-    }
-    */
-    
-    /**
      * Method used to deserialize a JSON String into an object of type 
      * <code>mil.nga.bundler.message.BundleRequest2</code>
      * 
@@ -113,9 +60,9 @@ public class BundlerMessageSerializer {
      * @return A <code>mil.nga.bundler.message.BundleRequest2</code> object. 
      * Null if any exceptions were encountered while deserializing the String.
      */
-    public BundleRequest deserializeToBundleRequest(String json) {
+    public BundleRequestMessage deserializeToBundleRequest(String json) {
         
-    	BundleRequest deserialized = null;
+    	BundleRequestMessage deserialized = null;
         
         try {
             if (json != null) {
@@ -124,7 +71,7 @@ public class BundlerMessageSerializer {
                 mapper.setDateFormat(dateFormatter);
                 deserialized = mapper.readValue(
                         json, 
-                        BundleRequest.class);
+                        BundleRequestMessage.class);
                 
             }
         }
