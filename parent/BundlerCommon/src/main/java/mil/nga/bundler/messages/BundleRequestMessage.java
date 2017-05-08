@@ -38,8 +38,8 @@ import mil.nga.bundler.types.ArchiveType;
  */
 @XmlRootElement
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonDeserialize(builder = BundleRequest.BundleRequestBuilder.class)
-public class BundleRequest implements Serializable {
+@JsonDeserialize(builder = BundleRequestMessage.BundleRequestBuilder.class)
+public class BundleRequestMessage implements Serializable {
 
     /**
      * Eclipse-generated serialVersionUID
@@ -62,7 +62,7 @@ public class BundleRequest implements Serializable {
      * Private constructor forcing the builder design pattern.  
      * @param The builder object. 
      */
-    private BundleRequest(BundleRequestBuilder builder) {
+    private BundleRequestMessage(BundleRequestBuilder builder) {
     	redirect       = builder.redirect;
     	maxSize        = builder.maxSize;
     	outputFilename = builder.outputFilename;
@@ -236,9 +236,9 @@ public class BundleRequest implements Serializable {
         private List<FileRequest> files    = new ArrayList<FileRequest>();
         
         
-        public BundleRequest build() throws IllegalStateException {
+        public BundleRequestMessage build() throws IllegalStateException {
         	validateBundleRequestObject();
-        	return new BundleRequest(this);
+        	return new BundleRequestMessage(this);
         }
         
         /**
