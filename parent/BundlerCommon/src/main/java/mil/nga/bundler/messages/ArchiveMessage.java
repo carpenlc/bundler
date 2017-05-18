@@ -122,7 +122,7 @@ public class ArchiveMessage implements Serializable {
                     (message.getJobId().isEmpty())) {
                 throw new IllegalStateException("Job ID not populated.");
             }
-            if ((message.getArchiveId() < 1) ||  
+            if ((message.getArchiveId() < 0) ||  
                     (message.getArchiveId() > MAX_NUM_ARCHIVES)) {
                 throw new IllegalStateException("Invalid archive ID received [ "
                         + message.getArchiveId() 

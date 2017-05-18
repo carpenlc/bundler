@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mil.nga.bundler.BundleRequest;
+import mil.nga.bundler.JobFactory;
 import mil.nga.bundler.ejb.EJBClientUtilities;
 import mil.nga.bundler.ejb.JobFactoryService;
 import mil.nga.bundler.ejb.JobRunnerService;
@@ -33,6 +34,8 @@ import mil.nga.bundler.ejb.JobTrackerService;
 import mil.nga.bundler.ejb.RequestArchiveService;
 import mil.nga.bundler.ejb.ValidationService;
 import mil.nga.bundler.exceptions.InvalidRequestException;
+import mil.nga.bundler.exceptions.ServiceUnavailableException;
+import mil.nga.bundler.messages.BundleRequestMessage;
 import mil.nga.bundler.messages.JobTrackerMessage;
 import mil.nga.bundler.model.Job;
 import mil.nga.bundler.model.ValidFile;
@@ -75,7 +78,7 @@ public class Bundler extends PropertyLoader {
      * web tier.  When deployed to JBoss EAP 6.x this internal member 
      * variable will always be null.
      */
-    @EJB(lookup="java:global/BundlerEAR/BundlerEJB/JobFactoryService!mil.nga.bundler.ejb.JobFactoryService")
+    @EJB
     private JobFactoryService jobFactoryService;
     
     /**
@@ -86,7 +89,7 @@ public class Bundler extends PropertyLoader {
      * web tier.  When deployed to JBoss EAP 6.x this internal member 
      * variable will always be null.
      */
-    @EJB(lookup="java:global/BundlerEAR/BundlerEJB/JobRunnerService!mil.nga.bundler.ejb.JobRunnerService")
+    @EJB
     private JobRunnerService jobRunnerService;
     
     /**
@@ -97,7 +100,7 @@ public class Bundler extends PropertyLoader {
      * web tier.  When deployed to JBoss EAP 6.x this internal member 
      * variable will always be null.
      */
-    @EJB(lookup="java:global/BundlerEAR/BundlerEJB/JobTrackerService!mil.nga.bundler.ejb.JobTrackerService")
+    @EJB
     private JobTrackerService jobTrackerService;
     
     /**
@@ -108,7 +111,7 @@ public class Bundler extends PropertyLoader {
      * web tier.  When deployed to JBoss EAP 6.x this internal member 
      * variable will always be null.
      */
-    @EJB(lookup="java:global/BundlerEAR/BundlerEJB/RequestArchiveService!mil.nga.bundler.ejb.RequestArchiveService")
+    @EJB
     private RequestArchiveService requestArchiveService;
     
     /**
@@ -118,14 +121,13 @@ public class Bundler extends PropertyLoader {
      * web tier.  When deployed to JBoss EAP 6.x this internal member 
      * variable will always be null.
      */
-    @EJB(lookup="java:global/BundlerEAR/BundlerEJB/JobFactoryServiceBean!mil.nga.bundler.ejb.ValidationService")
+    @EJB
     private ValidationService validationService;
     
     /**
      * Default constructor initializes the System configuration
      */
     public Bundler() { }
-    
     
     /**
      * Construct a URI for use in redirecting clients to the bundler status 
@@ -174,20 +176,18 @@ public class Bundler extends PropertyLoader {
      * @return The JobFactoryService EJB.
      * @throws NamingException Thrown if there is an error accessing the 
      * JNDI.
+     * @throws ServiceUnavailableException Thrown if the application was
+     * unable to look up the target service.
      */
     private JobFactoryService getJobFactoryService() 
-            throws NamingException {
-        
-        String method = "getJobFactoryService() - ";
-        
+            throws NamingException, ServiceUnavailableException {
         if (this.jobFactoryService == null) {
             this.jobFactoryService = 
                     EJBClientUtilities.getInstance().getJobFactoryService();
-        }
-        else {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(method 
-                        + "JobFactoryService already populated.");
+            if (this.jobFactoryService == null) {
+                throw new ServiceUnavailableException("Unable to look up [ "
+                        + JobFactoryService.class.getCanonicalName()
+                        + " ].");
             }
         }
         return this.jobFactoryService;
@@ -202,20 +202,18 @@ public class Bundler extends PropertyLoader {
      * @return The JobFactoryService EJB.
      * @throws NamingException Thrown if there is an error accessing the 
      * JNDI.
+     * @throws ServiceUnavailableException Thrown if the application was
+     * unable to look up the target service.
      */
     private JobRunnerService getJobRunnerService() 
-            throws NamingException {
-        
-        String method = "getJobRunnerService() - ";
-        
+            throws NamingException, ServiceUnavailableException {
         if (this.jobRunnerService == null) {
             this.jobRunnerService = 
                     EJBClientUtilities.getInstance().getJobRunnerService();
-        }
-        else {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(method 
-                        + "JobFactoryService already populated by the container.");
+            if (this.jobRunnerService == null) {
+                throw new ServiceUnavailableException("Unable to look up [ "
+                        + JobRunnerService.class.getCanonicalName()
+                        + " ].");
             }
         }
         return this.jobRunnerService;
@@ -230,20 +228,18 @@ public class Bundler extends PropertyLoader {
      * @return The JobFactoryService EJB.
      * @throws NamingException Thrown if there is an error accessing the 
      * JNDI.
+     * @throws ServiceUnavailableException Thrown if the application was
+     * unable to look up the target service.
      */
     private JobTrackerService getJobTrackerService() 
-            throws NamingException {
-        
-        String method = "getJobTrackerService() - ";
-        
+            throws NamingException, ServiceUnavailableException {
         if (this.jobTrackerService == null) {
             this.jobTrackerService = 
                     EJBClientUtilities.getInstance().getJobTrackerService();
-        }
-        else {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(method 
-                        + "JobTrackerService already populated by the container.");
+            if (this.jobTrackerService == null) {
+                throw new ServiceUnavailableException("Unable to look up [ "
+                        + JobTrackerService.class.getCanonicalName()
+                        + " ].");
             }
         }
         return this.jobTrackerService;
@@ -258,19 +254,19 @@ public class Bundler extends PropertyLoader {
      * @return The RequestArchiveService EJB.
      * @throws NamingException Thrown if there is an error accessing the 
      * JNDI.
+     * @throws ServiceUnavailableException Thrown if the application was
+     * unable to look up the target service.
      */
     private RequestArchiveService getRequestArchiveService() 
-            throws NamingException {
-        
-        String method = "getRequestArchiveService() - ";
-        
+            throws NamingException, ServiceUnavailableException {      
         if (this.requestArchiveService == null) {
-            this.requestArchiveService = 
-                    EJBClientUtilities.getInstance().getRequestArchiveService();
-        }
-        else {
-            LOGGER.info(method 
-                    + "RequestArchiveService populated.");
+            this.requestArchiveService = EJBClientUtilities.getInstance()
+                        .getRequestArchiveService();
+            if (this.requestArchiveService == null) {
+                throw new ServiceUnavailableException("Unable to look up [ "
+                        + RequestArchiveService.class.getCanonicalName()
+                        + " ].");
+            }
         }
         return this.requestArchiveService;
     }
@@ -330,7 +326,7 @@ public class Bundler extends PropertyLoader {
                     + "HTTP request headers are not available.");
         }
         if ((user == null) || (user.isEmpty())) {
-            user = "not available";
+            user = "unavailable";
         }
         return user;
     }
@@ -407,68 +403,16 @@ public class Bundler extends PropertyLoader {
             
             try {
                 
-                // Validate the incoming request to ensure all aspects of the
-            	// request are consistent.
-                if (getValidationService() != null) { 
-                	
-                    List<ValidFile> validatedFiles = getValidationService().validate(request);
+                Job job = (new JobFactory()).createJob(request);
                     
-                
-                    if (getJobFactoryService() != null) {
-                        
-                        Job job = getJobFactoryService().createJob(
-                                    request,
-                                    validatedFiles);
-                    
-                        // If enabled, save a copy of the client-supplied bundle 
-                        // request. 
-                        if (getRequestArchiveService() != null) {
-                            getRequestArchiveService().archiveRequest(
-                                    request, 
-                                    job.getJobID());
-                        }
-                        else {
-                            LOGGER.warn("Unable to obtain a reference to the "
-                                    + "RequestArchiveService EJB.  Incoming "
-                                    + "request object will not be archived.");
-                        }
-                        
-                        if (job != null) {
+                getRequestArchiveService().archiveRequest(
+                        request, 
+                        job.getJobID());
                         	
-                            if (getJobRunnerService() != null) {
-                                getJobRunnerService().run(job);
-                            }
-                            else {
-                                LOGGER.error("Unable to obtain a reference to the "
-                                        + "JobRunnerService EJB.  Unable to start " 
-                                        + "the job.");
-                            }
-                            
-                            // Get the current state of the job to return to the
-                            // client.
-                            if (getJobTrackerService() != null) {
-                                message = getJobTrackerService()
-                                            .getJobTracker(job.getJobID());
-                            }
-                            else {
-                                LOGGER.error("Unable to obtain a reference to the "
-                                        + "JobTrackerService EJB.  Returned state associated "
-                                        + "with job ID [ "
-                                        + job.getJobID()
-                                        + " ] will be null.");
-                            }
-                        }
-                        
-                        if (LOGGER.isDebugEnabled()) {
-                            LOGGER.debug("Successfully created job [ " 
-                                    + job.toString()
-                                    + " ].");
-                            LOGGER.debug("Job status returned to the client [ "
-                                    + message.toString()
-                                    + " ].");
-                        }
-                    }
-                }
+                getJobRunnerService().run(job);
+
+                message = getJobTrackerService().getJobTracker(job.getJobID());
+    
             }
             catch (InvalidRequestException ire) {
                 LOGGER.error(method
@@ -484,7 +428,14 @@ public class Bundler extends PropertyLoader {
                         + ire.getMessageText()
                         + "].");
             }
-             catch (NamingException ne) {
+            catch (ServiceUnavailableException sue) {
+                LOGGER.error(method 
+                        + "Unable to look up target service.  Error message [ "
+                        + sue.getMessage()
+                        + " ].");
+                return Response.serverError().build();
+            }
+            catch (NamingException ne) {
                 LOGGER.error(method 
                         + "An unexpected JNDI NamingException encountered "
                         + "while looking up EJBs.  Error message [ "
@@ -509,7 +460,104 @@ public class Bundler extends PropertyLoader {
             return Response.serverError().build();
         }
     }
+    
+    
+    /**
+     * 
+     * @param request
+     * @return
+     */
+    @POST
+    @Path("/BundleFiles")
+    //@Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response bundle(
+            @Context HttpHeaders headers,
+            BundleRequestMessage request) {
+        
+        String              method      = "bundle() - ";
+        JobTrackerMessage message     = null;
+        
+        // Make sure the input request was parsed.
+        if (request != null) {
             
+            // If the client user name was not set in the request, attempt to 
+            // extract it from the input request headers.
+            if ((request.getUserName() == null) || 
+                    (request.getUserName().isEmpty())) {
+                request.setUserName(getUser(headers));
+            }
+            
+            LOGGER.info(method 
+                    + "Incoming request parsed [ "
+                    + request.toString()
+                    + " ].");
+            
+            try {
+                
+                // Create a Job object from the input request.
+                Job job = (new JobFactory()).createJob(request);
+                
+                // If enabled, save a copy of the client-supplied bundle 
+                // request. 
+                getRequestArchiveService().archiveRequest(
+                        request, 
+                        job.getJobID());
+                    
+                // Start the job
+                getJobRunnerService().run(job);
+
+                // Generate the return message
+                message = getJobTrackerService()
+                                .getJobTracker(job.getJobID());
+   
+            }
+            catch (InvalidRequestException ire) {
+                LOGGER.error("Request validation failed with error code [ "
+                        + ire.getErrorCode()
+                        + " ], description [ "
+                        + ire.getMessageText()
+                        + "].");
+                throw new WebArchiveException("Request validation failed with "
+                        + "error code [ "
+                        + ire.getErrorCode()
+                        + " ], description [ "
+                        + ire.getMessageText()
+                        + "].");
+            }
+            catch (ServiceUnavailableException sue) {
+                LOGGER.error("Unable to look up target service.  Error message [ "
+                        + sue.getMessage()
+                        + " ].");
+                return Response.serverError().build();
+            }
+            catch (NamingException ne) {
+                LOGGER.error("An unexpected JNDI NamingException encountered "
+                        + "while looking up EJBs.  Error message [ "
+                        + ne.getMessage()
+                        + " ].");
+                return Response.serverError().build();
+            }
+        }
+        else {
+            LOGGER.error(method 
+                    + "Invalid request received.  Input request object is "
+                    + "null.");
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+        
+        // Return the state of the job to the caller.
+        if (message != null) {
+            return Response.ok(message, MediaType.APPLICATION_JSON).build();
+        }
+        else {
+            LOGGER.error("Unable to create the JobTrackerMessage!");
+            return Response.serverError().build();
+        }
+    }
+    
+    
     /**
      * Provide status information on the bundle operations associated with the
      * input job id.
@@ -532,16 +580,13 @@ public class Bundler extends PropertyLoader {
                         + " ].");
             }
             try {
-                if (getJobTrackerService() != null) {
-                    status = getJobTrackerService().getJobTracker(jobID);
-                }
-                else {
-                    LOGGER.error("Unable to obtain a reference to the "
-                            + "JobTrackerService EJB.  Returned state associated "
-                            + "with job ID [ "
-                            + jobID
-                            + " ] will be null.");
-                }
+                status = getJobTrackerService().getJobTracker(jobID);
+            }
+            catch (ServiceUnavailableException sue) {
+                String msg = "Unable to look up target service.  Error message [ "
+                        + sue.getMessage()
+                        + " ].";
+                throw new WebArchiveException(msg);
             }
             catch (NamingException ne) {
                 String msg = "An unexpected JNDI NamingException encountered "

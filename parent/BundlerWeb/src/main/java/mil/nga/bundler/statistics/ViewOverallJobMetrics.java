@@ -38,7 +38,7 @@ public class ViewOverallJobMetrics
      * web tier.  When deployed to JBoss EAP 6.x this internal member 
      * variable will always be null.
      */
-    @EJB(lookup="java:global/BundlerEAR/BundlerEJB/MetricsService!mil.nga.bundler.ejb.MetricsService")
+    @EJB
     MetricsService jobMetrics = null;
     
     /**

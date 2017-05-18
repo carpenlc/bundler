@@ -52,6 +52,7 @@ public class ViewJobTree extends BundlerEJBClient implements Serializable {
                 archive.getChildren().add(new DefaultTreeNode("Num Files : " + current.getNumFiles()));
                 archive.getChildren().add(new DefaultTreeNode("Size : " + current.getSizeHR()));
                 archive.getChildren().add(new DefaultTreeNode("State : " + current.getArchiveState()));
+                archive.getChildren().add(new DefaultTreeNode("Host : " + current.getHostName()));
             }
         }
         

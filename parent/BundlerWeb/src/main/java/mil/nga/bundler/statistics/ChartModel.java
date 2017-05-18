@@ -40,7 +40,7 @@ public class ChartModel implements BundlerConstantsI {
      * web tier.  When deployed to JBoss EAP 6.x this internal member 
      * variable will always be null.
      */
-    @EJB(lookup="java:global/BundlerEAR/BundlerEJB/JobService!mil.nga.bundler.ejb.JobService")
+    @EJB
     protected JobService jobService;
     
     /**

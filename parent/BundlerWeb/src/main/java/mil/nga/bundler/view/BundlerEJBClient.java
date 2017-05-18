@@ -30,7 +30,7 @@ public class BundlerEJBClient {
      * web tier.  When deployed to JBoss EAP 6.x this internal member 
      * variable will always be null.
      */
-    @EJB(lookup="java:global/BundlerEAR/BundlerEJB/JDBCJobService!mil.nga.bundler.ejb.jdbc.JDBCJobService")
+    @EJB
     protected JDBCJobService jdbcJobService;
 
     /**
