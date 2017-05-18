@@ -17,7 +17,7 @@
         </dependencies>
     </deployment>
     
-    <sub-deployment name="UPGDownloadEJB.jar">
+    <sub-deployment name="BundlerEJB.jar">
         <exclusions>
             <module name="org.jboss.resteasy.resteasy-jackson-provider" />
             <module name="org.apache.commons.logging" /> 
@@ -32,7 +32,7 @@
             <module name="org.jboss.resteasy.resteasy-jackson2-provider" services="import" />
         </dependencies>
     </sub-deployment>
-    <sub-deployment name="UPGDownloadWeb.war">
+    <sub-deployment name="BundlerWeb.war">
         <exclusions>
             <module name="org.jboss.resteasy.resteasy-jackson-provider" />
             <module name="org.apache.commons.logging" /> 

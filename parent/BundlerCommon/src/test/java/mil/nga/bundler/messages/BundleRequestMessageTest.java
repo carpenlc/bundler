@@ -59,7 +59,7 @@ public class BundleRequestMessageTest {
 				.build();
 		assertEquals(request2.getMaxSize(), BundlerConstantsI.DEFAULT_MAX_ARCHIVE_SIZE);
 		assertEquals(request2.getRedirect(), true);
-		assertEquals(request2.getOutputFilename(), BundlerConstantsI.DEFAULT_FILENAME_PREFIX);
+		assertEquals(request2.getOutputFilename(), "nga_data_archive");
 		assertEquals(request2.getUserName(), BundlerConstantsI.DEFAULT_USERNAME);
 		assertEquals(request2.getType().getText(), ArchiveType.ZIP.getText());
 		
@@ -124,10 +124,33 @@ public class BundleRequestMessageTest {
 	
 	@Test
 	public void testDeSerialization() {
-		System.out.println("[TEST] Testing de-serialization of class mil.nga.bundler.BundleRequest...");
+	    System.out.println("[TEST] Testing de-serialization of class mil.nga.bundler.BundleRequest...");
+	    
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"redirect\":true,\"max_size\":123,");
+        sb.append("\"archive_file\":\"file_archive\",\"user_name\":\"Bob Marley\",");
+        sb.append("\"type\":\"TAR\",\"files\":[");
+        sb.append("{\"file\":\"/some/long/path/to/file.txt\",\"archive_path\":");
+        sb.append("\"/arbitrary/path/in/archive/file.txt\"},");
+        sb.append("{\"file\":\"/some/long/path/to/file.txt\"},");
+        sb.append("{\"file\":\"/some/long/path/to/file2.txt\",\"archive_path\":");
+        sb.append("\"/arbitrary/path/in/archive/file2.txt\"},");
+        sb.append("{\"file\":\"/some/long/path/to/file2.txt\"}]}");
+	        
+        BundleRequestMessage request = BundlerMessageSerializer.getInstance()
+                .deserializeToBundleRequest(sb.toString());
+
+        assertEquals(request.getMaxSize(), 123);
+        assertEquals(request.getRedirect(), true);
+        assertEquals(request.getOutputFilename(), TEST_OUTPUT_FILENAME);
+        assertEquals(request.getUserName(), TEST_USERNAME);
+        assertEquals(request.getType().getText(), ArchiveType.TAR.getText());
+        assertEquals(request.getFiles().size(), 4);
+
+	    System.out.println("[TEST] Testing de-serialization of class mil.nga.bundler.BundleRequest (String version)...");
 		
-		StringBuilder sb = new StringBuilder();
-		sb.append("{\"redirect\":true,\"max_size\":123,");
+		sb = new StringBuilder();
+		sb.append("{\"redirect\":true,\"max_size\":\"123\",");
 		sb.append("\"archive_file\":\"file_archive\",\"user_name\":\"Bob Marley\",");
 		sb.append("\"type\":\"TAR\",\"files\":[");
 		sb.append("{\"file\":\"/some/long/path/to/file.txt\",\"archive_path\":");
@@ -137,7 +160,7 @@ public class BundleRequestMessageTest {
 		sb.append("\"/arbitrary/path/in/archive/file2.txt\"},");
 		sb.append("{\"file\":\"/some/long/path/to/file2.txt\"}]}");
 
-		BundleRequestMessage request = BundlerMessageSerializer.getInstance()
+		request = BundlerMessageSerializer.getInstance()
 									.deserializeToBundleRequest(sb.toString());
 		
 		assertEquals(request.getMaxSize(), 123);

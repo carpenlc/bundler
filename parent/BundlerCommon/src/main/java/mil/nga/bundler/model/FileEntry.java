@@ -5,6 +5,7 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
+import mil.nga.bundler.interfaces.BundlerConstantsI;
 import mil.nga.bundler.types.JobStateType;
 
 /**
@@ -38,13 +39,15 @@ public class FileEntry implements Serializable {
     
     /**
      * Foreign key linking all the way back to the job this FileEntry 
-     * is associated with.
+     * is associated with.  This member is not marked final as it will 
+     * change after construction. 
      */
     @Column(name="JOB_ID")
     private String jobID;
     
     /**
      * Foreign key linking the FileEntry table with the Archive table.
+     * This member is not marked final as it will change after construction.
      */
     @Column(name="ARCHIVE_ID")
     private long archiveID;
@@ -53,7 +56,8 @@ public class FileEntry implements Serializable {
      * This file is used in conjunction with external users who are 
      * looking for status on in-progress bundler jobs.  It will have 
      * a state of either 'NOT_STARTED' or 'COMPLETE'.  There are no 
-     * other intermediate states that will be tracked.
+     * other intermediate states that will be tracked.  This member 
+     * is not marked final as it will change after construction.
      */
     @Enumerated(EnumType.STRING)
     @Column(name="FILE_STATE")
@@ -93,6 +97,20 @@ public class FileEntry implements Serializable {
     public FileEntry(String path, long size) {
         super();
         setFilePath(path);
+        setSize(size);
+    }
+    
+    /**
+     * Alternate constructor allowing clients to supply params on construction.
+     * 
+     * @param path The full path to a file.
+     * @param path The archive entry path for a file.
+     * @param size The size of the target file.
+     */
+    public FileEntry(String path, String entryPath, long size) {
+        super();
+        setFilePath(path);
+        setEntryPath(entryPath);
         setSize(size);
     }
     
@@ -205,18 +223,18 @@ public class FileEntry implements Serializable {
     }
     
     /**
-     * Setter method for the entry path (i.e. the path within the output 
-     * archive file.)  This will be set by the PathFactory class.  If it 
-     * is not set, the file path will be returned.
-     * @param value The file entry path. 
+     * Setter method for the entry path to the target file.
+     * 
+     * @param value The archive entry path for a file.
      */
     public void setEntryPath(String value) {
         entryPath = value;
     }
     
     /**
-     * Setter method for the full file path
-     * @param path The full file path
+     * Setter method for the full path to the target file.
+     * 
+     * @param value The full path to a file.
      */
     public void setFilePath(String value) {
         path = value;
@@ -247,8 +265,8 @@ public class FileEntry implements Serializable {
     }
     
     /**
-     * Setter method for the uncompressed file size
-     * @param size The size of the file
+     * Getter method for the uncompressed size of the file.
+     * @param value The size of the target file.
      */
     public void setSize(long value) {
         size = value;
@@ -306,4 +324,6 @@ public class FileEntry implements Serializable {
         sb.append(newLine);
         return sb.toString();
     }
+    
+    
 }

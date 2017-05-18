@@ -79,9 +79,10 @@ public class JobRunnerService
                     + " ] to the JMS queue for processing.");
             
             super.notify(ARCHIVER_DEST_Q,
-                    new ArchiveMessage(
-                            archive.getJobID(), 
-                            archive.getArchiveID()));
+                    new ArchiveMessage.ArchiveMessageBuilder()
+                        .jobId(archive.getJobID())
+                        .archiveId(archive.getArchiveID())
+                        .build());
         }
         else {
             LOGGER.error("Client submitted a null archive.  The archive will "
@@ -117,9 +118,10 @@ public class JobRunnerService
             
             for (Archive archive : job.getArchives()) {
                 
-                ArchiveMessage archiveMsg = new ArchiveMessage(
-                        archive.getJobID(), 
-                        archive.getArchiveID());
+                ArchiveMessage archiveMsg = new ArchiveMessage.ArchiveMessageBuilder()
+                        .jobId(archive.getJobID())
+                        .archiveId(archive.getArchiveID())
+                        .build();
                 
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.info("Placing the following message on "

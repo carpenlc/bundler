@@ -51,9 +51,13 @@ import mil.nga.util.FileUtils;
                                 @ActivationConfigProperty(
                                                 propertyName = "destinationType",
                                                 propertyValue = "javax.jms.Queue"),
+                                // Another note to self, even though we moved the 
+                                // EJB definitions to ejb-jar.xml you still have to 
+                                // have the destination annotation or the project will
+                                // not deploy.
                                 @ActivationConfigProperty(
                                                 propertyName = "destination",
-                                                propertyValue = "queue/ArchiverMessageQ_TEST"),
+                                                propertyValue = "MovedToEJBJAR"),
                                 @ActivationConfigProperty(
                                                 propertyName = "acknowledgeMode",
                                                 propertyValue = "Auto-acknowledge")
@@ -216,9 +220,10 @@ public class ArchiverMDB
      */
     private void notify(Archive archive) {
         super.notify(TRACKER_DEST_Q,
-                new ArchiveMessage(
-                        archive.getJobID(), 
-                        archive.getArchiveID()));
+                new ArchiveMessage.ArchiveMessageBuilder()
+                        .jobId(archive.getJobID())
+                        .archiveId(archive.getArchiveID())
+                        .build());
     
     }
     
@@ -245,10 +250,10 @@ public class ArchiverMDB
             
             if (getJobService() != null) {
                 
-                Job job = getJobService().getJob(archiveMsg.getJobID());
+                Job job = getJobService().getJob(archiveMsg.getJobId());
                 if (job != null) {
                     
-                    Archive archive = job.getArchive(archiveMsg.getArchiveID());
+                    Archive archive = job.getArchive(archiveMsg.getArchiveId());
                     if (archive != null) {
                         
                         // Update the archive to reflect that archive processing 
@@ -268,7 +273,7 @@ public class ArchiverMDB
                                     + " ].");
                         }
                         try {
-                            createArchive(job, archiveMsg.getArchiveID());
+                            createArchive(job, archiveMsg.getArchiveId());
                             archive.setArchiveState(JobStateType.COMPLETE);
                         }
                         catch (IOException ioe) {

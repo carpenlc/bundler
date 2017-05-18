@@ -96,9 +96,9 @@ public class NotificationService implements BundlerConstantsI {
                          + ne.getMessage()
                          + " ].");
                  LOGGER.error("Unable to send notification associated with job ID [ "
-                        + archiveMsg.getJobID()
+                        + archiveMsg.getJobId()
                         + " ] and ID [ "
-                        + archiveMsg.getArchiveID()
+                        + archiveMsg.getArchiveId()
                         + " ] is complete.");
             }
             catch (JMSException je) {
@@ -107,9 +107,9 @@ public class NotificationService implements BundlerConstantsI {
                         + je.getMessage()
                         + " ].");
                 LOGGER.error("Unable to send notification associated with job ID [ "
-                        + archiveMsg.getJobID()
+                        + archiveMsg.getJobId()
                         + " ] and ID [ "
-                        + archiveMsg.getArchiveID()
+                        + archiveMsg.getArchiveId()
                         + " ] is complete.");
             }
             finally {

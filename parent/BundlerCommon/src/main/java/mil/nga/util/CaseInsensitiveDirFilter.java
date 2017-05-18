@@ -35,7 +35,6 @@ public class CaseInsensitiveDirFilter implements FilenameFilter {
      * @return true if and only if the name should be included in the file 
      * list; false otherwise.
      */
-    @Override
     public boolean accept(File dir, String name) {
         return pattern.matcher(new File(name).getName()).matches();
     }

@@ -14,8 +14,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
  * POJO implemented to allow clients to specify both the file they want 
- * bundled how they want it to appear in the output archive file.  This 
- * class is used in conjunction with the BundleRequest2 object.
+ * bundled how they want it to appear in the output archive file.  
  * 
  * @author L. Craig Carpenter
  */

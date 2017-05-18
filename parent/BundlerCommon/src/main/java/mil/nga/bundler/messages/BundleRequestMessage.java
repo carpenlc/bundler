@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
+import mil.nga.bundler.FileNameGenerator;
 import mil.nga.bundler.interfaces.BundlerConstantsI;
 import mil.nga.bundler.types.ArchiveType;
 
@@ -50,9 +51,13 @@ public class BundleRequestMessage implements Serializable {
     private final boolean     redirect;
     private final int         maxSize;
     private final String      outputFilename;
-    private final String      userName;
     private final ArchiveType type;
     
+    /**
+     * Username is not set as final because it is usually set outside of 
+     * construction.
+     */
+    private String            userName;
     /**
      * Annotated list of files that will be processed by the bundler.
      */
@@ -176,6 +181,14 @@ public class BundleRequestMessage implements Serializable {
     }
     
     /**
+     * Setter method for the name of the client submitting the bundle request.
+     * @param value The user name of the client submitting the bundle request.
+     */
+    public void setUserName(String value) {
+        userName = value;
+    }
+    
+    /**
      * Overridden toString method to dump the request into a human-readable format.
      * @return Printable string
      */
@@ -233,7 +246,7 @@ public class BundleRequestMessage implements Serializable {
     	private String            outputFilename = null;
     	private String            userName       = null;
         private ArchiveType       type           = ArchiveType.ZIP;
-        private List<FileRequest> files    = new ArrayList<FileRequest>();
+        private List<FileRequest> files          = new ArrayList<FileRequest>();
         
         
         public BundleRequestMessage build() throws IllegalStateException {
@@ -325,18 +338,15 @@ public class BundleRequestMessage implements Serializable {
         	if ((maxSize <= MIN_ARCHIVE_SIZE) || (maxSize > MAX_ARCHIVE_SIZE)) {
         		maxSize = DEFAULT_MAX_ARCHIVE_SIZE;
         	}
-        	
         	if ((userName == null) || (userName.isEmpty())) {
         		userName = DEFAULT_USERNAME;
         	}
-        	
         	if ((outputFilename == null) || (outputFilename.isEmpty())) {
-        		// TODO:  This is probably the wrong setting - find the correct one later.
-        		outputFilename = DEFAULT_FILENAME_PREFIX;
+        		outputFilename = FileNameGenerator
+        		        .getInstance()
+        		        .getFilename();
         	}
-        	
         }
-    	
     }
 }
 

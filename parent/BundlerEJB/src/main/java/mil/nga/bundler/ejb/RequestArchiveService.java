@@ -19,7 +19,8 @@ import mil.nga.PropertyLoader;
 import mil.nga.bundler.BundleRequest;
 import mil.nga.bundler.exceptions.PropertiesNotLoadedException;
 import mil.nga.bundler.interfaces.BundlerConstantsI;
-import mil.nga.bundler.messages.BundleRequest2;
+import mil.nga.bundler.messages.BundleRequestMessage;
+import mil.nga.bundler.messages.BundlerMessageSerializer;
 
 /**
  * Session Bean implementation class RequestArchiveService
@@ -250,13 +251,13 @@ public class RequestArchiveService
     }
     
     /**
-     * External interface used to marshal a BundleRequest2 into a JSON-based
+     * External interface used to marshal a BundleRequestMessage into a JSON-based
      * String and then store the results in an on-disk file.
      * 
-     * @param request Incoming BundleRequest2 object.
-     * @param jobID The job ID assigned to input BundleRequest2 object.
+     * @param request Incoming BundleRequestMessage object.
+     * @param jobID The job ID assigned to input BundleRequestMessage object.
      */
-    public void archiveRequest2(BundleRequest2 request, String jobID) {
+    public void archiveRequest(BundleRequestMessage request, String jobID) {
         
         if (request != null) {
             if ((jobID == null) || (jobID.isEmpty())) {
@@ -272,28 +273,15 @@ public class RequestArchiveService
                         + jobID
                         + " ].");
             }
-            
-            try { 
+
+            String json = BundlerMessageSerializer
+                    .getInstance()
+                    .serializePretty(request);
+            saveToFile(json, jobID);
                 
-                ObjectMapper mapper = new ObjectMapper();
-                String requestString = 
-                        mapper.writerWithDefaultPrettyPrinter()
-                              .writeValueAsString(request);
-                saveToFile(requestString, jobID);
-                
-            }
-            catch (JsonProcessingException jpe) {
-                LOGGER.error("Unexpected JsonProcessingException encountered "
-                        + "while attempting to marshal the client supplied "
-                        + "BundleRequest2 object for job ID [ "
-                        + jobID
-                        + " ].  Error message [ "
-                        + jpe.getMessage()
-                        + " ].");
-            }
         }
         else {
-            LOGGER.error("The input BundleRequest2 is null.  Unable to "
+            LOGGER.error("The input BundleRequestMessage is null.  Unable to "
                     + "archive the incoming request information.");
         }
     }

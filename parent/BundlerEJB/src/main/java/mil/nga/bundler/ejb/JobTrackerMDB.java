@@ -26,20 +26,30 @@ import org.slf4j.LoggerFactory;
  * It is responsible for ensuring the job state flags and the job
  * statistics information is updated and persisted.
  *  
+ * Note to self:  When we moved the activation configuration settings from
+ * being hardcoded as annotations in this class to being defined in the 
+ * <code>ejb-jar.xml</code> file we found that you cannot deploy the MDB 
+ * without a bogus "destination" property.   
  */
 @MessageDriven(
-                name = "TrackerMDB",
-                activationConfig = { 
-                                @ActivationConfigProperty(
-                                                propertyName = "destinationType", 
-                                                propertyValue = "javax.jms.Queue"),
-                                @ActivationConfigProperty(
-                                                propertyName = "destination", 
-                                                propertyValue = "queue/TrackerMessageQ_TEST"),
-                                @ActivationConfigProperty(
-                                                propertyName = "acknowledgeMode", 
-                                                propertyValue = "Auto-acknowledge")
-                })
+        // Note to self, if your MDB implements any interfaces other 
+        // than MessageListener, you have to specify which one is the 
+        // MessageListener.
+        activationConfig = {
+                        @ActivationConfigProperty(
+                                        propertyName = "destinationType",
+                                        propertyValue = "javax.jms.Queue"),
+                        // Another note to self, even though we moved the 
+                        // EJB definitions to ejb-jar.xml you still have to 
+                        // have the following annotation or the project will
+                        // not deploy.
+                        @ActivationConfigProperty(
+                                        propertyName = "destination",
+                                        propertyValue = "MovedToEJBJAR"),
+                        @ActivationConfigProperty(
+                                        propertyName = "acknowledgeMode",
+                                        propertyValue = "Auto-acknowledge")
+        })
 public class JobTrackerMDB implements MessageListener {
     
     /**
@@ -273,10 +283,10 @@ public class JobTrackerMDB implements MessageListener {
 
                  if (getJobService() != null) {
                      
-                     Job job = getJobService().getJob(archiveMsg.getJobID());
+                     Job job = getJobService().getJob(archiveMsg.getJobId());
                      
                      if (job != null) {
-                         Archive archive = job.getArchive(archiveMsg.getArchiveID());
+                         Archive archive = job.getArchive(archiveMsg.getArchiveId());
                          if (archive != null) {
                              checkArchive(archive);
                              updateJobState(job, archive);
@@ -285,16 +295,16 @@ public class JobTrackerMDB implements MessageListener {
                          else {
                               LOGGER.error("Unable to retrieve Archive "
                                      + "associated with job ID [ "
-                                     + archiveMsg.getJobID()
+                                     + archiveMsg.getJobId()
                                      + " ] and archive ID [ "
-                                     + archiveMsg.getArchiveID()
+                                     + archiveMsg.getArchiveId()
                                      + " ].");
                          }
                      }
                      else {
                          LOGGER.error("Unable to retrieve Job associated with "
                                  + "job ID [ "
-                                 + archiveMsg.getJobID()
+                                 + archiveMsg.getJobId()
                                  + " ].");
                      }
                  }

@@ -200,6 +200,39 @@ public class BundlerMessageSerializer {
         }
         return deserialized;
     }
+    /**
+     * Convert the input object into JSON format.  This version of the 
+     * serialization process is meant for generating a more human-readable
+     * output.
+     * 
+     * @param obj A populated object.
+     * @return A JSON String representation of the input Object.
+     */
+    public String serializePretty(Object obj) {
+        
+        String json = "null";
+        
+        if (obj != null) {
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.setDateFormat(dateFormatter);
+                json = mapper.writerWithDefaultPrettyPrinter()
+                        .writeValueAsString(obj);
+            }
+            catch (JsonProcessingException jpe) {
+                LOGGER.error("Unexpected JsonProcessingException encountered "
+                        + "while attempting to marshall the input "
+                        + "object to JSON.  Exception message [ "
+                        + jpe.getMessage()
+                        + " ].");
+            }
+        }
+        else {
+            LOGGER.warn("Input object is null.  Unable to "
+                    + "marshall the object to JSON.");
+        }
+        return json;
+    }
     
     /**
      * Convert the input object into JSON format. 

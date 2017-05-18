@@ -178,7 +178,6 @@ public class JobTrackerMessage
      * 
      * @param bundle Metadata associated with a completed archive file.
      */
-    @Override
     public synchronized void addArchive(Archive bundle) {
         if (bundle == null) {
             archives = new ArrayList<Archive>();
@@ -190,7 +189,6 @@ public class JobTrackerMessage
      * Getter method for the list of archives created by the archive job.
      * @return The list of bundles created.
      */
-    @Override
     public Collection<Archive> getArchives() {
         return archives;
     }
@@ -208,7 +206,6 @@ public class JobTrackerMessage
      * Getter method for the job ID associated with these metrics.
      * @return The job ID.
      */
-    @Override
     @JsonIgnore
     public String getJobID() {
         return jobID;
@@ -218,7 +215,6 @@ public class JobTrackerMessage
      * The user who submitted the job
      * @return The user
      */
-    @Override
     @JsonIgnore
     public String getUserName() {
         return userName;
@@ -292,7 +288,6 @@ public class JobTrackerMessage
      * Getter method for the current state of the job in progress.
      * @return The current state of the job.
      */
-    @Override
     @JsonIgnore
     public JobStateType getState() {
         return state;

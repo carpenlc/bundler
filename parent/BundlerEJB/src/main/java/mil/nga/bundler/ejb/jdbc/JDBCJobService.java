@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  * 
  * This class re-implements the methods in the JobService EJB class as 
  * simple JDBC calls.  This class was created in order to solve some 
- * performance problems when using hibernate in conjunction with the 
+ * performance problems when using Hibernate in conjunction with the 
  * metrics data.
  */
 @Stateless

@@ -20,7 +20,7 @@ import mil.nga.bundler.PathGenerator;
 import mil.nga.bundler.exceptions.InvalidRequestException;
 import mil.nga.bundler.exceptions.UnknownArchiveTypeException;
 import mil.nga.bundler.exceptions.ValidationErrorCodes;
-import mil.nga.bundler.messages.BundleRequest2;
+import mil.nga.bundler.messages.BundleRequestMessage;
 import mil.nga.bundler.messages.FileRequest;
 import mil.nga.bundler.model.ValidFile;
 import mil.nga.bundler.types.ArchiveType;
@@ -170,7 +170,7 @@ public class ValidationService {
             for (FileRequest file : files) {
                 ValidFile validFile = validateOneFile(file.getFile().trim());
                 if (validFile != null) {
-                    validFile.setEntryPath(file.getPath());
+                    validFile.setEntryPath(file.getArchivePath());
                     validFiles.add(validFile);
                 }
                 else {
@@ -205,7 +205,7 @@ public class ValidationService {
             
             // Stuff the list into a Set (which doesn't allow duplicates) then
             // create a new List out of the Set.
-             Set<String> deDupSet = new HashSet<String>(files);
+            Set<String> deDupSet = new HashSet<String>(files);
             deDupList = new ArrayList<String>(deDupSet);
         }
         else {
@@ -311,34 +311,7 @@ public class ValidationService {
         }
     }
     
-    public List<ValidFile> validate(BundleRequest2 request) 
-            throws InvalidRequestException {
-        
-        LOGGER.info("validate() called.");
-        List<ValidFile> validFiles = null;
-        
-        checkArchiveType(request.getType());
-        checkFileList2(request.getFiles());
-        
-        // Reset the input list of files with a de-duplicated version
-        List<FileRequest> deDupList = eliminateDuplicates2(request.getFiles());
-        request.setFiles(deDupList);
-        
-        // Next, make sure that clients actually supplied something valid to 
-        // bundle.  This was implemented because clients started supplying a 
-        // list of empty files. 
-        validFiles = validateFiles2(deDupList);
-        if ((validFiles == null) || (validFiles.size() == 0)) { 
-            throw new InvalidRequestException(
-                    ValidationErrorCodes.NO_VALID_INPUT_FILES_FOUND);
-        }
-        
-        // Not sure this is the best place to put this call, but set all 
-        // of the entry paths in the list of valid files.
-        PathGenerator.getInstance().setEntryPaths(validFiles);
-        
-        return validFiles;
-    }
+
     
     /**
      * 
