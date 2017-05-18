@@ -9,7 +9,7 @@
     </parent>
 
     <groupId>mil.nga.bundler</groupId>
-    <artifactId>Bundler</artifactId>
+    <artifactId>bundler</artifactId>
     <name>Bundler - EAR</name>
     <packaging>ear</packaging>
 
@@ -51,6 +51,10 @@
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -113,6 +117,10 @@
                         <jarModule>
                             <groupId>commons-codec</groupId>
                             <artifactId>commons-codec</artifactId>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>org.apache.commons</groupId>
+                            <artifactId>commons-compress</artifactId>
                         </jarModule>
                         <jarModule>
                             <groupId>ch.qos.logback</groupId>
