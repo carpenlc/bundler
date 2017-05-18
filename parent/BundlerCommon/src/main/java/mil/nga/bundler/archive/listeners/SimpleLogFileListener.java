@@ -6,8 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Simple class implementing the FileCompletionListenerI interface.  This class
- * was developed largely to test the feasibility of tracking  
+ * Simple class implementing the FileCompletionListenerI interface.  This 
+ * class was developed largely to test the feasibility of tracking processing
+ * completion of individual files. 
  * 
  * @author L. Craig Carpenter
  */
@@ -24,7 +25,6 @@ public class SimpleLogFileListener implements FileCompletionListenerI {
      * on a given file.
      * @param file The name of the file that completed archive processing.
      */
-    @Override
     public void notify(String file) {
         LOGGER.info("Archive processing has completed for file [ "
                 + file

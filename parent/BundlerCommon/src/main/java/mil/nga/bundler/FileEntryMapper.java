@@ -29,11 +29,12 @@ public class FileEntryMapper {
         return FileEntryMapperHolder.getFactorySingleton();
     }
     
+    
     /**
      * Map data from the <code>ValidFile</code> object into an object of 
      * type <code>FileRequest</code>.
      * 
-     * @param file 
+     * @param file Source 
      * @return
      */
     public FileEntry getFileEntry(String jobID, long archiveID, ValidFile file) {

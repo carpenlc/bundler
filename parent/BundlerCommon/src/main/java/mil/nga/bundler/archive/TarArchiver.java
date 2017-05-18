@@ -70,8 +70,9 @@ public class TarArchiver
         File dir = new File(baseDir);
         if (!dir.exists()) {
             String msg = "Directory identified for archiving does not exist.  "
-                    + "Directory identified:  "
-                    + baseDir;
+                    + "Directory identified [ "
+                    + baseDir
+                    + " ].";
             LOGGER.error(method + msg);
             throw new ArchiveException(msg);
         }
@@ -274,7 +275,6 @@ public class TarArchiver
                                     entry.getEntryPath()));
                     super.addOneFile(taos, file);
                     entry.setFileState(JobStateType.COMPLETE);
-                    
                 }
                 else {
                     

@@ -131,9 +131,19 @@ public class PathGenerator
      * 
      * @param entry FileEntry object associated with one file to be archived.
      */
-    private void setOneEntry(FileEntry entry) {
+    public void setOneEntry(FileEntry entry) {
         String path   = entry.getFilePath();
-        entry.setEntryPath(getEntryPath(path.trim()));
+        if ((entry.getEntryPath() == null) || (entry.getEntryPath().isEmpty())) {
+            // If the entry path wasn't supplied, calculate it.
+            entry.setEntryPath(getEntryPath(path.trim()));
+        }
+        else {
+            // If the entry path was supplied by the client, make sure it 
+            // doesn't start with a file separator character.
+            if (entry.getEntryPath().startsWith("/")) {
+                entry.setEntryPath(entry.getEntryPath().substring(1));
+            }
+        }
     }
     
     /**

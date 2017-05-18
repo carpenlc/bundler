@@ -16,6 +16,7 @@ import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +65,6 @@ public class ZipArchiver extends Archiver implements BundlerI {
     }
     
 
-    @Override
     public void bundle(String directory, String outputFile) 
             throws ArchiveException, IOException {
         
@@ -119,7 +119,6 @@ public class ZipArchiver extends Archiver implements BundlerI {
      * base directory.  This parameter is used in the creation of the relative
      * file paths contained within the output archive.
      */
-    @Override
     public void bundle(
             List<String> files, 
             String       outputFile,
@@ -187,7 +186,6 @@ public class ZipArchiver extends Archiver implements BundlerI {
     /**
      * 
      */
-    @Override
     public void bundle(List<FileEntry> files, String outputFile) 
             throws ArchiveException, IOException {
         

@@ -11,8 +11,11 @@ import mil.nga.bundler.model.Job;
 import mil.nga.bundler.model.Archive;
 import mil.nga.bundler.model.ValidFile;
 import mil.nga.bundler.types.ArchiveType;
+import mil.nga.bundler.exceptions.InvalidRequestException;
 import mil.nga.bundler.exceptions.UnknownArchiveTypeException;
+import mil.nga.bundler.exceptions.ValidationErrorCodes;
 import mil.nga.bundler.interfaces.BundlerConstantsI;
+import mil.nga.bundler.messages.BundleRequestMessage;
 import mil.nga.util.FileUtils;
 
 /**
@@ -80,6 +83,7 @@ public class JobFactory implements BundlerConstantsI {
      * method signature that requires a validated file as input.
      * 
      * @param file The validated file that will be added to the Job.
+     * @deprecated
      */
     private void addFileToJob(ValidFile file) {
         
@@ -112,6 +116,46 @@ public class JobFactory implements BundlerConstantsI {
                         job.getJobID(),
                         tempArchive.getArchiveID(),
                         file));
+    }
+    
+    /**
+     * Add a file to the job.  
+     * 
+     * @param file The validated file that will be added to the Job.
+     */
+    private void addFileToJob(FileEntry file) {
+        
+        if (tempArchive == null) {
+            archiveNumber = 0;
+            archiveSizeAccumulator = 0;
+            totalSizeAccumulator = 0;
+            tempArchive = new Archive(
+                    job.getJobID(),
+                    archiveNumber,
+                    job.getArchiveType());
+            job.addArchive(tempArchive);
+        }
+        else if (getEstimatedArchiveSize(file.getSize()) 
+                > job.getArchiveSize()) {
+            archiveNumber++;
+            tempArchive = new Archive(
+                    job.getJobID(),
+                    archiveNumber,
+                    job.getArchiveType());
+            job.addArchive(tempArchive);
+            archiveSizeAccumulator = 0;
+        }
+        
+        archiveSizeAccumulator += file.getSize();
+        totalNumFilesAccumulator++;
+        totalSizeAccumulator += file.getSize();
+        
+        // Update the FileEntry object with the job ID and current archive ID.
+        file.setJobID(job.getJobID());
+        file.setArchiveID(tempArchive.getArchiveID());
+        
+        // Add to the temp archive.
+        tempArchive.add(file);
     }
     
     /**
@@ -165,6 +209,7 @@ public class JobFactory implements BundlerConstantsI {
         job.setTotalSize(totalSizeAccumulator);
         
         List<Archive> archives = job.getArchives();
+        
         for (Archive archive : archives) {
             numArchives++;
             archive.setArchive(
@@ -203,6 +248,7 @@ public class JobFactory implements BundlerConstantsI {
      * @param validatedFiles validated list of files to use in creating the 
      * individual archives.
      * @return A populated Job object.
+     * @deprecated
      */
     public Job createJob(
             BundleRequest request, 
@@ -234,11 +280,131 @@ public class JobFactory implements BundlerConstantsI {
     }
     
     /**
+     * New version of the <code>createJob()</code> function that accepts a 
+     * <code>BundleRequest</code> object.  The input request is then split 
+     * into Archive jobs that can be sent into the cluster for processing. 
+     *   
+     * @param request The user-supplied bundle request.
+     * @return A populated Job object.
+     * @throws InvalidRequestException Thrown if the input bundle request is
+     * invalid. 
+     */
+    public Job createJob(BundleRequest request) 
+            throws InvalidRequestException {
+
+        List<FileEntry> files = FileValidator
+                                .getInstance()
+                                .validateStringList(request.getFiles());
+        if ((files != null) && (!files.isEmpty())) { 
+            job = initJob(request);
+            splitIntoArchives(files);
+            complete();
+        }
+        else {
+            LOGGER.error("List of valid files is null or empty.  Nothing to bundle.");
+            throw new InvalidRequestException(
+                    ValidationErrorCodes.NO_VALID_INPUT_FILES_FOUND);
+        }
+        return job;
+    }
+    
+    /**
+     * New version of the <code>createJob()</code> function that accepts a 
+     * <code>BundleRequestMessage</code>.  The input request is then split 
+     * into Archive jobs that can be sent into the cluster for processing. 
+     *   
+     * @param request The user-supplied bundle request.
+     * @return A populated Job object.
+     * @throws InvalidRequestException Thrown if the input bundle request is
+     * invalid. 
+     */
+    public Job createJob(BundleRequestMessage request) 
+            throws InvalidRequestException {
+
+        List<FileEntry> files = FileValidator
+                                .getInstance()
+                                .validate(request.getFiles());
+        if ((files != null) && (!files.isEmpty())) { 
+            job = initJob(request);
+            splitIntoArchives(files);
+            complete();
+        }
+        else {
+            LOGGER.error("List of valid files is null or empty.  Nothing to bundle.");
+            throw new InvalidRequestException(
+                    ValidationErrorCodes.NO_VALID_INPUT_FILES_FOUND);
+        }
+        return job;
+    }
+    
+    /**
+     * Private method used to create a new Job.  Logic needed to populate some of the 
+     * Job attributes is contained here.
+     * 
+     * @param request The user-supplied BundleRequest object.
+     * @return A new job instance.
+     */
+    private Job initJob (BundleRequest request) {
+    
+        Job job = new Job();
+        job.setJobID(getNewId());
+        job.setArchiveSize(getArchiveSize(request.getMaxSize()));
+        setArchiveFilenameTemplate(
+                FileNameGenerator
+                .getInstance()
+                .getArchiveFile(request.getFilename()));
+    
+        if ((request.getUserName() == null) || (request.getUserName().isEmpty())) {
+            job.setUserName(DEFAULT_USERNAME);
+        }
+        else {
+            job.setUserName(request.getUserName());
+        }
+        
+        try {
+            job.setArchiveType(ArchiveType.fromString(request.getType()));
+        }
+        catch (UnknownArchiveTypeException uae) {
+            LOGGER.warn("Client requested an unknown/unsupported archive type [ "
+                    + request.getType()
+                    + " ].  Using default value of [ "
+                    + ArchiveType.ZIP.getText()
+                    + " ].");
+            job.setArchiveType(ArchiveType.ZIP);
+        }
+        return job;
+    }
+    
+    /**
+     * Initialize a Job object setting the required internal members from 
+     * the user-supplied <code>BundleRequestMessage</code> object.
+     * 
+     * @param request
+     * @return An initialized Job object.
+     */
+    public Job initJob(BundleRequestMessage request) {
+        
+        Job job = new Job();
+        job.setJobID(getNewId());
+        job.setArchiveSize(getArchiveSize(request.getMaxSize()));
+        job.setUserName(request.getUserName());
+        job.setArchiveType(request.getType());
+        
+        setArchiveFilenameTemplate(
+                FileNameGenerator
+                .getInstance()
+                .getArchiveFile(request.getOutputFilename()));
+        
+        return job;
+    }
+    
+    /**
      * This method will take a list of files that were supplied by the
      * end-user and divvy them up into individual archives for later
      * processing.
      * 
      * @param files A list of files to be bundled.
+     * @deprecated
      */
     private void createArchives(List<ValidFile> files) {
         if ((files != null) && (files.size() > 0)) {
@@ -261,7 +427,13 @@ public class JobFactory implements BundlerConstantsI {
         }
     }
     
-    /**
+    private void splitIntoArchives(List<FileEntry> files) {
+        for (FileEntry file : files) {
+            addFileToJob(file);
+        }
+        
+    }
+     /**
      * Getter method for the template name of the output archive
      * file.
      * @return The template for the value of the output 
@@ -275,7 +447,7 @@ public class JobFactory implements BundlerConstantsI {
      * Ensure that the requested archive size falls within some allowable 
      * parameters.  
      * 
-     * This method has been ammended to ensure that someone doesn't request an 
+     * This method has been amended to ensure that someone doesn't request an 
      * archive size that is too small.  We ran into issues testing with the 
      * FalconView "Easy Button" software where users would request an 
      * obscenely large number of files with a size of 1M creating too many
@@ -335,7 +507,7 @@ public class JobFactory implements BundlerConstantsI {
             String archiveFilename) {
     
         Job job = new Job();
-        job.setJobID(getNewID());
+        job.setJobID(getNewId());
         job.setArchiveSize(getArchiveSize(archiveSize));
         setArchiveFilenameTemplate(
                 FileNameGenerator
@@ -367,7 +539,7 @@ public class JobFactory implements BundlerConstantsI {
      * 
      * @return A job ID (length defined by JOB_ID_LENGTH).
      */
-    public static String getNewID() {
+    public static String getNewId() {
         return FileUtils.generateUniqueToken(JOB_ID_LENGTH);
     }
 
