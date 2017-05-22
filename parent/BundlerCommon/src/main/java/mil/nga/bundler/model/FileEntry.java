@@ -165,12 +165,7 @@ public class FileEntry implements Serializable {
      * @return The file entry path. 
      */
     public String getEntryPath() {
-        if ((entryPath == null) || (entryPath.isEmpty())) {
-            return getFilePath();
-        }
-        else {
-            return entryPath;
-        }
+        return entryPath;
     }
     
     /**
