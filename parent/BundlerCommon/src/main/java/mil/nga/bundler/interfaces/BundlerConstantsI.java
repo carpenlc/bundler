@@ -135,14 +135,14 @@ public interface BundlerConstantsI {
      * The name of the destination queue on which Archiver jobs will be 
      * placed.
      */
-    //public static final String ARCHIVER_DEST_Q = "queue/ArchiverMessageQ";
-    public static final String ARCHIVER_DEST_Q = "queue/ArchiverMessageQ_TEST";
+    public static final String ARCHIVER_DEST_Q = "queue/ArchiverMessageQ";
+    //public static final String ARCHIVER_DEST_Q = "queue/ArchiverMessageQ_TEST";
     
     /**
      * The name of the destination queue on which completed archive jobs 
      * will be placed.
      */
-    //public static final String TRACKER_DEST_Q = "queue/TrackerMessageQ";
-    public static final String TRACKER_DEST_Q = "queue/TrackerMessageQ_TEST";
+    public static final String TRACKER_DEST_Q = "queue/TrackerMessageQ";
+    //public static final String TRACKER_DEST_Q = "queue/TrackerMessageQ_TEST";
     
 }

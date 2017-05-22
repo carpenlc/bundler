@@ -80,7 +80,7 @@ public class ValidFile implements Serializable {
     /**
      * The last modified date on the file.
      */
-    @Column(name="DATE")
+    @Column(name="FILE_DATE")
     private String date;
     
     /**
@@ -272,7 +272,7 @@ public class ValidFile implements Serializable {
         sb.append("Size             : ");
         sb.append(getSize());
         sb.append(newLine);
-        sb.append("Date             : ");
+        sb.append("File Date        : ");
         sb.append(getDate());
         sb.append(newLine);
         sb.append("Hash Type        : ");

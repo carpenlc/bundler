@@ -363,10 +363,15 @@ public class Bundler extends PropertyLoader {
      * @return
      */
     @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response bundleText(
             @Context HttpHeaders headers,
             String request) {
         
+        
+        if (request != null) {
+            System.out.println(request.toString());
+        }
         return Response.status(Status.OK).build();
     }
     
