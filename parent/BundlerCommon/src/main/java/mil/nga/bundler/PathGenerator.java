@@ -17,8 +17,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is responsible for configuring the path inside of an output 
- * archive in which a given file will be inserted.  The first iteration of 
- * this class will just read a list of path prefixes to strip off.  
+ * archive in which a given file will be inserted.  It's main use is to 
+ * exclude certain directory prefixes that are configurable in an external 
+ * properties file.  
  * 
  * @author L. Craig Carpenter
  *
@@ -91,6 +92,14 @@ public class PathGenerator
         }
     }
     
+    /**
+     * This method does the heavy lifting associated with stripping off any 
+     * configured prefixes and ensuring the output entry path does not start
+     * with a file separator character.
+     * 
+     * @param path The actual file path.
+     * @return The calculated entry path.
+     */
     private String getEntryPath(String path) {
         
         String method = "getEntryPath() - ";
@@ -105,7 +114,7 @@ public class PathGenerator
                             + " ].");
                 }
                 if (entryPath.startsWith(exclusion)) {
-                    path = entryPath.replaceFirst(Pattern.quote(exclusion), "");
+                    entryPath = entryPath.replaceFirst(Pattern.quote(exclusion), "");
                 }
             }
             
@@ -133,6 +142,7 @@ public class PathGenerator
      */
     public void setOneEntry(FileEntry entry) {
         String path   = entry.getFilePath();
+        System.out.println(entry.getEntryPath());
         if ((entry.getEntryPath() == null) || (entry.getEntryPath().isEmpty())) {
             // If the entry path wasn't supplied, calculate it.
             entry.setEntryPath(getEntryPath(path.trim()));
@@ -245,5 +255,18 @@ public class PathGenerator
         public static PathGenerator getFactorySingleton() {
             return _factory;
         }
+    }
+    
+    
+    public static void main(String[] args) {
+        PathGenerator.getInstance();
+        FileEntry entry = new FileEntry();
+        entry.setFilePath("/mnt/raster/dir1/dir2/dir3");
+        entry.setEntryPath(null);
+        PathGenerator.getInstance().setOneEntry(entry);
+        System.out.println(entry.toString());
+        
+        
+        
     }
 }

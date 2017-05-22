@@ -207,6 +207,7 @@ public class FileValidator {
             throw new InvalidRequestException(
                     ValidationErrorCodes.NO_INPUT_FILES_FOUND);
         }
+        
         filesRequested = eliminateStringDuplicates(filesRequested);
         filesRequested = expandStringList(filesRequested);
         
