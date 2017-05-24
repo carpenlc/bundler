@@ -324,7 +324,7 @@ public class ValidationService {
         LOGGER.info("validate() called.");
         List<ValidFile> validFiles = null;
         
-        checkArchiveType(request.getType());
+        //checkArchiveType(request.getType());
         checkFileList(request.getFiles());
         
         // Reset the input list of files with a de-duplicated version
