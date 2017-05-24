@@ -263,7 +263,7 @@ public class JobFactory implements BundlerConstantsI {
                         request.getUserName(),
                         request.getType(),
                         request.getMaxSize(),
-                        request.getFilename());
+                        request.getOutputFilename());
                 createArchives(validatedFiles);
             }
             else {
@@ -349,10 +349,11 @@ public class JobFactory implements BundlerConstantsI {
         Job job = new Job();
         job.setJobID(getNewId());
         job.setArchiveSize(getArchiveSize(request.getMaxSize()));
+        job.setArchiveType(request.getType());
         setArchiveFilenameTemplate(
                 FileNameGenerator
                 .getInstance()
-                .getArchiveFile(request.getFilename()));
+                .getArchiveFile(request.getOutputFilename()));
     
         if ((request.getUserName() == null) || (request.getUserName().isEmpty())) {
             job.setUserName(DEFAULT_USERNAME);
@@ -360,18 +361,7 @@ public class JobFactory implements BundlerConstantsI {
         else {
             job.setUserName(request.getUserName());
         }
-        
-        try {
-            job.setArchiveType(ArchiveType.fromString(request.getType()));
-        }
-        catch (UnknownArchiveTypeException uae) {
-            LOGGER.warn("Client requested an unknown/unsupported archive type [ "
-                    + request.getType()
-                    + " ].  Using default value of [ "
-                    + ArchiveType.ZIP.getText()
-                    + " ].");
-            job.setArchiveType(ArchiveType.ZIP);
-        }
+
         return job;
     }
     
@@ -502,13 +492,14 @@ public class JobFactory implements BundlerConstantsI {
      */
     private Job getNewJobInstance (
             String userName,
-            String type,
+            ArchiveType type,
             long   archiveSize,
             String archiveFilename) {
     
         Job job = new Job();
         job.setJobID(getNewId());
         job.setArchiveSize(getArchiveSize(archiveSize));
+        job.setArchiveType(type);
         setArchiveFilenameTemplate(
                 FileNameGenerator
                 .getInstance()
@@ -519,18 +510,7 @@ public class JobFactory implements BundlerConstantsI {
             userName = DEFAULT_USERNAME;
         }
         job.setUserName(userName);
-        
-        try {
-            job.setArchiveType(ArchiveType.fromString(type));
-        }
-        catch (UnknownArchiveTypeException uae) {
-            LOGGER.warn("Client requested an unknown/unsupported archive type [ "
-                    + type
-                    + " ].  Using default value of [ "
-                    + ArchiveType.ZIP.getText()
-                    + " ].");
-            job.setArchiveType(ArchiveType.ZIP);
-        }
+       
         return job;
     }
     
