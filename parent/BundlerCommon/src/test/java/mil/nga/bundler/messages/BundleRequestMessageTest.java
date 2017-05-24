@@ -23,8 +23,8 @@ public class BundleRequestMessageTest {
 	@Test
 	public void testCreation() {
 		
-		System.out.println("[TEST] Testing building objects of type class mil.nga.bundler.BundleRequest...");
-		BundleRequestMessage request = new BundleRequestMessage.BundleRequestBuilder()
+		System.out.println("[TEST] Testing building objects of type class mil.nga.bundler.message.BundleRequestMessage...");
+		BundleRequestMessage request = new BundleRequestMessage.BundleRequestMessageBuilder()
 									.maxSize(123)
 									.type(ArchiveType.TAR)
 									.redirect(true)
@@ -53,7 +53,7 @@ public class BundleRequestMessageTest {
 		assertEquals(request.getType().getText(), ArchiveType.TAR.getText());
 		
 		// Test creation with out-of-range values
-		BundleRequestMessage request2 = new BundleRequestMessage.BundleRequestBuilder()
+		BundleRequestMessage request2 = new BundleRequestMessage.BundleRequestMessageBuilder()
 				.maxSize(1200)
 				.redirect(true)
 				.build();
@@ -68,8 +68,8 @@ public class BundleRequestMessageTest {
 	
 	@Test
 	public void testSerialization() {
-		System.out.println("[TEST] Testing serialization of class mil.nga.bundler.BundleRequest...");
-		BundleRequestMessage request = new BundleRequestMessage.BundleRequestBuilder()
+		System.out.println("[TEST] Testing serialization of class mil.nga.bundler.message.BundleRequestMessage...");
+		BundleRequestMessage request = new BundleRequestMessage.BundleRequestMessageBuilder()
 									.maxSize(123)
 									.type(ArchiveType.TAR)
 									.redirect(true)
@@ -100,7 +100,7 @@ public class BundleRequestMessageTest {
 		String json = BundlerMessageSerializer.getInstance().serialize(request);
 		assertNotNull(json);
 		
-		BundleRequestMessage request2 = new BundleRequestMessage.BundleRequestBuilder()
+		BundleRequestMessage request2 = new BundleRequestMessage.BundleRequestMessageBuilder()
 				.maxSize(1200)
 				.redirect(true)
 				.build();
@@ -124,7 +124,7 @@ public class BundleRequestMessageTest {
 	
 	@Test
 	public void testDeSerialization() {
-	    System.out.println("[TEST] Testing de-serialization of class mil.nga.bundler.BundleRequest...");
+	    System.out.println("[TEST] Testing de-serialization of class mil.nga.bundler.message.BundleRequestMessage...");
 	    
         StringBuilder sb = new StringBuilder();
         sb.append("{\"redirect\":true,\"max_size\":123,");
@@ -138,7 +138,7 @@ public class BundleRequestMessageTest {
         sb.append("{\"file\":\"/some/long/path/to/file2.txt\"}]}");
 	        
         BundleRequestMessage request = BundlerMessageSerializer.getInstance()
-                .deserializeToBundleRequest(sb.toString());
+                .deserializeToBundleRequestMessage(sb.toString());
 
         assertEquals(request.getMaxSize(), 123);
         assertEquals(request.getRedirect(), true);
@@ -147,7 +147,7 @@ public class BundleRequestMessageTest {
         assertEquals(request.getType().getText(), ArchiveType.TAR.getText());
         assertEquals(request.getFiles().size(), 4);
 
-	    System.out.println("[TEST] Testing de-serialization of class mil.nga.bundler.BundleRequest (String version)...");
+	    System.out.println("[TEST] Testing de-serialization of class mil.nga.bundler.messages.BundleRequestMessage (String version)...");
 		
 		sb = new StringBuilder();
 		sb.append("{\"redirect\":true,\"max_size\":\"123\",");
@@ -161,7 +161,7 @@ public class BundleRequestMessageTest {
 		sb.append("{\"file\":\"/some/long/path/to/file2.txt\"}]}");
 
 		request = BundlerMessageSerializer.getInstance()
-									.deserializeToBundleRequest(sb.toString());
+									.deserializeToBundleRequestMessage(sb.toString());
 		
 		assertEquals(request.getMaxSize(), 123);
 		assertEquals(request.getRedirect(), true);
