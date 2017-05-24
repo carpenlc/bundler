@@ -56,9 +56,9 @@ public abstract class Archiver {
         catch (IOException ioe) {
             LOGGER.error(method 
                     + "An unexpected IOException was encountered while "
-                    + "attempting to add "
+                    + "attempting to add file [ "
                     + file.getAbsolutePath()
-                    + "to the target archive.  Output archive may be " 
+                    + " ] to the target archive.  Output archive may be " 
                     + "corrupt.", ioe);
         }
         finally {
@@ -103,17 +103,18 @@ public abstract class Archiver {
         if (!file.exists()) {
             LOGGER.warn(method 
                     + "Input file does not exist on the file system.  " 
-                    + "File requested:  "
+                    + "File requested [ "
                     + path
-                    + "  Skipping file processing.");
+                    + " ] Skipping file processing.");
             return;
         }
         // Ensure the file can be processed
         if (!(file.isFile() || file.isDirectory())) {
             LOGGER.warn(method
-                    + "An unknown file was encountered.  "
+                    + "An unknown file was encountered.  The file specified "
+                    + " by path [ "
                     + path 
-                    + " was not identified as either a regular file or "
+                    + " ] was not identified as either a regular file or "
                     + " a directory.  Skipping file processing.");
             return;
         }
@@ -147,8 +148,9 @@ public abstract class Archiver {
             else {
                 LOGGER.warn(method 
                         + "Target directory does not contain any files.  "
-                        + "Current directory: " 
-                        + path);
+                        + "Current directory [ " 
+                        + path
+                        + " ].");
             }
         }
     }

@@ -153,9 +153,9 @@ public class BZip2Archiver
         if (tarFile.exists()) {
             LOGGER.info(method 
                     + "Intermediate TAR file created successfully.  File "
-                    + "created:  " 
+                    + "created [ " 
                     + tarFile.getAbsolutePath()
-                    + "Creating output BZip2 file.");
+                    + " ].  Creating output BZip2 file.");
             compress(tarFile, this._type);
         }
         else {
@@ -165,6 +165,18 @@ public class BZip2Archiver
         }
     }
     
+    /**
+     * Bundle each file in the input list.  Each entry in the list should 
+     * be the full path to file that should be added to the archive.  The 
+     * files will be bundled in a single TAR archive, then compressed using 
+     * the BZip2 algorithm.
+     * 
+     * @param files List of files (full path) to be added to the archive.
+     * @param outputFile Full path of the output archive file (may or may not
+     * include the extension)
+     * @throws IOException Raised if there are issues constructing the output
+     * archive.
+     */
     @Override
     public void bundle(List<FileEntry> files, String outputFile) 
             throws ArchiveException, IOException {
@@ -182,9 +194,9 @@ public class BZip2Archiver
         if (tarFile.exists()) {
             LOGGER.info(method 
                     + "Intermediate TAR file created successfully.  File "
-                    + "created:  " 
+                    + "created [ " 
                     + tarFile.getAbsolutePath()
-                    + "Creating output BZip2 file.");
+                    + " ].  Creating output BZip2 file.");
             compress(tarFile, this._type);
         }
         else {

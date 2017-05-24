@@ -7,7 +7,6 @@ import mil.nga.bundler.archive.GZipArchiver;
 import mil.nga.bundler.archive.TarArchiver;
 import mil.nga.bundler.archive.ZipArchiver;
 import mil.nga.bundler.exceptions.UnknownArchiveTypeException;
-import mil.nga.bundler.interfaces.BundlerConstantsI;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,19 +56,27 @@ public class ArchiveFactory {
         
         String method = "getInstance() - ";
         if (type.equals(ArchiveType.ZIP)) {
-            LOGGER.debug(method + "Client requested ZIP archive format.");
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug(method + "Client requested ZIP archive format.");
+            }
             return new ZipArchiver();
         }
         else if (type.equals(ArchiveType.TAR)) {
-            LOGGER.debug(method + "Client requested TAR archive format.");
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug(method + "Client requested TAR archive format.");
+            }
             return new TarArchiver();
         }
         else if (type.equals(ArchiveType.GZIP)) {
-            LOGGER.debug(method + "Client requested GZIP archive format.");
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug(method + "Client requested GZIP archive format.");
+            }
             return new GZipArchiver();
         }
         else if (type.equals(ArchiveType.BZIP2)) {
-            LOGGER.debug(method + "Client requested BZIP2 archive format.");
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug(method + "Client requested BZIP2 archive format.");
+            }
             return new BZip2Archiver();
         }
         
@@ -92,13 +99,13 @@ public class ArchiveFactory {
     public static class ArchiveFactoryHolder {
         
         /**
-             * Reference to the Singleton instance of the ClientUtility
+             * Reference to the Singleton instance of the ArchiveFactory
          */
         private static ArchiveFactory _instance = new ArchiveFactory();
     
         /**
-         * Accessor method for the singleton instance of the ClientUtility.
-         * @return The Singleton instance of the client utility.
+         * Accessor method for the singleton instance of the ArchiveFactory.
+         * @return The Singleton instance of the ArchiveFactory.
          */
         public static ArchiveFactory getSingleton() {
             return _instance;
