@@ -142,7 +142,6 @@ public class PathGenerator
      */
     public void setOneEntry(FileEntry entry) {
         String path   = entry.getFilePath();
-        System.out.println(entry.getEntryPath());
         if ((entry.getEntryPath() == null) || (entry.getEntryPath().isEmpty())) {
             // If the entry path wasn't supplied, calculate it.
             entry.setEntryPath(getEntryPath(path.trim()));
