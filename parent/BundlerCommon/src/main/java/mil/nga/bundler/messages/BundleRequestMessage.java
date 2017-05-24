@@ -39,7 +39,7 @@ import mil.nga.bundler.types.ArchiveType;
  */
 @XmlRootElement
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonDeserialize(builder = BundleRequestMessage.BundleRequestBuilder.class)
+@JsonDeserialize(builder = BundleRequestMessage.BundleRequestMessageBuilder.class)
 public class BundleRequestMessage implements Serializable {
 
     /**
@@ -58,6 +58,7 @@ public class BundleRequestMessage implements Serializable {
      * construction.
      */
     private String            userName;
+    
     /**
      * Annotated list of files that will be processed by the bundler.
      */
@@ -67,7 +68,7 @@ public class BundleRequestMessage implements Serializable {
      * Private constructor forcing the builder design pattern.  
      * @param The builder object. 
      */
-    private BundleRequestMessage(BundleRequestBuilder builder) {
+    private BundleRequestMessage(BundleRequestMessageBuilder builder) {
     	redirect       = builder.redirect;
     	maxSize        = builder.maxSize;
     	outputFilename = builder.outputFilename;
@@ -238,7 +239,7 @@ public class BundleRequestMessage implements Serializable {
      * @author L. Craig Carpenter
      */
     @JsonPOJOBuilder(withPrefix = "")
-    public static class BundleRequestBuilder implements BundlerConstantsI {
+    public static class BundleRequestMessageBuilder implements BundlerConstantsI {
     
     	// Private internal members
     	private int               maxSize        = -1;
@@ -248,9 +249,13 @@ public class BundleRequestMessage implements Serializable {
         private ArchiveType       type           = ArchiveType.ZIP;
         private List<FileRequest> files          = new ArrayList<FileRequest>();
         
-        
+        /**
+         * Method used to construct an object of type BundleRequestMessage.
+         * @return
+         * @throws IllegalStateException
+         */
         public BundleRequestMessage build() throws IllegalStateException {
-        	validateBundleRequestObject();
+        	validateBundleRequestMessageObject();
         	return new BundleRequestMessage(this);
         }
         
@@ -261,7 +266,7 @@ public class BundleRequestMessage implements Serializable {
          * @return Handle to the builder object.
          */
         @JsonProperty(value="max_size")
-        public BundleRequestBuilder maxSize(int value) {
+        public BundleRequestMessageBuilder maxSize(int value) {
         	maxSize = value;
         	return this;
         }
@@ -275,7 +280,7 @@ public class BundleRequestMessage implements Serializable {
          * status tracking.
          */
         @JsonProperty(value="redirect")
-        public BundleRequestBuilder redirect(boolean value) {
+        public BundleRequestMessageBuilder redirect(boolean value) {
             redirect = value;
             return this;
         }
@@ -287,7 +292,7 @@ public class BundleRequestMessage implements Serializable {
          * @return Handle to the builder object.
          */
         @JsonProperty(value="type")
-        public BundleRequestBuilder type(ArchiveType value) {
+        public BundleRequestMessageBuilder type(ArchiveType value) {
         	type = value;
         	return this;
         }
@@ -298,7 +303,7 @@ public class BundleRequestMessage implements Serializable {
          * @param value The name of the output archive file to create.
          */
         @JsonProperty(value="archive_file")
-        public BundleRequestBuilder outputFilename(String value) {
+        public BundleRequestMessageBuilder outputFilename(String value) {
             outputFilename = value;
             return this;
         }
@@ -309,7 +314,7 @@ public class BundleRequestMessage implements Serializable {
          * @param value The user name of the client submitting the bundle request.
          */
         @JsonProperty(value="user_name")
-        public BundleRequestBuilder userName(String value) {
+        public BundleRequestMessageBuilder userName(String value) {
             userName = value;
             return this;
         }
@@ -320,7 +325,7 @@ public class BundleRequestMessage implements Serializable {
          * @param value The lit of files to bundle.
          */
         @JsonProperty(value="files")
-        public BundleRequestBuilder files(List<FileRequest> values) {
+        public BundleRequestMessageBuilder files(List<FileRequest> values) {
         	files = values;
         	return this;
         }
@@ -333,7 +338,7 @@ public class BundleRequestMessage implements Serializable {
          * @throws IllegalStateException Thrown if any of the required fields 
          * are not populated.
          */
-        private void validateBundleRequestObject() throws IllegalStateException {
+        private void validateBundleRequestMessageObject() throws IllegalStateException {
         	
         	if ((maxSize <= MIN_ARCHIVE_SIZE) || (maxSize > MAX_ARCHIVE_SIZE)) {
         		maxSize = DEFAULT_MAX_ARCHIVE_SIZE;

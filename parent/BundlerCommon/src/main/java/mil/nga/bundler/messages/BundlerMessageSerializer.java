@@ -15,6 +15,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 
+import mil.nga.bundler.BundleRequest;
+
 /**
  * This class was created for testing purposes.  It will "marshall"
  * an input Object into it's String-based JSON equivalent.
@@ -37,6 +39,9 @@ public class BundlerMessageSerializer {
     private static final DateFormat dateFormatter = 
             new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     
+    /**
+     * Ensure that all times are in GMT
+     */
     static {
         dateFormatter.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
@@ -54,13 +59,63 @@ public class BundlerMessageSerializer {
     
     /**
      * Method used to deserialize a JSON String into an object of type 
-     * <code>mil.nga.bundler.message.BundleRequest2</code>
+     * <code>mil.nga.bundler.BundleRequest</code>
      * 
      * @param json The String in JSON format.
-     * @return A <code>mil.nga.bundler.message.BundleRequest2</code> object. 
+     * @return A <code>mil.nga.bundler.BundleRequest</code> object. 
      * Null if any exceptions were encountered while deserializing the String.
      */
-    public BundleRequestMessage deserializeToBundleRequest(String json) {
+    public BundleRequest deserializeToBundleRequest(String json) {
+        
+        BundleRequest deserialized = null;
+        
+        try {
+            if (json != null) {
+                
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.setDateFormat(dateFormatter);
+                deserialized = mapper.readValue(
+                        json, 
+                        BundleRequest.class);
+                
+            }
+        }
+        catch (JsonMappingException jme) {
+            LOGGER.error("Unexpected JsonMappingException encountered "
+                    + "while attempting to deserialize the input "
+                    + "JSON to an object of type FileRequest.  Exception "
+                    + "message [ "
+                    + jme.getMessage()
+                    + " ].");
+        }
+        catch (JsonParseException jpe) {
+            LOGGER.error("Unexpected JsonParseException encountered "
+                    + "while attempting to deserialize the input "
+                    + "JSON to an object of type FileRequest.  Exception "
+                    + "message [ "
+                    + jpe.getMessage()
+                    + " ].");
+        }
+        catch (IOException ioe) {
+            LOGGER.error("Unexpected IOException encountered "
+                    + "while attempting to deserialize the input "
+                    + "JSON to an object of type FileRequest.  Exception "
+                    + "message [ "
+                    + ioe.getMessage()
+                    + " ].");
+        }
+        return deserialized;
+    }
+    
+    /**
+     * Method used to deserialize a JSON String into an object of type 
+     * <code>mil.nga.bundler.message.BundleRequestMessage</code>
+     * 
+     * @param json The String in JSON format.
+     * @return A <code>mil.nga.bundler.message.BundleRequestMessage</code> object. 
+     * Null if any exceptions were encountered while deserializing the String.
+     */
+    public BundleRequestMessage deserializeToBundleRequestMessage(String json) {
         
     	BundleRequestMessage deserialized = null;
         
