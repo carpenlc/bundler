@@ -35,14 +35,16 @@ import mil.nga.bundler.ejb.RequestArchiveService;
 import mil.nga.bundler.ejb.ValidationService;
 import mil.nga.bundler.exceptions.InvalidRequestException;
 import mil.nga.bundler.exceptions.ServiceUnavailableException;
+import mil.nga.bundler.interfaces.BundlerConstantsI;
 import mil.nga.bundler.messages.BundleRequestMessage;
+import mil.nga.bundler.messages.BundlerMessageSerializer;
 import mil.nga.bundler.messages.JobTrackerMessage;
 import mil.nga.bundler.model.Job;
 import mil.nga.bundler.model.ValidFile;
 import mil.nga.util.FileUtils;
 
 @Path("")
-public class Bundler extends PropertyLoader {
+public class Bundler extends PropertyLoader implements BundlerConstantsI {
 
     /**
      * Set up the Log4j system for use throughout the class
@@ -357,20 +359,34 @@ public class Bundler extends PropertyLoader {
     
     /**
      * Alternate version of the bundler entry point allowing clients to 
-     * call the bundler with media type of text/plain.  
-     * @param headers
-     * @param request
-     * @return
+     * call the bundler with media type of text/plain.  This was implemented 
+     * for the Aero folks working on cloud migration.  The "application/json"
+     * type was causing an HTTP "options" call that is not handled properly by
+     * the authentication software.  
+     * 
+     * @param headers The HTTP request headers.
+     * @param request The incoming JSON bundle request in String format.
+     * @return <code>JobTrackerMessage</code> object deserialized to JSON.
      */
+    @POST
+    @Path("BundleFilesText")
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
     public Response bundleText(
             @Context HttpHeaders headers,
-            String request) {
+            String requestString) {
         
+        BundleRequest request;
         
-        if (request != null) {
-            System.out.println(request.toString());
+        if (requestString != null) {
+            request = BundlerMessageSerializer.getInstance().deserializeToBundleRequest(requestString);
+         // If the client user name was not set in the request, attempt to 
+            // extract it from the input request headers.
+            if ((request.getUserName() == null) || 
+                    (request.getUserName().isEmpty()) || 
+                    (request.getUserName().equalsIgnoreCase(DEFAULT_USERNAME))) {
+                request.setUserName(getUser(headers));
+            }
         }
         return Response.status(Status.OK).build();
     }
@@ -397,7 +413,8 @@ public class Bundler extends PropertyLoader {
             // If the client user name was not set in the request, attempt to 
             // extract it from the input request headers.
             if ((request.getUserName() == null) || 
-                    (request.getUserName().isEmpty())) {
+                    (request.getUserName().isEmpty()) || 
+                    (request.getUserName().equalsIgnoreCase(DEFAULT_USERNAME))) {
                 request.setUserName(getUser(headers));
             }
             
@@ -414,6 +431,7 @@ public class Bundler extends PropertyLoader {
                         request, 
                         job.getJobID());
                         	
+                
                 getJobRunnerService().run(job);
 
                 message = getJobTrackerService().getJobTracker(job.getJobID());
@@ -490,7 +508,8 @@ public class Bundler extends PropertyLoader {
             // If the client user name was not set in the request, attempt to 
             // extract it from the input request headers.
             if ((request.getUserName() == null) || 
-                    (request.getUserName().isEmpty())) {
+                    (request.getUserName().isEmpty()) || 
+                    (request.getUserName().equalsIgnoreCase(DEFAULT_USERNAME))) {
                 request.setUserName(getUser(headers));
             }
             
