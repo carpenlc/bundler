@@ -240,29 +240,35 @@ public class FileValidator {
         List<String> expandedList = new ArrayList<String>();
         if ((filesRequested != null) && (!filesRequested.isEmpty())) { 
             for (String file : filesRequested) {
-                Path p = Paths.get(file);
-                if (Files.isDirectory(p)) {
-                    try {
-                        List<String> files = FileFinder.find(
-                                p.toAbsolutePath().toString());
-                        if ((files != null) && (!files.isEmpty())) { 
-                            for (String name : files) {
-                                expandedList.add(name);
+                if ((file != null) && (!file.isEmpty())) {
+                    Path p = Paths.get(file);
+                    if (Files.isDirectory(p)) {
+                        try {
+                            List<String> files = FileFinder.find(
+                                    p.toAbsolutePath().toString());
+                            if ((files != null) && (!files.isEmpty())) { 
+                                for (String name : files) {
+                                    expandedList.add(name);
+                                }
                             }
                         }
+                        catch (IOException ioe) {
+                            LOGGER.warn("Client requested bundling of directory [ "
+                                    + file
+                                    + " ] but an unexpected IOException was "
+                                    + "raised while walking the file system.  "
+                                    + "Error message [ "
+                                    + ioe.getMessage()
+                                    + " ].");
+                        }
                     }
-                    catch (IOException ioe) {
-                        LOGGER.warn("Client requested bundling of directory [ "
-                                + file
-                                + " ] but an unexpected IOException was "
-                                + "raised while walking the file system.  "
-                                + "Error message [ "
-                                + ioe.getMessage()
-                                + " ].");
+                    else {
+                        expandedList.add(file);
                     }
                 }
                 else {
-                    expandedList.add(file);
+                    LOGGER.warn("Client submitted an empty String filename "
+                            + "for bundling.  Skipping...");
                 }
             }
         }
@@ -283,33 +289,41 @@ public class FileValidator {
         List<FileRequest> expandedList = new ArrayList<FileRequest>();
         if ((filesRequested != null) && (!filesRequested.isEmpty())) { 
             for (FileRequest file : filesRequested) {
-                Path p = Paths.get(file.getFile());
-                if (Files.isDirectory(p)) {
-                    try {
-                        List<String> files = FileFinder.find(
-                                p.toAbsolutePath().toString());
-                        if ((files != null) && (!files.isEmpty())) { 
-                            for (String name : files) {
-                                expandedList.add(
-                                        new FileRequest.FileRequestBuilder()
-                                        .file(name)
-                                        .build());
+                if ((file != null) && 
+                        (file.getFile() != null) && 
+                        (!file.getFile().isEmpty())) {
+                    Path p = Paths.get(file.getFile());
+                    if (Files.isDirectory(p)) {
+                        try {
+                            List<String> files = FileFinder.find(
+                                    p.toAbsolutePath().toString());
+                            if ((files != null) && (!files.isEmpty())) { 
+                                for (String name : files) {
+                                    expandedList.add(
+                                            new FileRequest.FileRequestBuilder()
+                                            .file(name)
+                                            .build());
+                                }
                             }
+                            
                         }
-                        
+                        catch (IOException ioe) {
+                            LOGGER.warn("Client requested bundling of directory [ "
+                                    + file.getFile()
+                                    + " ] but an unexpected IOException was "
+                                    + "raised while walking the file system.  "
+                                    + "Error message [ "
+                                    + ioe.getMessage()
+                                    + " ].");
+                        }
                     }
-                    catch (IOException ioe) {
-                        LOGGER.warn("Client requested bundling of directory [ "
-                                + file.getFile()
-                                + " ] but an unexpected IOException was "
-                                + "raised while walking the file system.  "
-                                + "Error message [ "
-                                + ioe.getMessage()
-                                + " ].");
+                    else {
+                        expandedList.add(file);
                     }
                 }
                 else {
-                    expandedList.add(file);
+                    LOGGER.warn("Client submitted an empty String filename "
+                            + "for bundling.  Skipping...");
                 }
             }
         }
