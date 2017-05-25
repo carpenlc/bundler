@@ -294,6 +294,7 @@ public class FileValidator {
                         (!file.getFile().isEmpty())) {
                     Path p = Paths.get(file.getFile());
                     if (Files.isDirectory(p)) {
+                        String baseDir = p.toAbsolutePath().toString();
                         try {
                             List<String> files = FileFinder.find(
                                     p.toAbsolutePath().toString());
@@ -302,10 +303,16 @@ public class FileValidator {
                                     expandedList.add(
                                             new FileRequest.FileRequestBuilder()
                                             .file(name)
+                                            .archivePath(
+                                                    PathGenerator
+                                                    .getInstance()
+                                                    .getEntryPath(
+                                                            baseDir, 
+                                                            file.getArchivePath(), 
+                                                            name))
                                             .build());
                                 }
                             }
-                            
                         }
                         catch (IOException ioe) {
                             LOGGER.warn("Client requested bundling of directory [ "

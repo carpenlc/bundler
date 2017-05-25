@@ -176,6 +176,55 @@ public class PathGenerator
     }
     
     /**
+     * This ugly method is used to calculate the entry path within the output
+     * archive for files that were identified by searching through nested 
+     * directories.  The basic algorithm is that the base directory is 
+     * excluded (i.e. eliminated) from the absolute path.  The archivePath 
+     * (if supplied) is then prepended to what is left of the absolute path.
+     * 
+     * @param baseDir The base directory which was the starting point for 
+     * the file search that resulted in the absolutePath.
+     * @param archivePath The user-supplied archivePath.
+     * @param absolutePath The absolute path to a single file.
+     * @return The entry path for a single file.
+     */
+    public String getEntryPath(
+            String baseDir, 
+            String archivePath, 
+            String absolutePath) {
+        
+        String entryPath = absolutePath;
+        
+        // if the archivePath isn't supplied, do nothing.
+     // If the archive path is supplied, append it to whatever is left over.
+        if ((archivePath != null) && (!archivePath.isEmpty())) {
+            
+            // treat the baseDir as an exclusion from the absolute path.
+            if ((baseDir != null) && (!baseDir.isEmpty())) {
+                // Treat the baseDir as an exclusion
+                if (absolutePath.startsWith(baseDir)) {
+                    entryPath = absolutePath.replaceFirst(Pattern.quote(baseDir), "");
+                }
+            }    
+        
+            // Make sure the archivePath doesn't end with a file separator char 
+            // this ensures there are not duplicates.
+            if (archivePath.endsWith("/")) {
+                archivePath = archivePath.substring(0,archivePath.length()-1);
+            }
+            
+            // Make sure whatever is left of the absolutePath does not start 
+            // with a file separator character.
+            if (entryPath.startsWith("/")) {
+                entryPath = entryPath.substring(1);
+            }
+            entryPath = archivePath+"/"+entryPath;
+        
+        }
+        return entryPath;
+    }
+    
+    /**
      * Set any Entry paths that are not already defined.
      * @param files The list of validated files 
      */
@@ -258,6 +307,7 @@ public class PathGenerator
     
     
     public static void main(String[] args) {
+        
         PathGenerator.getInstance();
         FileEntry entry = new FileEntry();
         entry.setFilePath("/mnt/raster/dir1/dir2/dir3");
@@ -266,6 +316,13 @@ public class PathGenerator
         System.out.println(entry.toString());
         
         
-        
+        String test = PathGenerator.getInstance().getEntryPath("/1/2/3/4", "/7/8/", "/1/2/3/4/5/6/file.txt");
+        System.out.println(test);
+        test = PathGenerator.getInstance().getEntryPath("/1/2/3/4", "/7/8", "/1/2/3/4/5/6/file.txt");
+        System.out.println(test);
+        test = PathGenerator.getInstance().getEntryPath("/1/2/3/4", "", "/1/2/3/4/5/6/file.txt");
+        System.out.println(test);
+        test = PathGenerator.getInstance().getEntryPath("/1/2/3/4", "/7/8/4", "/1/2/3/4/5/6/file.txt");
+        System.out.println(test);
     }
 }
