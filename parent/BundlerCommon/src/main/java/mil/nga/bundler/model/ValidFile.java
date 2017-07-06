@@ -33,7 +33,7 @@ public class ValidFile implements Serializable {
     /**
      * The full path to the on-disk file.
      */
-    @Column(name="PATH")
+    @Column(name="FILE_PATH")
     private String path = null;
     
     /**
@@ -74,7 +74,7 @@ public class ValidFile implements Serializable {
     /**
      * The size of the file in bytes.
      */
-    @Column(name="SIZE")
+    @Column(name="FILE_SIZE")
     private long size = 0L;
     
     /**

@@ -57,7 +57,7 @@ import mil.nga.util.FileUtils;
                                 // not deploy.
                                 @ActivationConfigProperty(
                                                 propertyName = "destination",
-                                                propertyValue = "MovedToEJBJAR"),
+                                                propertyValue = "queue/ArchiverMessageQ"),
                                 @ActivationConfigProperty(
                                                 propertyName = "acknowledgeMode",
                                                 propertyValue = "Auto-acknowledge")

@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
                         // not deploy.
                         @ActivationConfigProperty(
                                         propertyName = "destination",
-                                        propertyValue = "MovedToEJBJAR"),
+                                        propertyValue = "queue/TrackerMessageQ"),
                         @ActivationConfigProperty(
                                         propertyName = "acknowledgeMode",
                                         propertyValue = "Auto-acknowledge")
