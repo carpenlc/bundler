@@ -61,10 +61,10 @@ public interface BundlerConstantsI {
     public static final String HASH_FILE_EXTENSION = "sha1";
     
     /**
-     * Default maximum size for the archive if it wasn't supplied by the 
-     * caller (in MB).
+     * Upper bound for maximum size for the archive (in MB).  If anything
+     * larger is requested it is set back down to this number.
      */
-    public static final int MAX_ARCHIVE_SIZE = 1024;
+    public static final int MAX_ARCHIVE_SIZE = 2048;
     
     /**
      * Part of the property name that will contain path prefix exclusions to 

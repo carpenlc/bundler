@@ -5,7 +5,6 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
-import mil.nga.bundler.interfaces.BundlerConstantsI;
 import mil.nga.bundler.types.JobStateType;
 
 /**

@@ -290,7 +290,7 @@ public class JobTrackerMDB implements MessageListener {
                          if (archive != null) {
                              checkArchive(archive);
                              updateJobState(job, archive);
-                             jobService.update(job);
+                             getJobService().update(job);
                          }
                          else {
                               LOGGER.error("Unable to retrieve Archive "

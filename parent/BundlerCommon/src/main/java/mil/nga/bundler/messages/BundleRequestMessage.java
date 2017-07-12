@@ -18,8 +18,8 @@ import mil.nga.bundler.types.ArchiveType;
 
 /**
  * Simple POJO used to hold the contents of a client-initiated bundle
- * request.  This object utilizes JAX-B annotations for marshalling/
- * unmarshalling client supplied JSON data.  Object is populated by 
+ * request.  This object utilizes JAX-B annotations for serializing/
+ * deserializing client supplied JSON data.  Object is populated by 
  * a RESTful (JAX-RS) service call via POST.
  *  
  * This version of the BundleRequest object allows clients to specify the path

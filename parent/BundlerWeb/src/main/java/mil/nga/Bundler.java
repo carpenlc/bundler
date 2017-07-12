@@ -340,6 +340,7 @@ public class Bundler extends PropertyLoader implements BundlerConstantsI {
      * application is responding to requests.
      */
     @GET
+    @HEAD
     @Path("/isAlive")
     public Response isAlive(@Context HttpHeaders headers) {
         
@@ -363,12 +364,15 @@ public class Bundler extends PropertyLoader implements BundlerConstantsI {
      * call the bundler with media type of text/plain.  This was implemented 
      * for the Aero folks working on cloud migration.  The "application/json"
      * type was causing an HTTP "options" call that is not handled properly by
-     * the authentication software.  
+     * the authentication software.  This method is identical to the 
+     * <code>BundleFilesJSON</code> method below with the additional step of 
+     * manually deserializing the input request.
      * 
      * @param headers The HTTP request headers.
      * @param request The incoming JSON bundle request in String format.
      * @return <code>JobTrackerMessage</code> object deserialized to JSON.
      */
+    @HEAD
     @POST
     @Path("BundleFilesText")
     @Consumes(MediaType.TEXT_PLAIN)
@@ -377,19 +381,95 @@ public class Bundler extends PropertyLoader implements BundlerConstantsI {
             @Context HttpHeaders headers,
             String requestString) {
         
-        BundleRequest request;
+        BundleRequest     request = null;
+        JobTrackerMessage message = null;
         
         if (requestString != null) {
-            request = BundlerMessageSerializer.getInstance().deserializeToBundleRequest(requestString);
-         // If the client user name was not set in the request, attempt to 
-            // extract it from the input request headers.
-            if ((request.getUserName() == null) || 
-                    (request.getUserName().isEmpty()) || 
-                    (request.getUserName().equalsIgnoreCase(DEFAULT_USERNAME))) {
-                request.setUserName(getUser(headers));
+            
+            request = BundlerMessageSerializer
+                    .getInstance()
+                    .deserializeToBundleRequest(requestString);
+            
+            if (request != null) {
+                
+                // If the client user name was not set in the request, attempt to 
+                // extract it from the input request headers.
+                if ((request.getUserName() == null) || 
+                        (request.getUserName().isEmpty()) || 
+                        (request.getUserName().equalsIgnoreCase(DEFAULT_USERNAME))) {
+                    request.setUserName(getUser(headers));
+                }
+                
+                LOGGER.info("Incoming request parsed [ "
+                        + request.toString()
+                        + " ].");
+                
+                try {
+                    
+                    Job job = (new JobFactory()).createJob(request);
+                        
+                    getRequestArchiveService().archiveRequest(
+                            request, 
+                            job.getJobID());
+                                
+                    
+                    getJobRunnerService().run(job);
+    
+                    message = getJobTrackerService().getJobTracker(job.getJobID());
+        
+                }
+                catch (InvalidRequestException ire) {
+                    LOGGER.error("Request validation failed with error code [ "
+                            + ire.getErrorCode()
+                            + " ], description [ "
+                            + ire.getMessageText()
+                            + "].");
+                    throw new WebArchiveException("Request validation failed with "
+                            + "error code [ "
+                            + ire.getErrorCode()
+                            + " ], description [ "
+                            + ire.getMessageText()
+                            + "].  Request validation failed with "
+                            + "error code [ "
+                            + ire.getErrorCode()
+                            + " ], description [ "
+                            + ire.getMessageText()
+                            + "].");
+                }
+                catch (ServiceUnavailableException sue) {
+                    LOGGER.error("Unable to look up target service.  Error message [ "
+                            + sue.getMessage()
+                            + " ].");
+                    return Response.serverError().build();
+                }
+                catch (NamingException ne) {
+                    LOGGER.error("An unexpected JNDI NamingException encountered "
+                            + "while looking up EJBs.  Error message [ "
+                            + ne.getMessage()
+                            + " ].");
+                    return Response.serverError().build();
+                }
+            }
+            else {
+                LOGGER.error("Invalid request received.  Unable to " 
+                        + "deserialize the request String.");
+                throw new WebArchiveException("Invalid request received.  Unable to " 
+                        + "deserialize the request String.");
             }
         }
-        return Response.status(Status.OK).build();
+        else {
+            LOGGER.error("Invalid request received.  Input request String is "
+                    + "null.");
+            return Response.serverError().build();
+        }
+        // Return the state of the job to the caller.
+        if (message != null) {
+            return Response.ok(message, MediaType.APPLICATION_JSON).build();
+        }
+        else {
+            LOGGER.error("Unable to create the JobTrackerMessage!");
+            return Response.serverError().build();
+        }
     }
     
     /**
@@ -398,6 +478,7 @@ public class Bundler extends PropertyLoader implements BundlerConstantsI {
      * @return
      */
     @POST
+    @HEAD
     @Path("/BundleFilesJSON")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -592,6 +673,7 @@ public class Bundler extends PropertyLoader implements BundlerConstantsI {
      * @return JSON representation of the job status, or error if not found.
      */
     @GET
+    @HEAD
     @Path("/GetState")
     @Produces(MediaType.APPLICATION_JSON)
     public JobTrackerMessage getState(
@@ -632,6 +714,7 @@ public class Bundler extends PropertyLoader implements BundlerConstantsI {
     
     
     @POST
+    @HEAD
     @Path("/validate")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
