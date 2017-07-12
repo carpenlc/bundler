@@ -54,7 +54,7 @@ public class BundleRequestMessageTest {
 		
 		// Test creation with out-of-range values
 		BundleRequestMessage request2 = new BundleRequestMessage.BundleRequestMessageBuilder()
-				.maxSize(1200)
+				.maxSize(2400)
 				.redirect(true)
 				.build();
 		assertEquals(request2.getMaxSize(), BundlerConstantsI.DEFAULT_MAX_ARCHIVE_SIZE);
